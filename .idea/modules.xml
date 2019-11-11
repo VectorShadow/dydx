@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../dualgui/dualgui.iml" filepath="$PROJECT_DIR$/../dualgui/dualgui.iml" />
       <module fileurl="file://$PROJECT_DIR$/dydx.iml" filepath="$PROJECT_DIR$/dydx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../guilib/guilib.iml" filepath="$PROJECT_DIR$/../guilib/guilib.iml" />
     </modules>
   </component>
 </project>
