@@ -29,6 +29,7 @@ public class Driver {
             TestDatum td = new TestDatum();
             System.out.println("" + (td.getTestString().equals(((TestDatum)(StreamConverter.toObject(StreamConverter.toByteArray(td)))).getTestString())));
             Gui gui = new DualityGUI();
+            gui.redraw();
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }
