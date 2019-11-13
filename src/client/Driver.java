@@ -6,7 +6,12 @@ import data.TestDatum;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
 import data.StreamConverter;
+import resources.DualityMode;
+import resources.GlyphBuilder;
+import resources.Pair;
 import server.engine.WorldManager;
+
+import java.awt.*;
 
 public class Driver {
     /**
@@ -29,7 +34,13 @@ public class Driver {
             TestDatum td = new TestDatum();
             System.out.println("" + (td.getTestString().equals(((TestDatum)(StreamConverter.toObject(StreamConverter.toByteArray(td)))).getTestString())));
             Gui gui = new DualityGUI();
-            gui.redraw();
+            gui.print(20, 20, GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '@').build());
+            gui.addZone(0.97, 0.15, 0.15, 0.15, DualityMode.TEXT);
+            gui.print(0, 0, 0, GlyphBuilder.buildGlyph().setDefaults(Color.BLUE, Color.YELLOW, '@').addForegroundColor(new Pair<>(0.33, Color.RED)).build());
+            for (;;){
+                gui.redraw();
+                Thread.sleep(25);
+            }
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }
