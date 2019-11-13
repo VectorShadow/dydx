@@ -7,11 +7,13 @@ import error.ErrorLogger;
 import linker.AbstractDataLink;
 import data.StreamConverter;
 import resources.DualityMode;
+import resources.Glyph;
 import resources.GlyphBuilder;
 import resources.Pair;
 import server.engine.WorldManager;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Driver {
     /**
@@ -35,8 +37,22 @@ public class Driver {
             System.out.println("" + (td.getTestString().equals(((TestDatum)(StreamConverter.toObject(StreamConverter.toByteArray(td)))).getTestString())));
             Gui gui = new DualityGUI();
             gui.print(20, 20, GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '@').build());
-            gui.addZone(0.97, 0.15, 0.15, 0.15, DualityMode.TEXT);
-            gui.print(0, 0, 0, GlyphBuilder.buildGlyph().setDefaults(Color.BLUE, Color.YELLOW, '@').addForegroundColor(new Pair<>(0.33, Color.RED)).build());
+            gui.addZone(0.85, 0.15, 0.15, 0.10, DualityMode.TEXT);
+            gui.print(0, 1, 1, GlyphBuilder.buildGlyph().setDefaults(Color.BLUE, Color.YELLOW, '@').addForegroundColor(new Pair<>(0.33, Color.RED)).build());
+            ArrayList<Glyph> testGlyphString = new ArrayList<>();
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'H').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'e').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'l').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'l').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'o').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, ' ').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'W').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'o').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'r').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'l').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'd').build());
+            testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '!').build());
+            gui.print(0, 2, 2, testGlyphString);
             for (;;){
                 gui.redraw();
                 Thread.sleep(25);
