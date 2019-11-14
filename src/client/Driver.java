@@ -37,7 +37,7 @@ public class Driver {
             System.out.println("" + (td.getTestString().equals(((TestDatum)(StreamConverter.toObject(StreamConverter.toByteArray(td)))).getTestString())));
             Gui gui = new DualityGUI();
             gui.print(20, 20, GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '@').build());
-            gui.addZone(0.85, 0.15, 0.15, 0.10, DualityMode.TEXT);
+            gui.addZone(0.15, 0.33, 0.75, 0.1, DualityMode.TEXT);
             gui.setBackground(0, GlyphBuilder.buildGlyph().setDefaults(Color.DARK_GRAY, Color.WHITE, ' ').build());
             gui.setBorder(0, GlyphBuilder.buildGlyph().setDefaults(Color.DARK_GRAY, Color.RED, '#').addBackgroundColor(new Pair<>(0.5, Color.LIGHT_GRAY)).addForegroundColor(new Pair<>(0.33, Color.GREEN)).addForegroundColor(new Pair<>(0.67, Color.BLUE)).build());
             gui.print(0, 1, 1, GlyphBuilder.buildGlyph().setDefaults(Color.BLUE, Color.YELLOW, '@').addForegroundColor(new Pair<>(0.33, Color.RED)).build());
