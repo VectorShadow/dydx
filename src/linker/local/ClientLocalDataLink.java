@@ -1,6 +1,8 @@
 package linker.local;
 
-public class ClientLocalDataLink extends AbstractLocalDataLink {
+import linker.ClientDataLink;
+
+public class ClientLocalDataLink extends AbstractLocalDataLink implements ClientDataLink {
     @Override
     public void handle(byte instruction, byte[] body) {
         System.out.println("\nInstruction: " + instruction + " Size: " + body.length + " Body: ");

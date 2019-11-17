@@ -3,6 +3,7 @@ package server;
 import linker.ConnectionProperties;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
+import linker.ServerDataLink;
 import linker.remote.ServerRemoteDataLink;
 
 import java.net.ServerSocket;
@@ -13,7 +14,7 @@ public class Server extends Thread {
     ServerSocket serverSocket = null;
     Socket socket = null;
     ConnectionProperties connectionProperties = new ConnectionProperties();
-    ArrayList<AbstractDataLink> openConnections = new ArrayList<>();
+    ArrayList<ServerDataLink> openConnections = new ArrayList<>();
 
     public void run() {
         try {
@@ -28,7 +29,7 @@ public class Server extends Thread {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }
     }
-    public ArrayList<AbstractDataLink> getOpenConnections() {
+    public ArrayList<ServerDataLink> getOpenConnections() {
         return openConnections;
     }
 }

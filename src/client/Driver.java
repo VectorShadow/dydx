@@ -3,6 +3,7 @@ package client;
 import contract.Gui;
 import core.DualityGUI;
 import data.TestDatum;
+import engine.Engine;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
 import data.StreamConverter;
@@ -12,7 +13,6 @@ import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.continuum.Pair;
 import resources.glyph.image.ImageManager;
-import server.engine.WorldManager;
 
 import java.awt.*;
 import java.io.File;
@@ -26,14 +26,21 @@ public class Driver {
     public static void main(String[] args) {
         try {
             //open a GUI, attempt to connect to a remote server, and display information
-            //if no connection can be established or player chooses to play locally, create a new WorldManager
-            //and establish a datalink bound to the WorldManager's datalink.
+            //if no connection can be established or player chooses to play locally, create a new Engine
+            //and establish a datalink bound to the Engine's datalink.
             //if connection is establised, create a datalink bound to the connection socket.
 
-            /* test */
-            WorldManager wm = new WorldManager(false);
-            AbstractDataLink adl = wm.generateClientDataLink();
+            /* test local */
+            //realtime
+            Engine e = new Engine(false, true);
+            AbstractDataLink adl = e.generateClientDataLink();
+            //turnbased
+//            Engine e = new Engine(false, false);
+//            AbstractDataLink adl = e.generateClientDataLink();
+            /* end local */
+            /* test remote */
 //            AbstractDataLink adl = new Client().connect();
+            /* end remote */
             adl.send(new byte[] {1, 0, 0, 5, 0, 1, 2, 3, 4});
             adl.send(new byte[] {7, 0, 0, 0x10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f});
             TestDatum td = new TestDatum();
@@ -65,6 +72,7 @@ public class Driver {
                 gui.redraw();
                 Thread.sleep(25);
             }
+            //todo - Engine.start() when ready to begin execution
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }

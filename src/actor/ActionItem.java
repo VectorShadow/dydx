@@ -7,9 +7,14 @@ package actor;
  */
 public class ActionItem {
     Action action;
+    Actor self;
 
     public Action getAction() {
         return action;
+    }
+
+    public Actor getSelf() {
+        return self;
     }
     //todo - supporting information as necessary
 }

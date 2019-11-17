@@ -20,4 +20,12 @@ public class ActorExecutionQueue {
     public long nextTime() {
         return executionQueue.poll().getNextActionTime();
     }
+    public ActionItem execute() {
+        Actor a = executionQueue.remove();
+        ActionItem ai = a.executeNextActionEvent();
+        //todo - verify that this ActionItem is still valid, else replace it with a pause action
+        //todo - set Actor's nextActionTime based on the final ActionItem
+        executionQueue.add(a);
+        return ai;
+    }
 }

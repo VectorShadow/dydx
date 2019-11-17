@@ -1,10 +1,11 @@
 package linker.remote;
 
 import error.LogReadyTraceableException;
+import linker.ClientDataLink;
 
 import java.net.Socket;
 
-public class ClientRemoteDataLink extends AbstractRemoteDataLink {
+public class ClientRemoteDataLink extends AbstractRemoteDataLink implements ClientDataLink {
 
     public ClientRemoteDataLink(Socket s) throws LogReadyTraceableException {
         super(s);
