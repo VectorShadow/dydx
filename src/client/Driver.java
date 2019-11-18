@@ -5,6 +5,7 @@ import core.DualityGUI;
 import data.TestDatum;
 import engine.Engine;
 import error.ErrorLogger;
+import level.terrain.TerrainFlags;
 import level.terrain.TerrainByte;
 import linker.AbstractDataLink;
 import data.StreamConverter;
@@ -31,6 +32,7 @@ public class Driver {
             //and establish a datalink bound to the Engine's datalink.
             //if connection is establised, create a datalink bound to the connection socket.
             TerrainByte.test();
+            TerrainFlags.test();
             /* test local */
             //realtime
             Engine e = new Engine(false, true);
