@@ -1,5 +1,6 @@
 package server;
 
+import crypto.RSA;
 import linker.ConnectionProperties;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
@@ -17,6 +18,10 @@ public class Server extends Thread {
     ArrayList<ServerDataLink> openConnections = new ArrayList<>();
 
     public void run() {
+        RSA.generateSessionKeys();
+        //todo - when each client connects, send it the public key for this session
+        //todo - then establish a secret key for non-RSA encryption, and revert to that
+        //todo for the remainder of the session
         try {
             serverSocket = new ServerSocket(connectionProperties.getPort());
             while (true) {
