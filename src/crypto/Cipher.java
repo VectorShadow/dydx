@@ -4,12 +4,11 @@ import java.security.SecureRandom;
 
 public class Cipher {
 
-    static final SecureRandom CIPHER_RANDOM = new SecureRandom();
+    static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 
     private static final int SHIFT = 7;
     private static final int KEY_SIZE = 128;
-    private static final int MAX_CHAR = 255;
 
     private static final char UPPER_MASK = 0xf0; //mask for converting hex chars to normal chars
     private static final char LOWER_MASK = 0x0f; //mask for converting hex chars to normal chars
@@ -23,7 +22,7 @@ public class Cipher {
     public static void generateSessionKey(){
         sessionKey = "";
         while (sessionKey.length() < KEY_SIZE){
-            sessionKey += (byte)CIPHER_RANDOM.nextInt(MAX_CHAR);
+            sessionKey += (byte) SECURE_RANDOM.nextInt(Password.MAX_CHAR);
         }
     }
 
