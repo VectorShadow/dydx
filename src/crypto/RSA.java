@@ -37,10 +37,9 @@ public class RSA {
     public static void generateSessionKeys() {
         final BigInteger DIFF = BigInteger.valueOf(2L).pow(1000); //2^1000, the minimum difference between p and q
         BigInteger p, q, phiN; //as in RSA description
-        SecureRandom s = new SecureRandom(); //a secure pseudo-random number generator
         do {
-            p = BigInteger.probablePrime(1536, s); //get a value for p with 1536 bits
-            q = BigInteger.probablePrime(1536, s); //get a value for q with 1536 bits
+            p = BigInteger.probablePrime(1536, Cipher.CIPHER_RANDOM); //get a value for p with 1536 bits
+            q = BigInteger.probablePrime(1536, Cipher.CIPHER_RANDOM); //get a value for q with 1536 bits
         } while (p.subtract(q).abs().compareTo(DIFF) < 0); //ensure p and q are far enough apart
         sessionPublicKey = p.multiply(q); //n = pq
         phiN = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)); //phi(n) = (p - 1)(q - 1)

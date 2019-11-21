@@ -2,11 +2,10 @@ package client;
 
 import contract.Gui;
 import core.DualityGUI;
+import crypto.Cipher;
 import data.TestDatum;
 import engine.Engine;
 import error.ErrorLogger;
-import level.terrain.TerrainFlags;
-import level.terrain.TerrainByte;
 import linker.AbstractDataLink;
 import data.StreamConverter;
 import resources.DualityContext;
@@ -31,8 +30,7 @@ public class Driver {
             //if no connection can be established or player chooses to play locally, create a new Engine
             //and establish a datalink bound to the Engine's datalink.
             //if connection is establised, create a datalink bound to the connection socket.
-            TerrainByte.test();
-            TerrainFlags.test();
+            Cipher.testAllCrypto();
             /* test local */
             //realtime
             Engine e = new Engine(false, true);
