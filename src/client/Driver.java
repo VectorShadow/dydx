@@ -69,6 +69,7 @@ public class Driver {
             testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, 'd').build());
             testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '!').build());
             gui.print(0, 2, 2, testGlyphString);
+            gui.setFullScreen(false);
             for (;;){
                 gui.redraw();
                 Thread.sleep(25);
