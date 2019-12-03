@@ -25,8 +25,6 @@ public class RSA {
      * @return the RSA-encrypted cipherText corresponding to plainText
      */
     public static BigInteger encrypt(BigInteger plainText, BigInteger publicKey){
-        if (sessionPublicKey.equals(BigInteger.ZERO) || sessionPrivateKey.equals(BigInteger.ZERO))
-            throw new IllegalStateException("Session keys have not been generated.");
         return plainText.modPow(E, publicKey); //C = P^e mod n
     }
 

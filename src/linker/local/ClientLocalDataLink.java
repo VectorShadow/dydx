@@ -1,14 +1,17 @@
 package linker.local;
 
+import data.AbstractDatum;
+import error.ErrorLogger;
+import error.LogReadyTraceableException;
 import linker.ClientDataLink;
 
 public class ClientLocalDataLink extends AbstractLocalDataLink implements ClientDataLink {
     @Override
-    public void handle(byte instruction, byte[] body) {
-        System.out.println("\nInstruction: " + instruction + " Size: " + body.length + " Body: ");
-        for (byte b : body) {
-            System.out.print(b + ", ");
+    public void handle(byte instruction, AbstractDatum datum) {
+        switch (instruction){
+            //todo - more cases
+            default:
+                ErrorLogger.logFatalException(new LogReadyTraceableException("Improper instruction."));
         }
-        //todo - same as ClientRemoteDataLink.handle()
     }
 }

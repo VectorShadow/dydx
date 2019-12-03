@@ -1,6 +1,7 @@
 package linker.remote;
 
 import data.DataPacker;
+import data.StreamConverter;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
@@ -23,11 +24,11 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         socket = s;
     }
 
-    public void send(byte[] transmission) throws LogReadyTraceableException {
+    public void send(byte[] transmission){
         try {
             socket.getOutputStream().write(transmission);
         } catch (IOException ioe) {
-            throw ErrorLogger.trace(ioe);
+            ErrorLogger.logFatalException(ErrorLogger.trace(ioe));
         }
     }
     protected void listen() throws LogReadyTraceableException {
@@ -67,7 +68,7 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                         }
                     }
                     if (bytesReadInInstruction >= instructionBodySize) { //if we finished an instruction, handle it
-                        handle(instruction, instructionBody);
+                        handle(instruction, StreamConverter.toObject(instructionBody));
                         instruction = 0; //then reset the data members
                         instructionBodySize = 0;
                         bytesReadInInstruction = 0;

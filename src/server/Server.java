@@ -3,11 +3,9 @@ package server;
 import crypto.RSA;
 import data.DataPacker;
 import data.InstructionCode;
-import data.StreamConverter;
-import data.crypto.RSAPublicKeyDatum;
+import data.BigIntegerDatum;
 import linker.ConnectionProperties;
 import error.ErrorLogger;
-import linker.AbstractDataLink;
 import linker.ServerDataLink;
 import linker.remote.ServerRemoteDataLink;
 
@@ -31,8 +29,8 @@ public class Server extends Thread {
                 srdl.start();
                 srdl.send(
                         DataPacker.pack(
-                                new RSAPublicKeyDatum(RSA.getSessionPublicKey()),
-                                InstructionCode.RSA_PUBLIC_KEY_TRANSMISSION)
+                                new BigIntegerDatum(RSA.getSessionPublicKey()),
+                                InstructionCode.PROTOCOL_BIG_INTEGER)
                 );
                 openConnections.add(srdl);
             }

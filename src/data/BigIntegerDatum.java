@@ -1,13 +1,13 @@
-package data.crypto;
+package data;
 
 import data.AbstractDatum;
 
 import java.math.BigInteger;
 
-public class RSAPublicKeyDatum extends AbstractDatum {
+public class BigIntegerDatum extends AbstractDatum {
     private BigInteger key;
 
-    public RSAPublicKeyDatum(BigInteger k) {
+    public BigIntegerDatum(BigInteger k) {
         key = k;
     }
     public BigInteger getKey() {

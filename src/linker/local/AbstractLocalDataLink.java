@@ -1,5 +1,6 @@
 package linker.local;
 
+import data.StreamConverter;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
@@ -34,12 +35,12 @@ public abstract class AbstractLocalDataLink extends AbstractDataLink {
     }
 
     @Override
-    public void send(byte[] transmission) throws LogReadyTraceableException {
+    public void send(byte[] transmission) {
         while(output.get() != null) { //don't overwrite the current output until it's been handled
             try {
                 Thread.sleep(5);
             } catch (InterruptedException e) {
-                throw ErrorLogger.trace(e);
+                ErrorLogger.logFatalException(ErrorLogger.trace(e));
             }
         }
         output.set(transmission);
@@ -65,7 +66,7 @@ public abstract class AbstractLocalDataLink extends AbstractDataLink {
         for (int i = 0; i < body.length; ++i) {
             body[i] = bytes[i + 4];
         }
-        handle(instruction, body);
+        handle(instruction, StreamConverter.toObject(body));
     }
     @Override
     public void run() {

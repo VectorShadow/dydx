@@ -3,15 +3,12 @@ package client;
 import contract.Gui;
 import core.DualityGUI;
 import crypto.Cipher;
-import crypto.RSA;
 import data.DataPacker;
 import data.InstructionCode;
-import data.TestDatum;
-import data.crypto.RSAPublicKeyDatum;
+import data.UserDatum;
 import engine.Engine;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
-import data.StreamConverter;
 import resources.DualityContext;
 import resources.DualityMode;
 import resources.glyph.Glyph;
@@ -46,8 +43,6 @@ public class Driver {
             /* test remote */
             AbstractDataLink adl = new Client().connect();
             /* end remote */
-//            RSA.generateSessionKeys();
-//            adl.send(DataPacker.pack(new RSAPublicKeyDatum(RSA.getSessionPublicKey()), InstructionCode.RSA_PUBLIC_KEY_TRANSMISSION));
             Gui gui = new DualityGUI();
             ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
             ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File("./gfx/16.png"));
@@ -72,6 +67,7 @@ public class Driver {
             testGlyphString.add(GlyphBuilder.buildGlyph().setDefaults(Color.BLACK, Color.WHITE, '!').build());
             gui.print(0, 2, 2, testGlyphString);
             gui.setFullScreen(false);
+            adl.send(DataPacker.pack(new UserDatum("Sereg", "pass1234"), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
             for (;;){
                 gui.redraw();
                 Thread.sleep(25);

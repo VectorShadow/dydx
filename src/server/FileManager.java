@@ -60,8 +60,10 @@ public class FileManager {
         String catalogLine =
                 username + SEPARATOR + salt + SEPARATOR + Password.hash(Password.salt(salt, password)) + "\n";
         try {
-            BufferedWriter fileOut = Files.newBufferedWriter(USER_CATALOG, StandardOpenOption.APPEND);
-            fileOut.write(catalogLine);
+            Files.write(USER_CATALOG, catalogLine.getBytes(), StandardOpenOption.APPEND);
+//            BufferedWriter fileOut = Files.newBufferedWriter(USER_CATALOG, StandardOpenOption.APPEND);
+//            fileOut.write(catalogLine);
+            System.out.println("wrote " + catalogLine);
         } catch (IOException ioe) {
             ErrorLogger.logFatalException(ErrorLogger.trace(ioe));
         }

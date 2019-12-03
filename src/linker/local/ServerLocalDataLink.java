@@ -1,14 +1,25 @@
 package linker.local;
 
+import data.AbstractDatum;
+import data.InstructionCode;
+import data.UserDatum;
+import error.ErrorLogger;
+import error.LogReadyTraceableException;
 import linker.ServerDataLink;
+import server.FileManager;
 
 public class ServerLocalDataLink extends AbstractLocalDataLink implements ServerDataLink {
     @Override
-    public void handle(byte instruction, byte[] body) {
-        System.out.println("\nInstruction: " + instruction + " Size: " + body.length + " Body: ");
-        for (byte b : body) {
-            System.out.print(b + ", ");
+    public void handle(byte instruction, AbstractDatum datum) {
+        switch (instruction){
+            //todo - more cases
+            case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
+                UserDatum ud = (UserDatum)datum;
+                //todo - make sure we don't call this unless we've verified the account doesn't already exist!
+                FileManager.createUser(ud.getUsername(), ud.decryptPassword());
+                break;
+            default:
+                ErrorLogger.logFatalException(new LogReadyTraceableException("Improper instruction."));
         }
-        //todo - same as ServerRemoteDataLink.handle()
     }
 }

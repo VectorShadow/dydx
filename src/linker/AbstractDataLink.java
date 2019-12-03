@@ -1,5 +1,6 @@
 package linker;
 
+import data.AbstractDatum;
 import error.LogReadyTraceableException;
 
 public abstract class AbstractDataLink extends Thread {
@@ -10,7 +11,7 @@ public abstract class AbstractDataLink extends Thread {
 
     protected abstract void listen() throws LogReadyTraceableException;
 
-    protected abstract void handle(byte instruction, byte[] body);
+    protected abstract void handle(byte instruction, AbstractDatum datum);
 
     public abstract void run();
 

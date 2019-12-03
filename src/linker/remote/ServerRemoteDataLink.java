@@ -1,7 +1,15 @@
 package linker.remote;
 
+import crypto.Cipher;
+import crypto.RSA;
+import data.AbstractDatum;
+import data.InstructionCode;
+import data.BigIntegerDatum;
+import data.UserDatum;
+import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.ServerDataLink;
+import server.FileManager;
 
 import java.net.Socket;
 
@@ -12,11 +20,21 @@ public class ServerRemoteDataLink extends AbstractRemoteDataLink implements Serv
     }
 
     @Override
-    public void handle(byte instruction, byte[] body) {
-        System.out.println("\nInstruction: " + instruction + " Size: " + body.length + " Body: ");
-        for (byte b : body) {
-            System.out.print(b + ", ");
+    public void handle(byte instruction, AbstractDatum datum) {
+        switch (instruction){
+            case InstructionCode.PROTOCOL_BIG_INTEGER:
+                BigIntegerDatum bid = (BigIntegerDatum)datum;
+                String sessionSecret = RSA.decrypt(bid.getKey()).toString(16);
+                Cipher.setSessionKey(sessionSecret);
+                break;
+            case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
+                UserDatum ud = (UserDatum)datum;
+                if (FileManager.doesUserExist(ud.getUsername())) break; //todo - handle this better!
+                FileManager.createUser(ud.getUsername(), ud.decryptPassword());
+                break;
+            //todo - more cases
+            default:
+                ErrorLogger.logFatalException(new LogReadyTraceableException("Improper instruction."));
         }
-        //todo - server implementation of handling an instruction
     }
 }

@@ -28,15 +28,16 @@ public class Cipher {
 
     /**
      * Client side - get the current session key for transmission to server.
+     * We use this to build a BigInteger, so it must be in radix form.
      */
     public static String getSessionKey(){
-        return sessionKey;
+        return toHexString(sessionKey);
     }
     /**
      * Server side - set the session key received from the client.
      */
     public static void setSessionKey(String key) {
-        sessionKey = key;
+        sessionKey = fromHexString(key);
     }
 
     private static byte shift(byte b, int mag, boolean left) {
