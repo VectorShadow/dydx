@@ -11,7 +11,7 @@ public class Password {
     private static char forceAlphaNumericalSymbolic(char candidate, int seed){
         char result = candidate;
         int iterations = 0;
-        while (result < 33 || result == 47 || result == 92 || result >= 127){
+        while (result < '!' || result == '/' || result == '\\' || result > '~'){
             int productStep = (result + iterations) * seed;
             int modStep = productStep % MAX_CHAR;
             seed += iterations++;
@@ -60,13 +60,7 @@ public class Password {
         return randomSalt;
     }
 
-    public static String salt(String unsaltedPassword) {
-        String salt = "";
-        for (int i = 0; i < SALT_LENGTH; ++i){
-            char nextCandidateChar = (char)Cipher.SECURE_RANDOM.nextInt(MAX_CHAR);
-            char nextResultChar = forceAlphaNumericalSymbolic(nextCandidateChar, i);
-            salt += nextResultChar;
-        }
-        return salt;
+    public static String salt(String salt, String unsaltedPassword) {
+        return salt + unsaltedPassword;
     }
 }
