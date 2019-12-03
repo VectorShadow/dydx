@@ -1,6 +1,10 @@
 package server;
 
 import crypto.RSA;
+import data.DataPacker;
+import data.InstructionCode;
+import data.StreamConverter;
+import data.crypto.RSAPublicKeyDatum;
 import linker.ConnectionProperties;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
@@ -19,15 +23,17 @@ public class Server extends Thread {
 
     public void run() {
         RSA.generateSessionKeys();
-        //todo - when each client connects, send it the public key for this session
-        //todo - then establish a secret key for non-RSA encryption, and revert to that
-        //todo for the remainder of the session
         try {
             serverSocket = new ServerSocket(connectionProperties.getPort());
             while (true) {
                 socket = serverSocket.accept();
                 ServerRemoteDataLink srdl = new ServerRemoteDataLink(socket);
                 srdl.start();
+                srdl.send(
+                        DataPacker.pack(
+                                new RSAPublicKeyDatum(RSA.getSessionPublicKey()),
+                                InstructionCode.RSA_PUBLIC_KEY_TRANSMISSION)
+                );
                 openConnections.add(srdl);
             }
         } catch (Exception e) {

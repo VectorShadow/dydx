@@ -1,5 +1,6 @@
 package linker.remote;
 
+import data.DataPacker;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
@@ -52,13 +53,13 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                     //todo - additionally handling here - let the server or client know connection was lost.
                 } else if (bytesRead > 0){ //data was read from the stream this pass - we do nothing on 0
                     if (instruction == 0) { //if we have no current instruction, parse for the next one
-                        if (bytesRead < 4) throw new IllegalArgumentException( //we need a 4 byte header to begin
+                        if (bytesRead < DataPacker.HEADER_LENGTH) throw new IllegalArgumentException( //we need a 4 byte header to begin
                                 "Stream contained too few bytes to parse: " + bytesRead + " bytes were in the stream.");
                         instruction = streamBlock[0]; //set the instruction code
-                        instructionBodySize = readSize(streamBlock[1], streamBlock[2], streamBlock[3]); //get the size as an int
+                        instructionBodySize = DataPacker.readSize(streamBlock[1], streamBlock[2], streamBlock[3]); //get the size as an int
                         instructionBody = new byte[instructionBodySize]; //initialize the body block
                     }
-                    for (int i = 4; i < bytesRead; ++i, bytesReadInInstruction++) { //iterate through the bytes read this pass
+                    for (int i = DataPacker.HEADER_LENGTH; i < bytesRead; ++i, bytesReadInInstruction++) { //iterate through the bytes read this pass
                         if (bytesReadInInstruction < instructionBodySize){ //bytes from the current instruction
                             instructionBody[bytesReadInInstruction] = streamBlock[i];
                         } else { //bytes from a new instruction
@@ -92,9 +93,6 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
             index++;
         }
         return total;
-    }
-    private int readSize(byte s0, byte s1, byte s2) {
-        return ((s0 << 16) & 0x00ff_0000) | ((s1 << 8) & 0x0000_ff00) | (s2 & 0x0000_00ff);
     }
     @Override
     public void run() {

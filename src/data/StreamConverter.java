@@ -5,13 +5,13 @@ import error.ErrorLogger;
 import java.io.*;
 
 public class StreamConverter {
-    public static byte[] toByteArray(Object o) {
+    public static byte[] toByteArray(AbstractDatum ad) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
         byte[] b = new byte[]{};
         try {
             out = new ObjectOutputStream(bos);
-            out.writeObject(o);
+            out.writeObject(ad);
             out.flush();
             b = bos.toByteArray();
         } catch (Exception e) {
@@ -25,13 +25,13 @@ public class StreamConverter {
         }
         return b;
     }
-    public static Object toObject(byte[] b) {
+    public static AbstractDatum toObject(byte[] b) {
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         ObjectInput in = null;
-        Object o = null;
+        AbstractDatum ad = null;
         try {
             in = new ObjectInputStream(bis);
-            o = in.readObject();
+            ad = (AbstractDatum)in.readObject();
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         } finally {
@@ -43,6 +43,6 @@ public class StreamConverter {
                 // ignore close exception
             }
         }
-        return o;
+        return ad;
     }
 }

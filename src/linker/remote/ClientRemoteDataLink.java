@@ -1,5 +1,7 @@
 package linker.remote;
 
+import data.StreamConverter;
+import data.crypto.RSAPublicKeyDatum;
 import error.LogReadyTraceableException;
 import linker.ClientDataLink;
 
@@ -17,6 +19,8 @@ public class ClientRemoteDataLink extends AbstractRemoteDataLink implements Clie
         for (byte b : body) {
             System.out.print(b + ", ");
         }
+        //test
+        System.out.println("\nKey: " + ((RSAPublicKeyDatum) StreamConverter.toObject(body)).getKey());
         //todo - called from AbstractRemoteDataLink.listen()
     }
 }

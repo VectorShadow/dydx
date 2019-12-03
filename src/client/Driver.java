@@ -3,7 +3,11 @@ package client;
 import contract.Gui;
 import core.DualityGUI;
 import crypto.Cipher;
+import crypto.RSA;
+import data.DataPacker;
+import data.InstructionCode;
 import data.TestDatum;
+import data.crypto.RSAPublicKeyDatum;
 import engine.Engine;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
@@ -33,19 +37,17 @@ public class Driver {
             Cipher.testAllCrypto();
             /* test local */
             //realtime
-            Engine e = new Engine(false, true);
-            AbstractDataLink adl = e.generateClientDataLink();
+//            Engine e = new Engine(false, true);
+//            AbstractDataLink adl = e.generateClientDataLink();
             //turnbased
 //            Engine e = new Engine(false, false);
 //            AbstractDataLink adl = e.generateClientDataLink();
             /* end local */
             /* test remote */
-//            AbstractDataLink adl = new Client().connect();
+            AbstractDataLink adl = new Client().connect();
             /* end remote */
-            adl.send(new byte[] {1, 0, 0, 5, 0, 1, 2, 3, 4});
-            adl.send(new byte[] {7, 0, 0, 0x10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f});
-            TestDatum td = new TestDatum();
-            System.out.println("" + (td.getTestString().equals(((TestDatum)(StreamConverter.toObject(StreamConverter.toByteArray(td)))).getTestString())));
+//            RSA.generateSessionKeys();
+//            adl.send(DataPacker.pack(new RSAPublicKeyDatum(RSA.getSessionPublicKey()), InstructionCode.RSA_PUBLIC_KEY_TRANSMISSION));
             Gui gui = new DualityGUI();
             ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
             ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File("./gfx/16.png"));

@@ -12,7 +12,7 @@ public class RSA {
      * @param cipherText - the RSA-encrypted cipherText received from the client, encrypted with sessionPublicKey
      * @return the plainText corresponding to cipherText
      */
-    private static BigInteger decrypt(BigInteger cipherText){
+    public static BigInteger decrypt(BigInteger cipherText){
         if (sessionPublicKey.equals(BigInteger.ZERO) || sessionPrivateKey.equals(BigInteger.ZERO))
             throw new IllegalStateException("Session keys have not been generated.");
         return cipherText.modPow(sessionPrivateKey, sessionPublicKey); //P = C^d mod n
@@ -24,7 +24,7 @@ public class RSA {
      * @param publicKey - the public key received from the server(same as sessionPrivateKey in server's RSA)
      * @return the RSA-encrypted cipherText corresponding to plainText
      */
-    private static BigInteger encrypt(BigInteger plainText, BigInteger publicKey){
+    public static BigInteger encrypt(BigInteger plainText, BigInteger publicKey){
         if (sessionPublicKey.equals(BigInteger.ZERO) || sessionPrivateKey.equals(BigInteger.ZERO))
             throw new IllegalStateException("Session keys have not been generated.");
         return plainText.modPow(E, publicKey); //C = P^e mod n
