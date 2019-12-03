@@ -18,6 +18,7 @@ public class Server extends Thread {
     ArrayList<ServerDataLink> openConnections = new ArrayList<>();
 
     public void run() {
+        FileManager.ensurePaths();
         RSA.generateSessionKeys();
         //todo - when each client connects, send it the public key for this session
         //todo - then establish a secret key for non-RSA encryption, and revert to that
