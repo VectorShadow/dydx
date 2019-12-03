@@ -13,6 +13,7 @@ import linker.ServerDataLink;
 import linker.local.ClientLocalDataLink;
 import linker.local.AbstractLocalDataLink;
 import linker.local.ServerLocalDataLink;
+import server.FileManager;
 import server.Server;
 
 /**
@@ -26,7 +27,7 @@ public class Engine extends Thread {
     private final boolean realtime;
 
     public Engine(boolean remote, boolean realtime) {
-        //todo - check for server file structure. create it if necessary
+        FileManager.ensurePaths();
         this.realtime = realtime;
         if (remote) {
             server = new Server();
