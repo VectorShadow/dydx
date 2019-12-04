@@ -25,7 +25,6 @@ public class ClientRemoteDataLink extends AbstractRemoteDataLink implements Clie
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
-                /*test*/ System.out.println("\nRSAKey: " + bid.getKey() + " SessionSecret: " + Cipher.getSessionKey());
                 BigInteger secretKey = new BigInteger(Cipher.getSessionKey(), 16);
                 BigInteger encryptedSecretKey = RSA.encrypt(secretKey, bid.getKey());
                 send(
