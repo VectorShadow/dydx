@@ -34,16 +34,16 @@ public class Password {
         char seedIndex = (char)((HASH_CONSTANT[0] * saltedPassword.charAt(MINIMUM_LENGTH + SALT_LENGTH - 1)) % length);
         char seedChar = saltedPassword.charAt(seedIndex);
         char stepVector = (char)((length * seedChar) % MAX_CHAR);
+        char baseChar = saltedPassword.charAt(0);
         for (int i = 0; i < MAXIMUM_LENGTH + SALT_LENGTH; ++i){
-            char baseChar =
-                    (char)((i < length) ? (saltedPassword.charAt(i)) : ((stepVector * (i - length)) % MAX_CHAR));
             int sumStep = baseChar + HASH_CONSTANT[i];
             int productStep = sumStep * stepVector;
             int modStep = productStep % MAX_CHAR;
             char candidate = (char)modStep;
-            char result = forceAlphaNumericalSymbolic(candidate, i);
+            char result = forceAlphaNumericalSymbolic(candidate, baseChar);
+            baseChar = candidate;
             stepVector =
-                    (char)((i < length) ? candidate : (candidate + saltedPassword.charAt(i % length)) % MAX_CHAR);
+                    (char)((result + saltedPassword.charAt(i % SALT_LENGTH)) % MAX_CHAR);
             hashedPassword += result;
         }
         return hashedPassword;
@@ -52,10 +52,11 @@ public class Password {
     public static String generateRandomSalt() {
         char nextCandidateChar;
         String randomSalt = "";
-
+        char nextAlphaSeed = 1;
         for (int i = 0; i < SALT_LENGTH; ++i){
             nextCandidateChar = (char)Cipher.SECURE_RANDOM.nextInt(MAX_CHAR);
-            randomSalt += forceAlphaNumericalSymbolic(nextCandidateChar, i);
+            randomSalt += forceAlphaNumericalSymbolic(nextCandidateChar, nextAlphaSeed);
+            nextAlphaSeed = nextCandidateChar;
         }
         return randomSalt;
     }
