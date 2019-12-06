@@ -9,25 +9,25 @@ import java.util.ArrayList;
  */
 public class EffectType {
 
-    private static ArrayList<EffectType> types = new ArrayList<>();
+    private static ArrayList<EffectType> enumeration = new ArrayList<>();
 
     public static void defineType(String typeName){
-        for (EffectType type : types) {
+        for (EffectType type : enumeration) {
             if (type.name.equals(typeName)) throw new IllegalArgumentException("Type " + typeName + " already defined.");
         }
         final EffectType effectType = new EffectType(typeName);
-        types.add(effectType);
+        enumeration.add(effectType);
     }
 
     public static EffectType named(String t){
-        for (final EffectType effectType : types) {
+        for (final EffectType effectType : enumeration) {
             if (effectType.name.equals(t)) return effectType;
         }
         throw new IllegalArgumentException("Typename " + t + " has not been defined. " +
-                "Call Effect.defineType(" + t + ") to define this type.");
+                "Call EffectType.defineType(" + t + ") to define this type.");
     }
 
-    private String name;
+    private final String name;
 
     private EffectType(String n) {
         name = n;
