@@ -6,6 +6,7 @@ import crypto.Cipher;
 import data.DataPacker;
 import data.InstructionCode;
 import data.UserDatum;
+import effect.Effect;
 import engine.Engine;
 import error.ErrorLogger;
 import linker.AbstractDataLink;
