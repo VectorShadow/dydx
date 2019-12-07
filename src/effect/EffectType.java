@@ -26,11 +26,20 @@ public class EffectType {
         throw new IllegalArgumentException("Typename " + t + " has not been defined. " +
                 "Call EffectType.defineType(" + t + ") to define this type.");
     }
+    public static int countDefinedEffectTypes() {
+        return enumeration.size();
+    }
 
     private final String name;
 
     private EffectType(String n) {
         name = n;
+    }
+    public int indexOf(){
+        for (int i = 0; i < countDefinedEffectTypes(); ++i) {
+            if (enumeration.get(i) == this) return i;
+        }
+        throw new IllegalStateException("Permission " + name + " not present in enumeration.");
     }
 
     /**
