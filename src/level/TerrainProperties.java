@@ -1,7 +1,7 @@
 package level;
 
 import effect.Effect;
-import resources.continuum.Pair;
+import resources.glyph.ProtoGlyph;
 
 import java.util.ArrayList;
 
@@ -20,6 +20,8 @@ public class TerrainProperties {
      */
     ArrayList<Effect> stationaryEffects = new ArrayList<>();
 
+    final ProtoGlyph protoGlyph;
+
     //todo - to avoid build order issues, additional permissions should be defined in the same place as,
     //todo - but prior to, properties, so:
     /*
@@ -34,11 +36,12 @@ public class TerrainProperties {
         .
      */
     //todo - if no new permissions need be defined, than this precaution is unnecessary.
-    TerrainProperties() {
+    TerrainProperties(ProtoGlyph protoGlyph) {
         //initialize permissions and effects with a number of elements corresponding to defined permissions
         for (int i = 0; i < TerrainPermission.countDefinedPermissions(); ++i) {
             permissions.add(false);
             movementEffects.add(new ArrayList<>());
         }
+        this.protoGlyph = protoGlyph;
     }
 }

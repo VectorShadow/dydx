@@ -2,6 +2,7 @@ package level;
 
 import effect.Effect;
 import effect.EffectType;
+import resources.glyph.ProtoGlyph;
 
 /**
  * Define a builder pattern for creation of new TerrainProperties.
@@ -9,12 +10,12 @@ import effect.EffectType;
 public class TerrainPropertiesBuilder {
     private TerrainProperties terrainProperties;
 
-    private TerrainPropertiesBuilder() {
-        terrainProperties = new TerrainProperties();
+    private TerrainPropertiesBuilder(ProtoGlyph protoGlyph) {
+        terrainProperties = new TerrainProperties(protoGlyph);
     }
 
-    public static TerrainPropertiesBuilder generateTerrainProperties() {
-        return new TerrainPropertiesBuilder();
+    public static TerrainPropertiesBuilder generateTerrainProperties(ProtoGlyph protoGlyph) {
+        return new TerrainPropertiesBuilder(protoGlyph);
     }
 
     public TerrainPropertiesBuilder permit(String permissionName) {
