@@ -1,47 +1,28 @@
 package level;
 
-import effect.Effect;
 import resources.glyph.ProtoGlyph;
 
 import java.util.ArrayList;
 
+/**
+ * Define the properties for a specific terrain type.
+ * Includes a list of flags to specify custom properties, and a protoglyph to specify the default appearance.
+ */
 public class TerrainProperties {
-
-    /**
-     * Whether this terrain permits movement of type n.
-     */
-    ArrayList<Boolean> permissions = new ArrayList<>();
-    /**
-     * Effects applied on moving into this terrain with movement of type n.
-     */
-    ArrayList<ArrayList<Effect>> movementEffects = new ArrayList<>();
-    /**
-     * Effects applied at intervals to actors and items occupying this terrain.
-     */
-    ArrayList<Effect> stationaryEffects = new ArrayList<>();
-
+    ArrayList<TerrainFlag> flags;
     final ProtoGlyph protoGlyph;
 
-    //todo - to avoid build order issues, additional permissions should be defined in the same place as,
-    //todo - but prior to, properties, so:
-    /*
-        TerrainPermission.definePermission(foo);
-        TerrainPermission.definePermission(foo2);
-        .
-        .
-        .
-        TerrainProperties tp0 = TerrainPropertiesBuilder.newTerrainProperties.(...).build();
-        .
-        .
-        .
-     */
-    //todo - if no new permissions need be defined, than this precaution is unnecessary.
-    TerrainProperties(ProtoGlyph protoGlyph) {
-        //initialize permissions and effects with a number of elements corresponding to defined permissions
-        for (int i = 0; i < TerrainPermission.countDefinedPermissions(); ++i) {
-            permissions.add(false);
-            movementEffects.add(new ArrayList<>());
-        }
-        this.protoGlyph = protoGlyph;
+    TerrainProperties(ProtoGlyph p) {
+        flags = new ArrayList<>();
+        protoGlyph = p;
     }
+
+    void addFlag(TerrainFlag tf) {
+        flags.add(tf);
+    }
+
+    public ArrayList<TerrainFlag> getFlags() {
+        return flags;
+    }
+    //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph
 }

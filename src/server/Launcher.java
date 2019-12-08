@@ -2,6 +2,8 @@ package server;
 
 import engine.Engine;
 import error.ErrorLogger;
+import level.BasicTerrainLookupTable;
+import level.Level;
 
 /**
  * executable for starting the server program as a remote server
@@ -9,6 +11,7 @@ import error.ErrorLogger;
 public class Launcher {
 
     public static void main(String[] args) {
+        Level.setTerrainLookupTable(new BasicTerrainLookupTable());
         try {
             new Engine(true, true);
             //todo

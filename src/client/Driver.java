@@ -8,6 +8,8 @@ import data.InstructionCode;
 import data.UserDatum;
 import engine.Engine;
 import error.ErrorLogger;
+import level.BasicTerrainLookupTable;
+import level.Level;
 import linker.AbstractDataLink;
 import resources.DualityContext;
 import resources.DualityMode;
@@ -32,8 +34,8 @@ public class Driver {
             //open a GUI, attempt to connect to a remote server, and display information
             //if no connection can be established or player chooses to play locally, create a new Engine
             //and establish a datalink bound to the Engine's datalink.
-            //if connection is establised, create a datalink bound to the connection socket.
-            Cipher.testAllCrypto();
+            //if connection is established, create a datalink bound to the connection socket.
+            Level.setTerrainLookupTable(new BasicTerrainLookupTable());
             /* test local */
             //realtime
             Engine e = new Engine(false, true);

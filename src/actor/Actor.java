@@ -1,7 +1,5 @@
 package actor;
 
-import effect.Effect;
-
 import java.util.LinkedList;
 
 /**
@@ -10,9 +8,8 @@ import java.util.LinkedList;
  * This queue is updated by the AI or player input. If it is empty, it returns a wait action.
  *
  * Base class for all actor entities which may appear on a level.
- * Implementations should define apply for each defined effect type.
  */
-public abstract class Actor {
+public class Actor {
     public LinkedList<ActionItem> actionItemQueue;
     long nextActionTime;
 
@@ -27,5 +24,4 @@ public abstract class Actor {
     public long getNextActionTime() {
         return nextActionTime;
     }
-    public abstract void apply(Effect e);
 }
