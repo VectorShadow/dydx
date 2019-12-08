@@ -3,6 +3,8 @@
     <output-path>$PROJECT_DIR$/out/artifacts/dydx_jar</output-path>
     <root id="archive" name="dydx.jar">
       <element id="module-output" name="dydx" />
+      <element id="module-output" name="guilib" />
+      <element id="module-output" name="dualgui" />
     </root>
   </artifact>
 </component>

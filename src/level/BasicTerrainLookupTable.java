@@ -1,5 +1,7 @@
 package level;
 
+import flag.Flag;
+import flag.FlagFactory;
 import resources.glyph.ProtoGlyphBuilder;
 
 import java.awt.*;
@@ -17,11 +19,11 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
     /**
      * Flag table.
      */
-    public final TerrainFlag[] DEFINED_FLAGS = {
+    public final Flag[] DEFINED_FLAGS = {
             // 0 - Permit Movement
-            new TerrainFlag("Permit Movement"),
+            FlagFactory.setName("Permit Movement").manufacture(),
             //1 - Permit Light
-            new TerrainFlag("Permit Light"),
+            FlagFactory.setName("Permit Light").manufacture(),
     };
 
     /**

@@ -2,7 +2,6 @@ package client;
 
 import contract.Gui;
 import core.DualityGUI;
-import crypto.Cipher;
 import data.DataPacker;
 import data.InstructionCode;
 import data.UserDatum;
@@ -38,14 +37,14 @@ public class Driver {
             Level.setTerrainLookupTable(new BasicTerrainLookupTable());
             /* test local */
             //realtime
-            Engine e = new Engine(false, true);
-            AbstractDataLink adl = e.generateClientDataLink();
+//            Engine e = new Engine(false, true);
+//            AbstractDataLink adl = e.generateClientDataLink();
             //turnbased
 //            Engine e = new Engine(false, false);
 //            AbstractDataLink adl = e.generateClientDataLink();
             /* end local */
             /* test remote */
-//            AbstractDataLink adl = new Client().connect();
+            AbstractDataLink adl = new Client().connect();
             /* end remote */
             Gui gui = new DualityGUI();
             ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
