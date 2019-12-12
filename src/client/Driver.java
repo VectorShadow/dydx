@@ -2,6 +2,7 @@ package client;
 
 import contract.Gui;
 import core.DualityGUI;
+import crypto.Cipher;
 import data.DataPacker;
 import data.InstructionCode;
 import data.UserDatum;
@@ -35,6 +36,7 @@ public class Driver {
             //and establish a datalink bound to the Engine's datalink.
             //if connection is established, create a datalink bound to the connection socket.
             Level.setTerrainLookupTable(new BasicTerrainLookupTable());
+            Cipher.testAllCrypto();
             /* test local */
             //realtime
 //            Engine e = new Engine(false, true);
@@ -77,6 +79,7 @@ public class Driver {
             testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('!', Color.BLACK, Color.WHITE).build()));
             gui.print(0, 2, 2, testGlyphString);
             //gui.setFullScreen(false);
+            Thread.sleep(750); //todo - handle this required pause better
             adl.send(DataPacker.pack(new UserDatum("Sereg", "pass1234"), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
             for (;;){
                 gui.redraw();

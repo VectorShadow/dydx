@@ -31,8 +31,8 @@ public class Engine extends Thread {
         this.realtime = realtime;
         if (remote) {
             server = new Server();
-            llt.setOpenLinks(server.getOpenConnections());
             server.start();
+            llt.setOpenLinks(server.getOpenConnections());
         } else {
             llt.addOpenLink(new ServerLocalDataLink());
         }

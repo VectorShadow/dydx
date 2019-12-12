@@ -14,30 +14,25 @@ public class Cipher {
     private static final char LOWER_MASK = 0x0f; //mask for converting hex chars to normal chars
     private static final int BYTE_MASK = 0x0000_007f;
 
-    private static String sessionKey;
+    private static final String SESSION_KEY = generateSessionKey();
 
     /**
-     * Client side - generate a key to encrypt sensitive data (passwords etc.)
+     * Client side - generate a key to encrypt sensitive data (passwords etc.).
+     * Use Radix16 form to facilitate BIG_INTEGER encryption with RSA.
      */
-    public static void generateSessionKey(){
-        sessionKey = "";
-        while (sessionKey.length() < KEY_SIZE){
-            sessionKey += (byte) SECURE_RANDOM.nextInt(Password.MAX_CHAR);
+    private static String generateSessionKey(){
+        String sk = "";
+        while (sk.length() < KEY_SIZE){
+            sk += (byte) SECURE_RANDOM.nextInt(Password.MAX_CHAR);
         }
+        return toHexString(sk);
     }
 
     /**
      * Client side - get the current session key for transmission to server.
-     * We use this to build a BigInteger, so it must be in radix form.
      */
     public static String getSessionKey(){
-        return toHexString(sessionKey);
-    }
-    /**
-     * Server side - set the session key received from the client.
-     */
-    public static void setSessionKey(String key) {
-        sessionKey = fromHexString(key);
+        return SESSION_KEY;
     }
 
     private static byte shift(byte b, int mag, boolean left) {
@@ -85,12 +80,16 @@ public class Cipher {
     }
 
     /**
-     * Encryption/Decryption step - xor the source text with the sessionKey.
+     * Encryption/Decryption step - xor the source text with the provided key.
+     * If no key is provided, use the session key.
      * This encrypts plain text or decrypts cipher text.
      */
     private static String xorApplyKey(String sourceText) {
+        return xorApplyKey(sourceText, SESSION_KEY);
+    }
+    private static String xorApplyKey(String sourceText, String secretKey) {
         byte[] sourceBytes = sourceText.getBytes();
-        byte[] keyBytes = sessionKey.getBytes();
+        byte[] keyBytes = secretKey.getBytes();
         byte[] targetBytes = new byte[sourceBytes.length];
         for (int i = 0; i < sourceBytes.length; ++i)
             targetBytes[i] = (byte) (sourceBytes[i] ^ keyBytes[i % keyBytes.length]);
@@ -180,22 +179,28 @@ public class Cipher {
      * Encrypt a string for secure transmission.
      */
     public static String encrypt(String plainText){
-        return bytewiseShiftLeft(xorApplyKey(toHexString(plainText)));
+        return encrypt(plainText, SESSION_KEY);
+    }
+
+    public static String encrypt(String plainText, String secretKey) {
+        return bytewiseShiftLeft(xorApplyKey(toHexString(plainText), secretKey));
     }
 
     /**
      * Decrypt a cipher string.
      */
-    public static String decrypt(String cipherText) {
-        return fromHexString(xorApplyKey(bytewiseShiftRight(cipherText)));
+    public static String decrypt(String plainText) {
+        return decrypt(plainText, SESSION_KEY);
+    }
+    public static String decrypt(String cipherText, String secretKey) {
+        return fromHexString(xorApplyKey(bytewiseShiftRight(cipherText), secretKey));
     }
 
     public static boolean testAllCrypto() {
         generateSessionKey();
         return testShift() &&
                 testRightShiftInvertsLeftShift() &&
-                testBytewiseXor() &&
-                testEncryptDecrypt();
+                testBytewiseXor() && testEncryptDecrypt();
     }
     private static boolean testShift(){
         byte b0 = 0b0000_0001;
@@ -247,6 +252,7 @@ public class Cipher {
         System.out.println("TestBytewiseXor " + (pass ? "passed. " : "failed: " + test0 + " != " + reverse));
         return pass;
     }
+
     private static boolean testEncryptDecrypt() {
         String test0 = "Test message 0.";
         String test0partial = encrypt(test0);

@@ -19,7 +19,17 @@ public class UserDatum extends AbstractDatum {
         return username;
     }
 
-    public String decryptPassword() {
+    /**
+     * Local version - Cipher.SESSION_KEY is all that's required.
+     */
+    public String decryptPassword(){
         return Cipher.decrypt(encryptedPassword);
+    }
+
+    /**
+     * Remote version - we need a key received from a remote source.
+     */
+    public String decryptPassword(String secretKey) {
+        return Cipher.decrypt(encryptedPassword, secretKey);
     }
 }

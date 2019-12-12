@@ -1,5 +1,6 @@
 package client;
 
+import crypto.Cipher;
 import error.LogReadyTraceableException;
 import linker.ConnectionProperties;
 import linker.remote.ClientRemoteDataLink;

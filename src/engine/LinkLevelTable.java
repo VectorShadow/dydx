@@ -2,6 +2,7 @@ package engine;
 
 import level.Level;
 import linker.ServerDataLink;
+import server.Server;
 
 import java.util.ArrayList;
 
@@ -13,15 +14,18 @@ import java.util.ArrayList;
 public class LinkLevelTable {
     private ArrayList<ServerDataLink> openLinks = new ArrayList<>();
     private ArrayList<Level> activeLevels = new ArrayList<>();
-    //todo - some data structure here
 
+    /**
+     * Search all open links for the specified level and return a list of links connected to that level.
+     */
     public ArrayList<ServerDataLink> getLinks(Level l) {
-        //todo - stub
-        return null;
+        ArrayList<ServerDataLink> serverDataLinks = new ArrayList<>();
+        for (ServerDataLink sdl : openLinks) if (sdl.getLevel() == l) serverDataLinks.add(sdl);
+        return serverDataLinks;
     }
     public Level getLevel(ServerDataLink l) {
-        //todo - stub
-        return null;
+        if (openLinks.contains(l)) return l.getLevel();
+        throw new IllegalArgumentException("Specified data link is not in this table.");
     }
 
     public ArrayList<Level> getActiveLevels() {

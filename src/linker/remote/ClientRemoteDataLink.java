@@ -17,7 +17,6 @@ public class ClientRemoteDataLink extends AbstractRemoteDataLink implements Clie
 
     public ClientRemoteDataLink(Socket s) throws LogReadyTraceableException {
         super(s);
-        Cipher.generateSessionKey(); //generate a secret key to encrypt the session with
     }
 
     @Override

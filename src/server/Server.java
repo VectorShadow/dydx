@@ -27,12 +27,12 @@ public class Server extends Thread {
                 socket = serverSocket.accept();
                 ServerRemoteDataLink srdl = new ServerRemoteDataLink(socket);
                 srdl.start();
+                openConnections.add(srdl);
                 srdl.send(
                         DataPacker.pack(
                                 new BigIntegerDatum(RSA.getSessionPublicKey()),
                                 InstructionCode.PROTOCOL_BIG_INTEGER)
                 );
-                openConnections.add(srdl);
             }
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));

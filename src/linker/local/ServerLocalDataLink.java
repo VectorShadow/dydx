@@ -1,5 +1,6 @@
 package linker.local;
 
+import crypto.Cipher;
 import data.AbstractDatum;
 import data.InstructionCode;
 import data.UserDatum;
@@ -16,6 +17,7 @@ public class ServerLocalDataLink extends AbstractLocalDataLink implements Server
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
                 UserDatum ud = (UserDatum)datum;
                 //todo - make sure we don't call this unless we've verified the account doesn't already exist!
+                //decrypt using the local session key
                 FileManager.createUser(ud.getUsername(), ud.decryptPassword());
                 break;
             default:

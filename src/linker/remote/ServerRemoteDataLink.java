@@ -15,6 +15,11 @@ import java.net.Socket;
 
 public class ServerRemoteDataLink extends AbstractRemoteDataLink implements ServerDataLink {
 
+    /**
+     * The shared secret for this session.
+     */
+    private String linkSecret;
+
     public ServerRemoteDataLink(Socket s) throws LogReadyTraceableException {
         super(s);
     }
@@ -24,13 +29,12 @@ public class ServerRemoteDataLink extends AbstractRemoteDataLink implements Serv
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
-                String sessionSecret = RSA.decrypt(bid.getKey()).toString(16);
-                Cipher.setSessionKey(sessionSecret);
+                linkSecret = RSA.decrypt(bid.getKey()).toString(16);
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
                 UserDatum ud = (UserDatum)datum;
                 if (FileManager.doesUserExist(ud.getUsername())) break; //todo - handle this better!
-                FileManager.createUser(ud.getUsername(), ud.decryptPassword());
+                FileManager.createUser(ud.getUsername(), ud.decryptPassword(linkSecret));
                 break;
             //todo - more cases
             default:
