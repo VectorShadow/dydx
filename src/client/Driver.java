@@ -8,6 +8,7 @@ import data.InstructionCode;
 import data.UserDatum;
 import engine.Engine;
 import error.ErrorLogger;
+import gui.Display;
 import level.BasicTerrainLookupTable;
 import level.Level;
 import linker.AbstractDataLink;
@@ -39,53 +40,56 @@ public class Driver {
 //            Cipher.testAllCrypto();
             /* test local */
             //realtime
-//            Engine e = new Engine(false, true);
-//            AbstractDataLink adl = e.generateClientDataLink();
+            Engine e = new Engine(false, true);
+            AbstractDataLink adl = e.generateClientDataLink();
             //turnbased
 //            Engine e = new Engine(false, false);
 //            AbstractDataLink adl = e.generateClientDataLink();
             /* end local */
             /* test remote */
-            AbstractDataLink adl = new Client().connect();
+//            AbstractDataLink adl = new Client().connect();
             /* end remote */
-            Gui gui = new DualityGUI();
-            ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
-            ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File("./gfx/16.png"));
-            ProtoGlyph player = ProtoGlyphBuilder.setDefaults('@', Color.BLACK, Color.WHITE).build();
-            gui.print(20, 20, GlyphBuilder.build(player));
-            ProtoGlyph question = ProtoGlyphBuilder.setDefaults('?', Color.BLACK, Color.MAGENTA, Color.YELLOW, Color.CYAN).addPrimary(new Pair<>(0.5, Color.ORANGE)).setSourceCoordinates(0,0).build();
-            gui.print(20, 21, GlyphBuilder.build(question, DualityMode.TILE));
-            gui.addZone(0.15, 0.33, 0.75, 0.1, DualityMode.TEXT);
-            ProtoGlyph bg = ProtoGlyphBuilder.setDefaults(' ', Color.DARK_GRAY, Color.WHITE).build();
-            ProtoGlyph border = ProtoGlyphBuilder.setDefaults('#', Color.DARK_GRAY, Color.RED).addBackground(new Pair<>(0.5, Color.LIGHT_GRAY)).addPrimary(new Pair<>(0.33, Color.GREEN)).addPrimary(new Pair<>(0.67, Color.BLUE)).build();
-            gui.setBorder(0, GlyphBuilder.build(border));
-            gui.print(
-                    0, 1, 1, GlyphBuilder.build(
-                    ProtoGlyphBuilder.setDefaults('@', Color.BLUE, Color.YELLOW).addPrimary(new Pair<>(0.33, Color.RED)).build()
-                    )
-            );
-            ArrayList<Glyph> testGlyphString = new ArrayList<>();
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('H', Color.BLACK, Color.WHITE).build().insertPrimary(new Pair<>(0.5, Color.RED))));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('e', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('o', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('W', Color.BLACK, Color.WHITE).build().insertPrimary(new Pair<>(0.5, Color.GREEN)).insertPrimary(new Pair<>(0.5, Color.RED))));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('o', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('r', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('d', Color.BLACK, Color.WHITE).build()));
-            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('!', Color.BLACK, Color.WHITE).build()));
-            gui.print(0, 2, 2, testGlyphString);
+            Display.loadGraphics("./gfx/32.png", "./gfx/16.png");
+            Display.getInstance().start();
+            Display.drawLevel(adl.getLevel());
+//            Gui gui = new DualityGUI();
+//            ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
+//            ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File("./gfx/16.png"));
+//            ProtoGlyph player = ProtoGlyphBuilder.setDefaults('@', Color.BLACK, Color.WHITE).build();
+//            gui.print(20, 20, GlyphBuilder.build(player));
+//            ProtoGlyph question = ProtoGlyphBuilder.setDefaults('?', Color.BLACK, Color.MAGENTA, Color.YELLOW, Color.CYAN).addPrimary(new Pair<>(0.5, Color.ORANGE)).setSourceCoordinates(0,0).build();
+//            gui.print(20, 21, GlyphBuilder.build(question, DualityMode.TILE));
+//            gui.addZone(0.15, 0.33, 0.75, 0.1, DualityMode.TEXT);
+//            ProtoGlyph bg = ProtoGlyphBuilder.setDefaults(' ', Color.DARK_GRAY, Color.WHITE).build();
+//            ProtoGlyph border = ProtoGlyphBuilder.setDefaults('#', Color.DARK_GRAY, Color.RED).addBackground(new Pair<>(0.5, Color.LIGHT_GRAY)).addPrimary(new Pair<>(0.33, Color.GREEN)).addPrimary(new Pair<>(0.67, Color.BLUE)).build();
+//            gui.setBorder(0, GlyphBuilder.build(border));
+//            gui.print(
+//                    0, 1, 1, GlyphBuilder.build(
+//                    ProtoGlyphBuilder.setDefaults('@', Color.BLUE, Color.YELLOW).addPrimary(new Pair<>(0.33, Color.RED)).build()
+//                    )
+//            );
+//            ArrayList<Glyph> testGlyphString = new ArrayList<>();
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('H', Color.BLACK, Color.WHITE).build().insertPrimary(new Pair<>(0.5, Color.RED))));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('e', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('o', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('W', Color.BLACK, Color.WHITE).build().insertPrimary(new Pair<>(0.5, Color.GREEN)).insertPrimary(new Pair<>(0.5, Color.RED))));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('o', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('r', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('l', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('d', Color.BLACK, Color.WHITE).build()));
+//            testGlyphString.add(GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('!', Color.BLACK, Color.WHITE).build()));
+//            gui.print(0, 2, 2, testGlyphString);
             //gui.setFullScreen(false);
             Thread.sleep(750); //todo - handle this required pause better
             adl.send(DataPacker.pack(new UserDatum("Sereg", "pass1234"), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
-            for (;;){
-                gui.redraw();
-                Thread.sleep(75);
-            }
-            //todo - Engine.start() when ready to begin execution
+//            for (;;){
+//                gui.redraw();
+//                Thread.sleep(75);
+//            }
+            //todo - Engine.start() when ready to begin execution - local only... engine already running on server!
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }

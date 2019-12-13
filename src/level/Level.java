@@ -5,6 +5,7 @@ import actor.ActorExecutionQueue;
 import engine.time.RealTime;
 import engine.time.Time;
 import engine.time.TurnTime;
+import mapgen.TestGenerator;
 
 public class Level {
 
@@ -13,6 +14,8 @@ public class Level {
     Time time;
     ActorExecutionQueue actors;
     int terrainTheme;
+    int rows;
+    int cols;
     byte[][] terrainMap;
     Actor[][] actorMap; //redundant access to actors by coordinates
 
@@ -20,8 +23,20 @@ public class Level {
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue();
         terrainTheme = theme;
-        terrainMap = new byte[rows][cols];
+        this.rows = rows;
+        this.cols = cols;
+        //terrainMap = new byte[rows][cols];
+        /* todo - the above, and a proper method for calling map generation */
+        terrainMap = new TestGenerator().generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
+    }
+
+    public int getRows(){
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
     }
 
     public Time getTime() {

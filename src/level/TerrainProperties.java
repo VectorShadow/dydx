@@ -1,6 +1,9 @@
 package level;
 
 import flag.Flag;
+import resources.DualityMode;
+import resources.glyph.Glyph;
+import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyph;
 
 import java.util.ArrayList;
@@ -25,5 +28,10 @@ public class TerrainProperties {
     public ArrayList<Flag> getFlags() {
         return flags;
     }
-    //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph
+
+    public Glyph render() {
+        //todo - HACK for now
+        //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph
+        return GlyphBuilder.build(protoGlyph, DualityMode.TILE);
+    }
 }
