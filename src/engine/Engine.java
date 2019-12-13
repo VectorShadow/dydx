@@ -16,6 +16,8 @@ import linker.local.ServerLocalDataLink;
 import server.FileManager;
 import server.Server;
 
+import java.util.ArrayList;
+
 /**
  * This class manages the game world. It will be constructed with remote = true if called by Launcher
  * (server side, remote), or remote = false if called by Driver(client side, local).
@@ -23,7 +25,8 @@ import server.Server;
 public class Engine extends Thread {
 
     private Server server = null;
-    private LinkLevelTable llt = new LinkLevelTable();
+    private ArrayList<ServerDataLink> localLinks = null;
+    private ArrayList<Level> activeLevels = new ArrayList<>();
     private final boolean realtime;
 
     public Engine(boolean remote, boolean realtime) {
@@ -32,10 +35,20 @@ public class Engine extends Thread {
         if (remote) {
             server = new Server();
             server.start();
-            llt.setOpenLinks(server.getOpenConnections());
         } else {
-            llt.addOpenLink(new ServerLocalDataLink());
+            localLinks = new ArrayList<>();
+            localLinks.add(new ServerLocalDataLink());
         }
+    }
+
+    /**
+     * Return a list of ServerDataLinks which this engine is connected on.
+     * If we are local, simply return the localLinks field.
+     * Otherwise, get the open connections from the active Server.
+     */
+    private ArrayList<ServerDataLink> getAllDataLinks() {
+        if (server == null) return localLinks;
+        return server.getOpenConnections();
     }
 
     /**
@@ -43,7 +56,7 @@ public class Engine extends Thread {
      * @return
      */
     public ClientLocalDataLink generateClientDataLink() {
-        return AbstractLocalDataLink.generateClientLink((ServerLocalDataLink)llt.getOpenLinks().get(0));
+        return AbstractLocalDataLink.generateClientLink((ServerLocalDataLink)localLinks.get(0));
     }
 
     public void run(){
@@ -64,7 +77,7 @@ public class Engine extends Thread {
             }
             systime = System.currentTimeMillis();
             //attempt to process pending actions on all active levels
-            for (Level l : llt.getActiveLevels()) {
+            for (Level l : activeLevels) {
                 //get the queue for this level
                 ActorExecutionQueue aeq = l.getActors();
                 //update the time on this level - a realtime engine will use the system time,
@@ -76,7 +89,7 @@ public class Engine extends Thread {
                     //execute
                     EventDatum ed = execute(aeq.execute());
                     //send the resulting datum via all relevant data links
-                    for (ServerDataLink sdl : llt.getLinks(l)) {
+                    for (ServerDataLink sdl : getAllDataLinks()) {
                         ((AbstractDataLink)sdl).send(StreamConverter.toByteArray(ed));
                     }
                 }
@@ -92,5 +105,22 @@ public class Engine extends Thread {
     private EventDatum execute(ActionItem ai) {
         //todo - update the World, then build an EventDatum to send to the Client
         return null;
+    }
+    /**
+     * Search all open links for the specified level and return a list of links connected to that level.
+     */
+    public ArrayList<ServerDataLink> getLinks(Level l) {
+        if (!activeLevels.contains(l)) throw new IllegalArgumentException("Specified level does not exist.");
+        ArrayList<ServerDataLink> serverDataLinks = new ArrayList<>();
+        for (ServerDataLink sdl : getAllDataLinks()) if (sdl.getLevel() == l) serverDataLinks.add(sdl);
+        return serverDataLinks;
+    }
+
+    /**
+     * Return the level associated with the specified data link.
+     */
+    public Level getLevel(ServerDataLink l) {
+        if (!getAllDataLinks().contains(l)) throw new IllegalArgumentException("Specified data link does not exist.");
+        return l.getLevel();
     }
 }

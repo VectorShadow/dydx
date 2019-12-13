@@ -36,7 +36,7 @@ public class Driver {
             //and establish a datalink bound to the Engine's datalink.
             //if connection is established, create a datalink bound to the connection socket.
             Level.setTerrainLookupTable(new BasicTerrainLookupTable());
-            Cipher.testAllCrypto();
+//            Cipher.testAllCrypto();
             /* test local */
             //realtime
 //            Engine e = new Engine(false, true);
