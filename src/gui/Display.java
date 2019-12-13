@@ -44,11 +44,13 @@ public class Display extends Thread {
 
     @Override
     public void run() {
-        gui.redraw();
-        try {
-            Thread.sleep(refreshRate());
-        } catch (InterruptedException e) {
-            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+        for (;;){
+            gui.redraw();
+            try {
+                Thread.sleep(refreshRate());
+            } catch (InterruptedException e) {
+                ErrorLogger.logFatalException(ErrorLogger.trace(e));
+            }
         }
     }
 }

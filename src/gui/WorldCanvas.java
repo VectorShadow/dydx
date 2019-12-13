@@ -41,10 +41,6 @@ public class WorldCanvas {
                 else {
                     TerrainProperties tp = level.propertiesAt(levelRow, levelCol);
                     g = tp.render();
-                    g = GlyphBuilder.build(
-                    ProtoGlyphBuilder.setDefaults('@', Color.BLUE, Color.YELLOW).addPrimary(new Pair<>(0.33, Color.RED)).build()
-                    );
-                    System.out.println("Found non empty glyph at (" + i + "," + j + ")");
                 }
                 gui.print(i, j, g);
             }
