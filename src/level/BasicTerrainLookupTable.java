@@ -14,17 +14,24 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
     /**
      * Flag definitions.
      */
-    public final int PERMIT_MOVEMENT = 0;
-    public final int PERMIT_LIGHT = 1;
+    public static final int PERMIT_MOVEMENT = 0;
+    public static final int PERMIT_LIGHT = 1;
     /**
      * Flag table.
      */
-    public final Flag[] DEFINED_FLAGS = {
+    public static final Flag[] DEFINED_FLAGS = {
             // 0 - Permit Movement
             FlagFactory.setName("Permit Movement").manufacture(),
             //1 - Permit Light
             FlagFactory.setName("Permit Light").manufacture(),
     };
+
+    /**
+     * Access flags by name.
+     */
+    public static Flag flag(int flagIndex) {
+        return DEFINED_FLAGS[flagIndex];
+    }
 
     /**
      * Properties tables.

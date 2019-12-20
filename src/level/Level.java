@@ -7,6 +7,8 @@ import engine.time.Time;
 import engine.time.TurnTime;
 import mapgen.TestGenerator;
 
+import java.util.Random;
+
 public class Level {
 
     static TerrainLookupTable terrainLookupTable;
@@ -29,6 +31,15 @@ public class Level {
         /* todo - the above, and a proper method for calling map generation */
         terrainMap = new TestGenerator().generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
+        //todo - generate actors properly: MEGAHACK - generate actors randomly
+        for (int i = 0; i < 5;) {
+            int r = new Random().nextInt(rows);
+            int c = new Random().nextInt(cols);
+            if (propertiesAt(r, c).hasProperty(BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT))) {
+                actorMap[r][c] = new Actor(time);
+                ++i;
+            }
+        }
     }
 
     public int getRows(){

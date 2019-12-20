@@ -41,6 +41,10 @@ public class WorldCanvas {
                 else {
                     TerrainProperties tp = level.propertiesAt(levelRow, levelCol);
                     g = tp.render();
+                    //todo - properly render actors: MEGAHACK - force glyph if actor is here
+                    if (level.getActorAt(levelRow, levelCol) != null) {
+                        g = GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('A', Color.BLACK, Color.YELLOW).build());
+                    }
                 }
                 gui.print(i, j, g);
             }

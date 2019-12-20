@@ -29,6 +29,10 @@ public class TerrainProperties {
         return flags;
     }
 
+    public boolean hasProperty(Flag f) {
+        return flags.contains(f);
+    }
+
     public Glyph render() {
         //todo - HACK for now
         //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph

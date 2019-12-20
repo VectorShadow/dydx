@@ -19,7 +19,7 @@ public class Actor {
     public LinkedList<ActionItem> actionItemQueue;
     long nextActionTime;
 
-    Actor(Time levelTime) {
+    public Actor(Time levelTime) {
         uID = serial++; //increment and assign a unique serial ID - used for associating across links
         actionItemQueue = new LinkedList<>();
         nextActionTime = levelTime.getCurrentTime() + levelTime.getGranularity();
