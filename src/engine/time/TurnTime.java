@@ -14,6 +14,6 @@ public class TurnTime extends Time {
 
     @Override
     public int getGranularity() {
-        throw new UnsupportedOperationException();
+        return Time.BASE_GRANULARITY;
     }
 }

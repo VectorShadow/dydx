@@ -1,5 +1,7 @@
 package actor;
 
+import engine.time.Time;
+
 import java.util.LinkedList;
 
 /**
@@ -10,8 +12,22 @@ import java.util.LinkedList;
  * Base class for all actor entities which may appear on a level.
  */
 public class Actor {
+
+    private static int serial = 0;
+
+    private int uID;
     public LinkedList<ActionItem> actionItemQueue;
     long nextActionTime;
+
+    Actor(Time levelTime) {
+        uID = serial++; //increment and assign a unique serial ID - used for associating across links
+        actionItemQueue = new LinkedList<>();
+        nextActionTime = levelTime.getCurrentTime() + levelTime.getGranularity();
+    }
+
+    public int getUID() {
+        return uID;
+    }
 
     public ActionItem checkNextActionEvent(){
         //todo - handle null case by replacing with wait action

@@ -17,6 +17,12 @@ public class ActorExecutionQueue {
             }
         }
     );
+    public Actor getActor(int actorID) {
+        for (Actor actor : executionQueue) {
+            if (actor.getUID() == actorID) return actor;
+        }
+        throw new IllegalArgumentException("Actor " + actorID + "not found.");
+    }
     public long nextTime() {
         return executionQueue.poll().getNextActionTime();
     }

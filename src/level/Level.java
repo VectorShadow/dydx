@@ -47,6 +47,10 @@ public class Level {
         return actors;
     }
 
+    public Actor getActor(int actorID) {
+        return actors.getActor(actorID);
+    }
+
     public byte getTerrainAt(int row, int col) {
         return terrainMap[row][col];
     }
