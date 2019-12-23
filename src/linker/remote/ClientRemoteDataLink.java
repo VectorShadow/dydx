@@ -1,16 +1,10 @@
 package linker.remote;
 
-import crypto.Cipher;
-import crypto.RSA;
 import data.AbstractDatum;
-import data.DataPacker;
-import data.InstructionCode;
-import data.BigIntegerDatum;
-import error.ErrorLogger;
+import data.handler.ClientHandler;
 import error.LogReadyTraceableException;
 import linker.ClientDataLink;
 
-import java.math.BigInteger;
 import java.net.Socket;
 
 public class ClientRemoteDataLink extends AbstractRemoteDataLink implements ClientDataLink {
@@ -21,19 +15,6 @@ public class ClientRemoteDataLink extends AbstractRemoteDataLink implements Clie
 
     @Override
     public void handle(byte instruction, AbstractDatum datum) {
-        switch (instruction){
-            case InstructionCode.PROTOCOL_BIG_INTEGER:
-                BigIntegerDatum bid = (BigIntegerDatum)datum;
-                BigInteger secretKey = new BigInteger(Cipher.getSessionKey(), 16);
-                BigInteger encryptedSecretKey = RSA.encrypt(secretKey, bid.getKey());
-                send(
-                        DataPacker.pack(new BigIntegerDatum(encryptedSecretKey), InstructionCode.PROTOCOL_BIG_INTEGER)
-                );
-                break;
-
-            //todo - more cases
-            default:
-                ErrorLogger.logFatalException(new LogReadyTraceableException("Improper instruction."));
-        }
+        ClientHandler.getInstance().handle(instruction, datum, this);
     }
 }

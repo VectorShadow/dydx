@@ -2,8 +2,8 @@ package engine;
 
 import actor.ActionItem;
 import actor.ActorExecutionQueue;
-import data.EventDatum;
-import data.StreamConverter;
+import crypto.RSA;
+import data.*;
 import engine.time.Time;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
@@ -52,11 +52,20 @@ public class Engine extends Thread {
     }
 
     /**
-     * if world manager is constructed from driver, we provide a method for the client to get its local D
+     * if world manager is constructed from driver, we provide a method for the client to get its local data link
+     * we also take care of RSA crypto since we don't use a Server (which normally handles this) in local mode
      * @return
      */
     public ClientLocalDataLink generateClientDataLink() {
-        return AbstractLocalDataLink.generateClientLink((ServerLocalDataLink)localLinks.get(0));
+        RSA.generateSessionKeys();
+        ServerLocalDataLink sldl = (ServerLocalDataLink)localLinks.get(0);
+        ClientLocalDataLink cldl = AbstractLocalDataLink.generateClientLink(sldl);
+        sldl.send(
+                DataPacker.pack(
+                        new BigIntegerDatum(RSA.getSessionPublicKey()),
+                        InstructionCode.PROTOCOL_BIG_INTEGER)
+        );
+        return cldl;
     }
 
     public void run(){
