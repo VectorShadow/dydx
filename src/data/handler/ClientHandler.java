@@ -14,7 +14,7 @@ import java.math.BigInteger;
 
 public class ClientHandler extends AbstractHandler {
 
-    protected static ClientHandler instance;
+    private static ClientHandler instance;
 
     public static ClientHandler getInstance() {
         if (instance == null) instance = new ClientHandler();

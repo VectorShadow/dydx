@@ -12,7 +12,7 @@ import server.FileManager;
 
 public class ServerHandler extends AbstractHandler {
 
-    protected static ServerHandler instance;
+    private static ServerHandler instance;
 
     /**
      * The shared secret for this session.
