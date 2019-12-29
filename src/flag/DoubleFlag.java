@@ -14,6 +14,9 @@ public class DoubleFlag extends AbstractFlag implements Flag {
             this.x = x;
             this.y = y;
     }
+    public double average() {
+        return x * y / 2.0;
+    }
 
     @Override
     public double getPower() {
