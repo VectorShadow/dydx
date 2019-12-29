@@ -36,4 +36,16 @@ public enum Direction {
         }
         return Direction.ERROR;
     }
+    public double multiplier(){
+        switch (this){
+            case NORTH: case EAST: case SOUTH: case WEST:
+                return 1.0;
+            case NORTH_EAST: case SOUTH_EAST: case SOUTH_WEST: case NORTH_WEST:
+                return 1.5;
+            case SELF:
+                return 0.0;
+            default:
+                throw new IllegalStateException("May not call multiplier on ERROR direction.");
+        }
+    }
 }

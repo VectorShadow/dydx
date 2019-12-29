@@ -1,11 +1,20 @@
 package graph;
 
-public class Vertex {
-    public final int ROW;
-    public final int COL;
+import java.util.ArrayList;
 
-    public Vertex(int row, int col) {
+public class Vertex {
+    final int ROW;
+    final int COL;
+
+    ArrayList<Edge> edges;
+
+
+    Vertex(int row, int col) {
         ROW = row;
         COL = col;
+        edges = new ArrayList<>();
+    }
+    void addEdge(Edge e) {
+        edges.add(e);
     }
 }
