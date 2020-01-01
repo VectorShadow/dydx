@@ -3,18 +3,25 @@ package graph;
 import java.util.ArrayList;
 
 public class Vertex {
-    final int ROW;
-    final int COL;
 
+    final Coordinate coordinate;
     ArrayList<Edge> edges;
 
+    Vertex(Coordinate coord){
+        coordinate = coord;
+        edges = new ArrayList<>();
+    }
 
     Vertex(int row, int col) {
-        ROW = row;
-        COL = col;
-        edges = new ArrayList<>();
+        this(new Coordinate(row, col));
     }
     void addEdge(Edge e) {
         edges.add(e);
+    }
+    int col(){
+        return coordinate.COL;
+    }
+    int row(){
+        return coordinate.ROW;
     }
 }
