@@ -27,34 +27,44 @@ public class Graph {
      * movement is not valid along that edge.
      */
     public Graph(Level level, Flag constructionProperty, boolean requireDestinationFlag){
+        subGraphs = new ArrayList<>();
         this.level = level;
         this.constructionProperty = constructionProperty;
         this.requiresDestinationFlag = requireDestinationFlag;
-        SubGraph s; //declare a subgraph
-        Stack<Vertex> vertexStack;
-        ArrayList<Vertex> forwardVertices;
-        boolean validDestinationVertex;
+        SubGraph nextSubgraph; //the SubGraph we are currently building
+        SubGraph pendingChecks; //a SubGraph to track vertices that remain to be checked and preserves edges
+        ArrayList<Vertex> forwardVertices; //declare a list to hold forward vertices
+        boolean validDestinationVertex; //flag indicating a valid edge exists
         //iterate through the level map
         for (int i = 0; i < level.getRows(); ++i) {
             for (int j = 0; j < level.getCols(); ++j) {
                 Vertex v = new Vertex(i, j); //generate a vertex from the next tile
                 //verify that the vertex has the construction property and is not in an existing subgraph
                 if (!validVertex(v) || exists(v) != null) continue; //if either fails, move on
-                s = new SubGraph(); //otherwise instantiate a new subgraph
-                s.addVertex(v); //and add this vertex to it
-                vertexStack = new Stack<>(); //instantiate a new stack
-                vertexStack.push(v); //and push this vertex onto it
+                nextSubgraph = new SubGraph(); //otherwise instantiate the next subgraph to build
+                pendingChecks = new SubGraph(); //and a new pending check subgraph
+                pendingChecks.addVertex(v); //and prepare to check the current vertex
                 do {
-                    v = vertexStack.pop(); //get the top Vertex from the stack
-                    if (!validVertex(v)) continue; //if invalid, ignore and move on
+                    System.out.println(pendingChecks);
+                    v = pendingChecks.pop(); //get the next vertex to be checked
+                    System.out.println("Checking " + v);
+                    //if we've already checked and added this vertex, or it's invalid, ignore and move on
+                    if (nextSubgraph.contains(v) || !validVertex(v)) continue;
                     forwardVertices = new ArrayList<>(); //instantiate a new list of forward vertices
-                    //add all forward edges(which occur later in the level array)
-                    forwardVertices.add(new Vertex(v, Direction.EAST));
-                    forwardVertices.add(new Vertex(v, Direction.SOUTH_WEST));
-                    forwardVertices.add(new Vertex(v, Direction.SOUTH));
-                    forwardVertices.add(new Vertex(v, Direction.SOUTH_EAST));
+                    //add all forward edges (from v to another tile) which are still in bounds
+                    for (Direction direction : Direction.values()) {
+                        if (direction != Direction.ERROR) {
+                            Vertex fv = new Vertex(v, direction);
+                            if (vertexInBounds(fv)) forwardVertices.add(fv);
+                        }
+                    }
                     //iterate through forward vertices
                     for (Vertex destination : forwardVertices) {
+                        //find out whether an existing vertex to be checked corresponds to the specified destination
+                        Vertex existingVertex = pendingChecks.getVertex(destination.coordinate());
+                        //if so, use the existing vertex instead of the newly generated one to preserve edges
+                        if (existingVertex != null) destination = existingVertex;
+                        System.out.println("Destination " + destination);
                         validDestinationVertex = false; //destination does not yet have a valid edge with v
                         if (validEdge(v, destination)) { //check the forward edge
                             v.addEdge(new Edge(v, destination)); //if valid, create the edge and add it to v
@@ -65,16 +75,31 @@ public class Graph {
                             destination.addEdge(new Edge(destination, v));
                             validDestinationVertex = true; //we found a valid edge
                         }
-                        if (validDestinationVertex) { //if we found a valid edge:
-                            //add the destination to the stack(so we can check its forward edges and include it in this
-                            //subgraph
-                            vertexStack.push(destination);
-                            s.addVertex(destination); //add the destination vertex to this subgraph
+                        //if we found a new valid edge:
+                        if (validDestinationVertex) {
+                            //if the edge is valid, but the destination is not, add the destination to the subgraph -
+                            //since it will not pass its self check - if it's not already there
+                            if (!validVertex(destination)) {
+                                if (!nextSubgraph.contains(destination)) nextSubgraph.addVertex(destination);
+                            }
+                            //otherwise, add it to the list to be checked if it's not already there
+                            else if (!pendingChecks.contains(destination)) {
+                                System.out.println("Valid, pushing " + destination);
+                                pendingChecks.addVertex(destination);
+                            }
+
+                        }
+                        //otherwise, if we removed an existing vertex, put it back
+                        else if (existingVertex != null) {
+                            pendingChecks.addVertex(existingVertex);
                         }
                     }
+                    //if this vertex has any edges, add it to the subgraph we're building
+                    if (v.edges.size() > 0 && !nextSubgraph.contains(v)) nextSubgraph.addVertex(v);
                     //continue until we've checked all vertices found to have valid edges in this subgraph
-                } while(!vertexStack.empty());
-                subGraphs.add(s); //this subgraph is now complete, add it to this graph
+                } while(pendingChecks.countVertices() > 0);
+                //this subgraph is now complete - if it has any vertices, add it to this graph
+                if (nextSubgraph.countVertices() > 0) subGraphs.add(nextSubgraph);
             }
         }
     }
@@ -92,11 +117,14 @@ public class Graph {
         }
         return null;
     }
+    private boolean vertexInBounds(Vertex v) {
+        return v.row() >= 0 && v.col() >= 0 && v.row() < level.getRows() && v.col() < level.getCols();
+    }
     private boolean validVertex(Vertex v) {
-        return level.propertiesAt(v.row(), v.col()).hasProperty(constructionProperty);
+        return vertexInBounds(v) && level.propertiesAt(v.row(), v.col()).hasProperty(constructionProperty);
     }
     private boolean validEdge(Vertex orig, Vertex dest) {
-        return validVertex(orig) && (!requiresDestinationFlag || validVertex(dest));
+        return validVertex(orig) && ((!requiresDestinationFlag && vertexInBounds(dest)) || validVertex(dest));
     }
     public ArrayList<Coordinate> radiate(Coordinate center, double power){
         //todo - traverse the graph and return a list of coordinates corresponding to light/sight with the specified
@@ -107,5 +135,27 @@ public class Graph {
         //todo - traverse the graph and return a list of coordinates corresponding to the shortest path from origin
         // to destination in terms of the cost specified by the graph's construction property on its edges.
         return null;
+    }
+    int countEdges() {
+        int e = 0;
+        for (SubGraph s : subGraphs) {
+            for (Vertex v : s.vertices) e += v.countEdges();
+        }
+        return e;
+    }
+    int countVertices() {
+        int v = 0;
+        for (SubGraph s : subGraphs) v += s.countVertices();
+        return v;
+    }
+    int countSubgraphs() {
+        return subGraphs.size();
+    }
+    @Override
+    public String toString() {
+        String s = "[Graph consisting of " + countSubgraphs() + " subgraphs, containing a total of " +
+                countVertices() + " vertices and " + countEdges() + " edges.]";
+        for (SubGraph subGraph : subGraphs) s += "\n" + subGraph;
+        return s;
     }
 }

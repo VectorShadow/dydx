@@ -8,4 +8,14 @@ public class Coordinate {
         ROW = row;
         COL = col;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Coordinate && ((Coordinate) o).ROW == ROW && ((Coordinate) o).COL == COL;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + ROW + "," + COL + ")";
+    }
 }

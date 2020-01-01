@@ -27,4 +27,14 @@ public class Vertex {
     int row(){
         return coordinate.ROW;
     }
+    Coordinate coordinate(){
+        return coordinate;
+    }
+    int countEdges() {
+        return edges.size();
+    }
+    @Override
+    public String toString() {
+        return "V[" + coordinate + "]";
+    }
 }

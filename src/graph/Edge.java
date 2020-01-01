@@ -18,8 +18,8 @@ public class Edge {
     }
 
     double cost(Level level, Flag flag) {
-        boolean originHasFlag = level.propertiesAt(origin.ROW, origin.COL).hasProperty(flag);
-        boolean destinationHasFlag = level.propertiesAt(destination.ROW, destination.COL).hasProperty(flag);
+        boolean originHasFlag = level.propertiesAt(origin.row(), origin.col()).hasProperty(flag);
+        boolean destinationHasFlag = level.propertiesAt(destination.row(), destination.col()).hasProperty(flag);
         //neither endpoint has the flag, no cost for that flag
         if (!originHasFlag && !destinationHasFlag) return 0.0;
         //at least one endpoint has the flag:

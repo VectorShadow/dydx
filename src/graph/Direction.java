@@ -29,8 +29,8 @@ public enum Direction {
         return column + colChange;
     }
     public static Direction derive(Vertex from, Vertex to) {
-        int dRow = to.ROW - from.ROW;
-        int dCol = to.COL - from.COL;
+        int dRow = to.row() - from.row();
+        int dCol = to.col() - from.col();
         for (Direction direction : Direction.values()){
             if (direction.rowChange == dRow && direction.colChange == dCol) return direction;
         }
