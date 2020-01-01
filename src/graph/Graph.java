@@ -56,9 +56,9 @@ public class Graph {
         // power
         return null;
     }
-    public ArrayList<Coordinate> shortestPath(Coordinate origin, Coordinate destination, Flag criterion){
+    public ArrayList<Coordinate> shortestPath(Coordinate origin, Coordinate destination){
         //todo - traverse the graph and return a list of coordinates corresponding to the shortest path from origin
-        // to destination in terms of the cost specified by the criterion flag
+        // to destination in terms of the cost specified by the graph's construction property on its edges.
         return null;
     }
 }
