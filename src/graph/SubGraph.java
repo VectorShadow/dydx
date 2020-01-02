@@ -18,20 +18,6 @@ public class SubGraph {
     int countVertices() {
         return vertices.size();
     }
-    //return the vertex existing in this subgraph which corresponds to the provided coordinate
-    Vertex getVertex(Coordinate c) {
-        for (Vertex vertex : vertices) {
-            if (vertex.coordinate().equals(c)) {
-                vertices.remove(vertex);
-                return vertex;
-            }
-        }
-        return null;
-    }
-    //pop the last vertex added to this subgraph
-    Vertex pop() {
-        return vertices.remove(vertices.size() - 1);
-    }
     //check whether this subgraph contains the specified vertex
     boolean contains(Vertex v) {
         for (Vertex vertex : vertices) {

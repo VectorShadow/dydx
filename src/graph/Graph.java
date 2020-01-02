@@ -4,7 +4,6 @@ import flag.Flag;
 import level.Level;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class Graph {
     ArrayList<SubGraph> subGraphs;
@@ -32,7 +31,7 @@ public class Graph {
         this.constructionProperty = constructionProperty;
         this.requiresDestinationFlag = requireDestinationFlag;
         SubGraph nextSubgraph; //the SubGraph we are currently building
-        SubGraph pendingChecks; //a SubGraph to track vertices that remain to be checked and preserves edges
+        VertexStack pendingChecks; //a Stack to track vertices that remain to be checked and preserves edges
         ArrayList<Vertex> forwardVertices; //declare a list to hold forward vertices
         boolean validDestinationVertex; //flag indicating a valid edge exists
         //iterate through the level map
@@ -42,12 +41,10 @@ public class Graph {
                 //verify that the vertex has the construction property and is not in an existing subgraph
                 if (!validVertex(v) || exists(v) != null) continue; //if either fails, move on
                 nextSubgraph = new SubGraph(); //otherwise instantiate the next subgraph to build
-                pendingChecks = new SubGraph(); //and a new pending check subgraph
-                pendingChecks.addVertex(v); //and prepare to check the current vertex
+                pendingChecks = new VertexStack(); //and a new pending check subgraph
+                pendingChecks.push(v); //and prepare to check the current vertex
                 do {
-                    System.out.println(pendingChecks);
                     v = pendingChecks.pop(); //get the next vertex to be checked
-                    System.out.println("Checking " + v);
                     //if we've already checked and added this vertex, or it's invalid, ignore and move on
                     if (nextSubgraph.contains(v) || !validVertex(v)) continue;
                     forwardVertices = new ArrayList<>(); //instantiate a new list of forward vertices
@@ -61,10 +58,9 @@ public class Graph {
                     //iterate through forward vertices
                     for (Vertex destination : forwardVertices) {
                         //find out whether an existing vertex to be checked corresponds to the specified destination
-                        Vertex existingVertex = pendingChecks.getVertex(destination.coordinate());
+                        Vertex existingVertex = pendingChecks.removeVertex(destination.coordinate());
                         //if so, use the existing vertex instead of the newly generated one to preserve edges
                         if (existingVertex != null) destination = existingVertex;
-                        System.out.println("Destination " + destination);
                         validDestinationVertex = false; //destination does not yet have a valid edge with v
                         if (validEdge(v, destination)) { //check the forward edge
                             v.addEdge(new Edge(v, destination)); //if valid, create the edge and add it to v
@@ -84,14 +80,13 @@ public class Graph {
                             }
                             //otherwise, add it to the list to be checked if it's not already there
                             else if (!pendingChecks.contains(destination)) {
-                                System.out.println("Valid, pushing " + destination);
-                                pendingChecks.addVertex(destination);
+                                pendingChecks.push(destination);
                             }
 
                         }
                         //otherwise, if we removed an existing vertex, put it back
                         else if (existingVertex != null) {
-                            pendingChecks.addVertex(existingVertex);
+                            pendingChecks.push(existingVertex);
                         }
                     }
                     //if this vertex has any edges, add it to the subgraph we're building
