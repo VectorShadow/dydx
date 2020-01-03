@@ -1,6 +1,7 @@
 package graph;
 
 import flag.Flag;
+import level.BasicTerrainLookupTable;
 import level.Level;
 
 import java.util.ArrayList;
@@ -98,6 +99,10 @@ public class Graph {
             }
         }
     }
+    public void update(Coordinate c) {
+        //todo - update the graph based on a change at coordinate c.
+        // this is necessary if we want to avoid rebuilding the entire graph when tile properties change at runtime.
+    }
 
     /**
      * Check the subgraphs for a specific vertex.
@@ -152,5 +157,30 @@ public class Graph {
                 countVertices() + " vertices and " + countEdges() + " edges.]";
         for (SubGraph subGraph : subGraphs) s += "\n" + subGraph;
         return s;
+    }
+    public static void speedTest() {
+        long start, stop;
+        Level l, m, n, o;
+        Graph g;
+        l = new Level(true, 32, 32, 0);
+        start = System.currentTimeMillis();
+        g = new Graph(l, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        stop = System.currentTimeMillis();
+        System.out.println("Graph build speed @32x32: " + (stop - start));
+        m = new Level(true, 225, 68, 0);
+        start = System.currentTimeMillis();
+        g = new Graph(m, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        stop = System.currentTimeMillis();
+        System.out.println("Graph build speed @225x68: " + (stop - start));
+        n = new Level(true, 19, 816, 0);
+        start = System.currentTimeMillis();
+        g = new Graph(n, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        stop = System.currentTimeMillis();
+        System.out.println("Graph build speed @19x816: " + (stop - start));
+        o = new Level(true, 512, 512, 0);
+        start = System.currentTimeMillis();
+        g = new Graph(o, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        stop = System.currentTimeMillis();
+        System.out.println("Graph build speed @512x512(throttled to 128x128): " + (stop - start));
     }
 }

@@ -53,9 +53,10 @@ public class Driver {
             Display.loadGraphics("./gfx/32.png", "./gfx/16.png");
             Display.getInstance().start();
             Display.drawLevel(adl.getLevel());
-            Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT), true);
-            Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
-            System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);
+//            Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT), true);
+//            Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+//            System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);
+            Graph.speedTest();
 //            Gui gui = new DualityGUI();
 //            ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));
 //            ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File("./gfx/16.png"));

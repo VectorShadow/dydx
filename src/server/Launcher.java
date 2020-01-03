@@ -2,6 +2,7 @@ package server;
 
 import engine.Engine;
 import error.ErrorLogger;
+import graph.Graph;
 import level.BasicTerrainLookupTable;
 import level.Level;
 
@@ -12,6 +13,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         Level.setTerrainLookupTable(new BasicTerrainLookupTable());
+        Graph.speedTest();
         try {
             new Engine(true, true);
             //todo

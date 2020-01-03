@@ -11,6 +11,19 @@ import java.util.Random;
 
 public class Level {
 
+    /**
+     * Because the Graph algorithm which we rely on for raycasting and AI runs in
+     * Exponential Time relative to the size of the level, we cap level size at a number
+     * for which total runtime does not become obscene.
+     * It remains possible to have levels that are tall and narrow, or wide and short, so long as the
+     * total number of tiles does not exceed a certain maximum.
+     * Note that open levels are more prone to this than closed levels, since the number of edges generated
+     * for common flags such as light and movement are much higher.
+     */
+    final int MAX_DIM = 128;
+    final int MAX_SIZE = MAX_DIM * MAX_DIM;
+
+
     static TerrainLookupTable terrainLookupTable;
 
     Time time;
@@ -25,8 +38,8 @@ public class Level {
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue();
         terrainTheme = theme;
-        this.rows = rows;
-        this.cols = cols;
+        this.rows = rows * cols > MAX_SIZE ? MAX_DIM : rows;
+        this.cols = rows * cols > MAX_SIZE ? MAX_DIM : cols;
         //terrainMap = new byte[rows][cols];
         /* todo - the above, and a proper method for calling map generation */
         terrainMap = new TestGenerator().generateTerrain(rows, cols);
