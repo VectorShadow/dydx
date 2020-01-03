@@ -12,15 +12,14 @@ import java.util.Random;
 public class Level {
 
     /**
-     * Because the Graph algorithm which we rely on for raycasting and AI runs in
-     * Polynomial Time(->n^2) relative to the size of the level, we cap level size at a number
-     * for which total runtime does not become obscene.
+     * The Graph algorithm which we rely on for raycasting and AI runs in linear time relative to the size of the level,
+     * so we cap level size at a number which prevents graph construction from becoming prohibitive for the server.
      * It remains possible to have levels that are tall and narrow, or wide and short, so long as the
      * total number of tiles does not exceed a certain maximum.
      * Note that open levels are more prone to this than closed levels, since the number of edges generated
      * for common flags such as light and movement are much higher.
      */
-    final int MAX_DIM = 256;
+    final int MAX_DIM = 512;
     final int MAX_SIZE = MAX_DIM * MAX_DIM;
 
 
@@ -34,22 +33,22 @@ public class Level {
     byte[][] terrainMap;
     Actor[][] actorMap; //redundant access to actors by coordinates
 
-    public Level(boolean realtime, int rows, int cols, int theme){
+    public Level(boolean realtime, int r, int c, int theme){
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue();
         terrainTheme = theme;
-        this.rows = rows * cols > MAX_SIZE ? MAX_DIM : rows;
-        this.cols = rows * cols > MAX_SIZE ? MAX_DIM : cols;
+        rows = r * c > MAX_SIZE ? MAX_DIM : r;
+        cols = r * c > MAX_SIZE ? MAX_DIM : c;
         //terrainMap = new byte[rows][cols];
         /* todo - the above, and a proper method for calling map generation */
         terrainMap = new TestGenerator().generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
         //todo - generate actors properly: MEGAHACK - generate actors randomly
         for (int i = 0; i < 5;) {
-            int r = new Random().nextInt(rows);
-            int c = new Random().nextInt(cols);
-            if (propertiesAt(r, c).hasProperty(BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT))) {
-                actorMap[r][c] = new Actor(time);
+            int ar = new Random().nextInt(rows);
+            int ac = new Random().nextInt(cols);
+            if (propertiesAt(ar, ac).hasProperty(BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT))) {
+                actorMap[ar][ac] = new Actor(time);
                 ++i;
             }
         }
