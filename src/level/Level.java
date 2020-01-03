@@ -13,7 +13,7 @@ public class Level {
 
     /**
      * Because the Graph algorithm which we rely on for raycasting and AI runs in
-     * Exponential Time relative to the size of the level, we cap level size at a number
+     * Polynomial Time(->n^2) relative to the size of the level, we cap level size at a number
      * for which total runtime does not become obscene.
      * It remains possible to have levels that are tall and narrow, or wide and short, so long as the
      * total number of tiles does not exceed a certain maximum.
