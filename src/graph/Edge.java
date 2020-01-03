@@ -6,12 +6,18 @@ import flag.Flag;
 import flag.SingleFlag;
 import level.Level;
 
+/**
+ * An edge between Vertices in a Graph.
+ * Note that the destination is not a Vertex, but rather the Coordinate corresponding to a Vertex.
+ * This is because Coordinates can be interpreted in the context of a Graph, but Vertices without
+ * that context are meaningless.
+ */
 public class Edge {
-    final Vertex origin;
-    final Vertex destination;
+    private final Vertex origin;
+    final Coordinate destination;
     final Direction direction;
 
-    Edge(Vertex from, Vertex to){
+    Edge(Vertex from, Coordinate to){
         origin = from;
         destination = to;
         direction = Direction.derive(from, to);
@@ -19,7 +25,7 @@ public class Edge {
 
     double cost(Level level, Flag flag) {
         boolean originHasFlag = level.propertiesAt(origin.row(), origin.col()).hasProperty(flag);
-        boolean destinationHasFlag = level.propertiesAt(destination.row(), destination.col()).hasProperty(flag);
+        boolean destinationHasFlag = level.propertiesAt(destination.ROW, destination.COL).hasProperty(flag);
         //neither endpoint has the flag, no cost for that flag
         if (!originHasFlag && !destinationHasFlag) return 0.0;
         //at least one endpoint has the flag:

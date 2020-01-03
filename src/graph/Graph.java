@@ -24,34 +24,48 @@ public class Graph {
         }
     }
     private void generateVertex(int row, int col) {
-        ArrayList<Vertex> adjacentVertices;
+        ArrayList<Coordinate> adjacentCoordinates;
         Vertex origin = new Vertex(row, col);
-        if (!validVertex(origin)) return;
-        adjacentVertices = new ArrayList<>();
+        if (!validCoordinate(origin.coordinate())) return;
+        adjacentCoordinates = new ArrayList<>();
         for (Direction direction : Direction.values()) {
             if (direction.ordinal() < Direction.SELF.ordinal()) {
-                Vertex adj = new Vertex(origin, direction);
-                if (vertexInBounds(adj)) adjacentVertices.add(adj);
+                Coordinate adj = origin.adjacent(direction);
+                if (inBounds(adj)) adjacentCoordinates.add(adj);
             }
         }
-        for (Vertex target : adjacentVertices) {
+        for (Coordinate target : adjacentCoordinates) {
             if (validEdge(origin, target)) {
                 origin.addEdge(new Edge(origin, target));
             }
         }
-        allVertices[indexOf(origin)] = origin;
+        allVertices[indexOf(origin.coordinate())] = origin;
     }
-    private int indexOf(Vertex v) {
-        return v.row() * level.getCols() + v.col();
+    private int indexOf(Coordinate c) {
+        return c.ROW * level.getCols() + c.COL;
     }
-    private boolean vertexInBounds(Vertex v) {
-        return v.row() >= 0 && v.col() >= 0 && v.row() < level.getRows() && v.col() < level.getCols();
+    private boolean inBounds(Coordinate c) {
+        return c.ROW >= 0 && c.COL >= 0 && c.ROW < level.getRows() && c.COL < level.getCols();
     }
-    private boolean validVertex(Vertex v) {
-        return vertexInBounds(v) && level.propertiesAt(v.row(), v.col()).hasProperty(constructionProperty);
+    private boolean validCoordinate(Coordinate c) {
+        return inBounds(c) && level.propertiesAt(c.ROW, c.COL).hasProperty(constructionProperty);
     }
-    private boolean validEdge(Vertex orig, Vertex dest) {
-        return validVertex(orig) && ((!requiresDestinationFlag && vertexInBounds(dest)) || validVertex(dest));
+    private boolean validEdge(Vertex orig, Coordinate dest) {
+        return validCoordinate(orig.coordinate()) && (
+                (!requiresDestinationFlag && inBounds(dest)) || validCoordinate(dest)
+        );
+    }
+
+    /**
+     * Find a vertex by following an edge from the given vertex.
+     *
+     * @param origin the source vertex
+     * @param edgeDirection the direction of the edge to follow
+     * @return the vertex found along the given edge, or null if no edge exists
+     */
+    private Vertex followEdge(Vertex origin, Direction edgeDirection) {
+        Edge e = origin.getEdge(edgeDirection);
+        return e == null ? null : allVertices[indexOf(e.destination)];
     }
     int countEdges() {
         int count = 0;

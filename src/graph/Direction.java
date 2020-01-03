@@ -28,9 +28,9 @@ public enum Direction {
         if (this == ERROR) throw new IllegalArgumentException("May not apply ERROR direction.");
         return column + colChange;
     }
-    public static Direction derive(Vertex from, Vertex to) {
-        int dRow = to.row() - from.row();
-        int dCol = to.col() - from.col();
+    public static Direction derive(Vertex from, Coordinate to) {
+        int dRow = to.ROW - from.row();
+        int dCol = to.COL - from.col();
         for (Direction direction : Direction.values()){
             if (direction.rowChange == dRow && direction.colChange == dCol) return direction;
         }

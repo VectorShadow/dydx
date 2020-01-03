@@ -14,8 +14,8 @@ public class Vertex {
     Vertex(int row, int col) {
         this(new Coordinate(row, col));
     }
-    Vertex(Vertex origin, Direction direction) {
-        this(origin.row() + direction.rowChange, origin.col() + direction.colChange);
+    Coordinate adjacent(Direction direction) {
+        return new Coordinate(row() + direction.rowChange, col() + direction.colChange);
     }
     void addEdge(Edge e) {
         edges[e.direction.ordinal()] = e;
