@@ -8,6 +8,7 @@ import data.InstructionCode;
 import data.UserDatum;
 import engine.Engine;
 import error.ErrorLogger;
+import graph.Coordinate;
 import graph.Graph;
 import gui.Display;
 import level.BasicTerrainLookupTable;
@@ -56,6 +57,8 @@ public class Driver {
             Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT), true);
             Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
             System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);
+            g0.update(new Coordinate(32, 32));
+            System.out.println("Updated movement graph: " + g0);
             Graph.speedTest();
 //            Gui gui = new DualityGUI();
 //            ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File("./gfx/32.png"));

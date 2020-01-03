@@ -17,27 +17,29 @@ public class Graph {
         this.constructionProperty = constructionProperty;
         this.requiresDestinationFlag = requireDestinationFlag;
         allVertices = new Vertex[l.getRows() * l.getCols()];
-        ArrayList<Vertex> adjacentVertices;
-        Vertex origin;
         for (int i = 0; i < l.getRows(); ++i) {
             for (int j = 0; j < l.getCols(); ++j) {
-                origin = new Vertex(i, j);
-                if (!validVertex(origin)) continue;
-                adjacentVertices = new ArrayList<>();
-                for (Direction direction : Direction.values()) {
-                    if (direction != Direction.ERROR) {
-                        Vertex adj = new Vertex(origin, direction);
-                        if (vertexInBounds(adj)) adjacentVertices.add(adj);
-                    }
-                }
-                for (Vertex target : adjacentVertices) {
-                    if (validEdge(origin, target)) {
-                        origin.addEdge(new Edge(origin, target));
-                    }
-                }
-                allVertices[indexOf(origin)] = origin;
+                generateVertex(i, j);
             }
         }
+    }
+    private void generateVertex(int row, int col) {
+        ArrayList<Vertex> adjacentVertices;
+        Vertex origin = new Vertex(row, col);
+        if (!validVertex(origin)) return;
+        adjacentVertices = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            if (direction.ordinal() < Direction.SELF.ordinal()) {
+                Vertex adj = new Vertex(origin, direction);
+                if (vertexInBounds(adj)) adjacentVertices.add(adj);
+            }
+        }
+        for (Vertex target : adjacentVertices) {
+            if (validEdge(origin, target)) {
+                origin.addEdge(new Edge(origin, target));
+            }
+        }
+        allVertices[indexOf(origin)] = origin;
     }
     private int indexOf(Vertex v) {
         return v.row() * level.getCols() + v.col();
@@ -68,9 +70,16 @@ public class Graph {
         return "[Graph consisting of " + countVertices() + " edged vertices and " + countEdges() + " edges.]";
     }
 
+    /**
+     * Re-generate all vertexes at and adjacent to the specified coordinate.
+     * This must be called whenever map terrain is updated in any way that might change existing flags.
+     */
     public void update(Coordinate c) {
-        //todo - update the graph based on a change at coordinate c.
-        // this is necessary if we want to avoid rebuilding the entire graph when tile properties change at runtime.
+        for (int i = -1; i < 2; ++i) {
+            for (int j = -1; j < 2; ++j) {
+                generateVertex(c.ROW + i, c.COL + j);
+            }
+        }
     }
 
     public ArrayList<Coordinate> radiate(Coordinate center, double power){

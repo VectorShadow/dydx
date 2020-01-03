@@ -1,15 +1,14 @@
 package graph;
 
-import java.util.ArrayList;
-
 public class Vertex {
 
     private final Coordinate coordinate;
-    ArrayList<Edge> edges;
+    private Edge[] edges;
+    private int count = 0;
 
-    Vertex(Coordinate coord){
-        coordinate = coord;
-        edges = new ArrayList<>();
+    Vertex(Coordinate c){
+        coordinate = c;
+        edges = new Edge[8];
     }
 
     Vertex(int row, int col) {
@@ -19,7 +18,11 @@ public class Vertex {
         this(origin.row() + direction.rowChange, origin.col() + direction.colChange);
     }
     void addEdge(Edge e) {
-        edges.add(e);
+        edges[e.direction.ordinal()] = e;
+        ++count;
+    }
+    Edge getEdge(Direction dir) {
+        return edges[dir.ordinal()];
     }
     int col(){
         return coordinate.COL;
@@ -31,7 +34,7 @@ public class Vertex {
         return coordinate;
     }
     int countEdges() {
-        return edges.size();
+        return count;
     }
     @Override
     public String toString() {
