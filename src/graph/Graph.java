@@ -5,12 +5,19 @@ import level.BasicTerrainLookupTable;
 import level.Level;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Graph {
+
+    private static final int PENDING = -1;
+    private static final int NONE = -2;
+
     ArrayList<SubGraph> subGraphs;
     Level level;
     Flag constructionProperty;
     boolean requiresDestinationFlag;
+    VertexStack pending;
+    int[] subGraphByIndex;
 
     /**
      * Level is the level used to generate this graph.
@@ -31,8 +38,8 @@ public class Graph {
         this.level = level;
         this.constructionProperty = constructionProperty;
         this.requiresDestinationFlag = requireDestinationFlag;
-        SubGraph nextSubgraph; //the SubGraph we are currently building
-        VertexStack pendingChecks; //a Stack to track vertices that remain to be checked and preserves edges
+        subGraphByIndex = new int[this.level.getRows() * this.level.getCols()];
+        Arrays.fill(subGraphByIndex, NONE);
         ArrayList<Vertex> forwardVertices; //declare a list to hold forward vertices
         boolean validDestinationVertex; //flag indicating a valid edge exists
         //iterate through the level map
@@ -40,14 +47,14 @@ public class Graph {
             for (int j = 0; j < level.getCols(); ++j) {
                 Vertex v = new Vertex(i, j); //generate a vertex from the next tile
                 //verify that the vertex has the construction property and is not in an existing subgraph
-                if (!validVertex(v) || exists(v) != null) continue; //if either fails, move on
-                nextSubgraph = new SubGraph(); //otherwise instantiate the next subgraph to build
-                pendingChecks = new VertexStack(); //and a new pending check subgraph
-                pendingChecks.push(v); //and prepare to check the current vertex
+                if (!validVertex(v) || isAssignedToSubGraph(v)) continue; //if either fails, move on
+                subGraphs.add(new SubGraph()); //otherwise instantiate and add the next subgraph to build
+                pending = new VertexStack(); //and a new pending check subgraph
+                pushToPending(v); //and prepare to check the current vertex
                 do {
-                    v = pendingChecks.pop(); //get the next vertex to be checked
+                    v = popFromPending(); //get the next vertex to be checked
                     //if we've already checked and added this vertex, or it's invalid, ignore and move on
-                    if (nextSubgraph.contains(v) || !validVertex(v)) continue;
+                    if (currentSubGraphContains(v) || !validVertex(v)) continue;
                     forwardVertices = new ArrayList<>(); //instantiate a new list of forward vertices
                     //add all forward edges (from v to another tile) which are still in bounds
                     for (Direction direction : Direction.values()) {
@@ -59,7 +66,7 @@ public class Graph {
                     //iterate through forward vertices
                     for (Vertex destination : forwardVertices) {
                         //find out whether an existing vertex to be checked corresponds to the specified destination
-                        Vertex existingVertex = pendingChecks.removeVertex(destination.coordinate());
+                        Vertex existingVertex = removeFromPending(destination.coordinate());
                         //if so, use the existing vertex instead of the newly generated one to preserve edges
                         if (existingVertex != null) destination = existingVertex;
                         validDestinationVertex = false; //destination does not yet have a valid edge with v
@@ -77,25 +84,27 @@ public class Graph {
                             //if the edge is valid, but the destination is not, add the destination to the subgraph -
                             //since it will not pass its self check - if it's not already there
                             if (!validVertex(destination)) {
-                                if (!nextSubgraph.contains(destination)) nextSubgraph.addVertex(destination);
+                                if (!currentSubGraphContains(destination)) addVertexToCurrentSubGraph(destination);
                             }
                             //otherwise, add it to the list to be checked if it's not already there
-                            else if (!pendingChecks.contains(destination)) {
-                                pendingChecks.push(destination);
+                            else if (!pendingVerticesContains(destination)) {
+                                pushToPending(destination);
                             }
 
                         }
                         //otherwise, if we removed an existing vertex, put it back
                         else if (existingVertex != null) {
-                            pendingChecks.push(existingVertex);
+                            pushToPending(existingVertex);
                         }
                     }
                     //if this vertex has any edges, add it to the subgraph we're building
-                    if (v.edges.size() > 0 && !nextSubgraph.contains(v)) nextSubgraph.addVertex(v);
+                    if (v.edges.size() > 0 && !currentSubGraphContains(v)) {
+                        addVertexToCurrentSubGraph(v);
+                    }
                     //continue until we've checked all vertices found to have valid edges in this subgraph
-                } while(pendingChecks.countVertices() > 0);
-                //this subgraph is now complete - if it has any vertices, add it to this graph
-                if (nextSubgraph.countVertices() > 0) subGraphs.add(nextSubgraph);
+                } while(pending.countVertices() > 0);
+                //this subgraph is now complete
+                ignoreEmptySubGraphs();
             }
         }
     }
@@ -104,18 +113,53 @@ public class Graph {
         // this is necessary if we want to avoid rebuilding the entire graph when tile properties change at runtime.
     }
 
+    private int indexOf(Vertex v) {
+        return v.row() * level.getCols() + v.col();
+    }
+    private boolean isAssignedToSubGraph(Vertex v) {
+        return subGraphByIndex[indexOf(v)] > PENDING;
+    }
+    private boolean pendingVerticesContains(Vertex v) {
+        return subGraphByIndex[indexOf(v)] == PENDING;
+    }
+    private void pushToPending(Vertex v){
+        pending.addVertex(v);
+        if (!isAssignedToSubGraph(v)) setVertexSubgraph(v, PENDING);
+    }
+    private Vertex popFromPending() {
+        Vertex v = pending.pop();
+        if (!isAssignedToSubGraph(v)) setVertexSubgraph(v, NONE);
+        return v;
+    }
+    private Vertex removeFromPending(Coordinate c) {
+        Vertex v = pending.removeVertex(c);
+        if (v != null && !isAssignedToSubGraph(v)) setVertexSubgraph(v, NONE);
+        return v;
+    }
+    private void ignoreEmptySubGraphs() {
+        if (subGraphs.get(indexOfCurrentSubGraph()).countVertices() == 0) subGraphs.remove(indexOfCurrentSubGraph());
+    }
+    private int indexOfCurrentSubGraph() {
+        return subGraphs.size() - 1;
+    }
+    private boolean currentSubGraphContains(Vertex v) {
+        return subGraphByIndex[indexOf(v)] == indexOfCurrentSubGraph();
+    }
+    private void addVertexToCurrentSubGraph(Vertex v) {
+        subGraphs.get(indexOfCurrentSubGraph()).addVertex(v);
+        setVertexSubgraph(v, indexOfCurrentSubGraph());
+    }
+    private void setVertexSubgraph(Vertex v, int subGraph) {
+        subGraphByIndex[indexOf(v)] = subGraph;
+    }
     /**
      * Check the subgraphs for a specific vertex.
      * If a vertex with the same row and column information is found, return the subgraph it was found in.
      * Otherwise return null.
      */
-    private SubGraph exists(Vertex v) {
-        for (SubGraph subGraph : subGraphs) {
-            for (Vertex vertex : subGraph.vertices) {
-                if (vertex.row() == v.row() && vertex.col() == v.col()) return subGraph;
-            }
-        }
-        return null;
+    private SubGraph subGraphOf(Vertex v) {
+        int i = subGraphByIndex[indexOf(v)];
+        return i < 0 ? null : subGraphs.get(subGraphByIndex[indexOf(v)]);
     }
     private boolean vertexInBounds(Vertex v) {
         return v.row() >= 0 && v.col() >= 0 && v.row() < level.getRows() && v.col() < level.getCols();
@@ -181,6 +225,6 @@ public class Graph {
         start = System.currentTimeMillis();
         g = new Graph(o, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
         stop = System.currentTimeMillis();
-        System.out.println("Graph build speed @512x512(throttled to 128x128): " + (stop - start));
+        System.out.println("Graph build speed @512x512(throttled to 256x256): " + (stop - start));
     }
 }

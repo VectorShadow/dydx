@@ -20,7 +20,7 @@ public class Level {
      * Note that open levels are more prone to this than closed levels, since the number of edges generated
      * for common flags such as light and movement are much higher.
      */
-    final int MAX_DIM = 128;
+    final int MAX_DIM = 256;
     final int MAX_SIZE = MAX_DIM * MAX_DIM;
 
 
