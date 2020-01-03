@@ -156,6 +156,12 @@ public class Graph {
      * Check the subgraphs for a specific vertex.
      * If a vertex with the same row and column information is found, return the subgraph it was found in.
      * Otherwise return null.
+     * Note that this only tracks the last SubGraph the Vertex was added to - this should not present a problem,
+     * since all SubGraphs still properly contain all assigned vertices, and other methods relying on this
+     * information generally only care that either the Vertex is assigned at all, or assigned to the SubGraph
+     * currently under construction.
+     * If necessary, the system can be refactored to flag the assigned SubGraphs -
+     * for example, 0b00101101 might correspond to a vertex in SubGraphs 0, 2, 3, and 5.
      */
     private SubGraph subGraphOf(Vertex v) {
         int i = subGraphByIndex[indexOf(v)];
