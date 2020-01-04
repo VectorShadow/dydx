@@ -5,10 +5,14 @@ import core.DualityGUI;
 import error.ErrorLogger;
 import level.Level;
 import resources.DualityContext;
+import resources.DualityMode;
+import resources.glyph.Glyph;
 import resources.glyph.image.ImageManager;
+import resources.render.OutputMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Display extends Thread {
 
@@ -38,6 +42,16 @@ public class Display extends Thread {
 
     public static void drawLevel(Level level) {
         WorldCanvas.paint(level, getInstance().gui);
+    }
+
+    public static int temporaryTextWindow(double pct) {
+        return getInstance().gui.addZone((1.0 - pct) / 2, pct, (1.0 - pct) / 2, pct, DualityMode.TEXT) - 1;
+    }
+    public static void writeToTemporaryTextWindow(int zoneId, ArrayList<Glyph> glyphString) {
+        getInstance().gui.print(zoneId, 1, 1, glyphString);
+    }
+    public static void disposeTemporaryTextWindow(int zoneID){
+        getInstance().gui.removeZone(zoneID);
     }
 
     private final Gui gui = new DualityGUI();
