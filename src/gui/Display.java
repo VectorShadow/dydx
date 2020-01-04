@@ -10,9 +10,11 @@ import resources.glyph.Glyph;
 import resources.glyph.image.ImageManager;
 import resources.render.OutputMode;
 
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 public class Display extends Thread {
 
@@ -39,6 +41,15 @@ public class Display extends Thread {
         if (instance == null) instance = new Display();
         return instance;
     }
+    public static void setKeyListener(KeyListener kl) {
+        getInstance().gui.addKeyListener(kl);
+    }
+    public static void setFullscreen(boolean fullscreen) {
+        getInstance().gui.setFullScreen(fullscreen);
+    }
+    public static void toggleFullscreen() {
+        getInstance().gui.toggleFullScreen();
+    }
 
     public static void drawLevel(Level level) {
         WorldCanvas.paint(level, getInstance().gui);
@@ -64,6 +75,8 @@ public class Display extends Thread {
                 Thread.sleep(refreshRate());
             } catch (InterruptedException e) {
                 ErrorLogger.logFatalException(ErrorLogger.trace(e));
+//            } catch (ConcurrentModificationException cme) {
+//                //do nothing? todo: find out if this causes serious problems or not
             }
         }
     }
