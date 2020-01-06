@@ -1,9 +1,6 @@
 package graph;
 
-import flag.BasicFlag;
-import flag.DoubleFlag;
-import flag.Flag;
-import flag.SingleFlag;
+import attribute.*;
 import level.Level;
 
 /**
@@ -23,20 +20,25 @@ public class Edge {
         direction = Direction.derive(from, to);
     }
 
-    double cost(Level level, Flag flag) {
-        boolean originHasFlag = level.propertiesAt(origin.row(), origin.col()).hasProperty(flag);
-        boolean destinationHasFlag = level.propertiesAt(destination.ROW, destination.COL).hasProperty(flag);
+    double cost(Level level, int attributeIndex) {
+        Attribute originAttribute = level.propertiesAt(origin.row(), origin.col()).getAttribute(attributeIndex);
+        Attribute destinationAttribute =
+                level.propertiesAt(destination.ROW, destination.COL).getAttribute(attributeIndex);
         //neither endpoint has the flag, no cost for that flag
-        if (!originHasFlag && !destinationHasFlag) return 0.0;
+        if (!originAttribute.isSet() && !destinationAttribute.isSet()) return 0.0;
         //at least one endpoint has the flag:
-        //basic flags have no inherent cost, return 1.0 for orthogonal or 1.5 for diagonal
-        else if (flag instanceof BasicFlag) return direction.multiplier();
-        //single flags return their inherent cost, halved if only one endpoint has the flag
-        else if (flag instanceof SingleFlag)
-            return flag.getPower() * (originHasFlag && destinationHasFlag ? 1.0 : 0.5);
-        //double flags return their average cost, halved if only one endpoint has the flag
-        else if (flag instanceof DoubleFlag)
-            return ((DoubleFlag) flag).average() * (originHasFlag && destinationHasFlag ? 1.0 : 0.5);
+        //boolean attributes have no inherent cost, return 1.0 for orthogonal or 1.5 for diagonal
+        //scaling attributes may modify this cost, so multiply by the average of both ends
+        else if (originAttribute instanceof BooleanAttribute || originAttribute instanceof ScalingAttribute)
+            return direction.multiplier() * (originAttribute.getScaling() + destinationAttribute.getScaling()) * 0.5;
+        //constant flat attributes return half their flat value for each endpoint
+        //dual attributes additionally apply the average scaling factor of both ends to the flat sum
+        else if (originAttribute instanceof ConstantFlatAttribute || originAttribute instanceof DualAttribute)
+            return ((originAttribute.getFlat() + destinationAttribute.getFlat()) * 0.5) *
+                    (originAttribute.getScaling() + destinationAttribute.getScaling()) * 0.5;
+        //variable flat attributes return half their average for each endpoint
+        else if (originAttribute instanceof VariableFlatAttribute)
+            return (originAttribute.getAverage() + destinationAttribute.getAverage()) * 0.5;
         else throw new IllegalStateException("flag is of unsupported class");
     }
 }

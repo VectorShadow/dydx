@@ -1,6 +1,6 @@
 package graph;
 
-import flag.Flag;
+import attribute.Attribute;
 import level.BasicTerrainLookupTable;
 import level.Level;
 
@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public class Graph {
     Level level;
-    Flag constructionProperty;
+    int constructionAttribute;
     boolean requiresDestinationFlag;
     Vertex[] allVertices;
 
-    public Graph(Level l, Flag constructionProperty, boolean requireDestinationFlag) {
+    public Graph(Level l, int constructionAttribute, boolean requireDestinationFlag) {
         level = l;
-        this.constructionProperty = constructionProperty;
+        this.constructionAttribute = constructionAttribute;
         this.requiresDestinationFlag = requireDestinationFlag;
         allVertices = new Vertex[l.getRows() * l.getCols()];
         for (int i = 0; i < l.getRows(); ++i) {
@@ -48,7 +48,7 @@ public class Graph {
         return c.ROW >= 0 && c.COL >= 0 && c.ROW < level.getRows() && c.COL < level.getCols();
     }
     private boolean validCoordinate(Coordinate c) {
-        return inBounds(c) && level.propertiesAt(c.ROW, c.COL).hasProperty(constructionProperty);
+        return inBounds(c) && level.propertiesAt(c.ROW, c.COL).hasProperty(constructionAttribute);
     }
     private boolean validEdge(Vertex orig, Coordinate dest) {
         return validCoordinate(orig.coordinate()) && (
@@ -113,22 +113,22 @@ public class Graph {
         Graph g;
         l = new Level(true, 16, 16, 0);
         start = System.currentTimeMillis();
-        g = new Graph(l, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        g = new Graph(l, BasicTerrainLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @16x16: " + (stop - start));
         m = new Level(true, 256, 256, 0);
         start = System.currentTimeMillis();
-        g = new Graph(m, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        g = new Graph(m, BasicTerrainLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @256x256: " + (stop - start));
         n = new Level(true, 512, 512, 0);
         start = System.currentTimeMillis();
-        g = new Graph(n, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        g = new Graph(n, BasicTerrainLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @512x512: " + (stop - start));
         o = new Level(true, 1024, 1024, 0);
         start = System.currentTimeMillis();
-        g = new Graph(o, BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+        g = new Graph(o, BasicTerrainLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @1024x1024(throttled to 512x512): " + (stop - start));
     }

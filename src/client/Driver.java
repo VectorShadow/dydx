@@ -54,8 +54,8 @@ public class Driver {
             Display.loadGraphics("./gfx/32.png", "./gfx/16.png");
             Display.getInstance().start();
             Display.drawLevel(adl.getLevel());
-            Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT), true);
-            Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_LIGHT), false);
+            Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.PERMIT_MOVE, true);
+            Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.PERMIT_LIGHT, false);
             System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);
             g0.update(new Coordinate(32, 32));
             System.out.println("Updated movement graph: " + g0);

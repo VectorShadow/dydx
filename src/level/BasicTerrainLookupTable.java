@@ -1,7 +1,7 @@
 package level;
 
-import flag.Flag;
-import flag.FlagFactory;
+import attribute.Attribute;
+import attribute.AttributeFactory;
 import resources.glyph.ProtoGlyphBuilder;
 
 import java.awt.*;
@@ -12,26 +12,18 @@ import java.awt.*;
  */
 public class BasicTerrainLookupTable implements TerrainLookupTable {
     /**
-     * Flag definitions.
+     * Attribute indices.
      */
-    public static final int PERMIT_MOVEMENT = 0;
+    public static final int PERMIT_MOVE = 0;
     public static final int PERMIT_LIGHT = 1;
-    /**
-     * Flag table.
-     */
-    public static final Flag[] DEFINED_FLAGS = {
-            // 0 - Permit Movement
-            FlagFactory.setName("Permit Movement").manufacture(),
-            //1 - Permit Light
-            FlagFactory.setName("Permit Light").manufacture(),
-    };
 
     /**
-     * Access flags by name.
+     * Default Attributes.
      */
-    public static Flag flag(int flagIndex) {
-        return DEFINED_FLAGS[flagIndex];
-    }
+    public static final Attribute[] DEFAULT_ATTRIBUTES = new Attribute[] {
+            AttributeFactory.manufacture(false),
+            AttributeFactory.manufacture(false),
+    };
 
     /**
      * Properties tables.
@@ -44,8 +36,8 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
             // 1 - Empty floor
             TerrainPropertiesBuilder
                     .setProtoGlyph(ProtoGlyphBuilder.setDefaults('.', Color.BLACK, Color.WHITE).build())
-                    .addFlag(DEFINED_FLAGS[PERMIT_MOVEMENT])
-                    .addFlag(DEFINED_FLAGS[PERMIT_LIGHT])
+                    .setAttribute(PERMIT_MOVE, AttributeFactory.manufacture(true))
+                    .setAttribute(PERMIT_LIGHT, AttributeFactory.manufacture(true))
                     .build(),
             // 2 - Basic Wall
             TerrainPropertiesBuilder
@@ -58,6 +50,11 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
      */
     public BasicTerrainLookupTable() {
 
+    }
+
+    @Override
+    public Attribute[] defaultAttributes() {
+        return DEFAULT_ATTRIBUTES;
     }
 
     /**

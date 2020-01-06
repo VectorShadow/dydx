@@ -47,7 +47,7 @@ public class Level {
         for (int i = 0; i < 5;) {
             int ar = new Random().nextInt(rows);
             int ac = new Random().nextInt(cols);
-            if (propertiesAt(ar, ac).hasProperty(BasicTerrainLookupTable.flag(BasicTerrainLookupTable.PERMIT_MOVEMENT))) {
+            if (propertiesAt(ar, ac).hasProperty(BasicTerrainLookupTable.PERMIT_MOVE)) {
                 actorMap[ar][ac] = new Actor(time);
                 ++i;
             }

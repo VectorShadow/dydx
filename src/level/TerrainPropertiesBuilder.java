@@ -1,6 +1,6 @@
 package level;
 
-import flag.Flag;
+import attribute.Attribute;
 import resources.glyph.ProtoGlyph;
 
 public class TerrainPropertiesBuilder {
@@ -13,8 +13,8 @@ public class TerrainPropertiesBuilder {
     public static TerrainPropertiesBuilder setProtoGlyph(ProtoGlyph p) {
         return new TerrainPropertiesBuilder(p);
     }
-    public TerrainPropertiesBuilder addFlag(Flag f) {
-        terrainProperties.addFlag(f);
+    public TerrainPropertiesBuilder setAttribute(int index, Attribute attribute) {
+        terrainProperties.setAttribute(index, attribute);
         return this;
     }
     public TerrainProperties build() {
