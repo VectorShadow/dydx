@@ -55,11 +55,12 @@ public class Display extends Thread {
         WorldCanvas.paint(level, getInstance().gui);
     }
 
+    public static Gui gui(){
+        return getInstance().gui;
+    }
+
     public static int temporaryTextWindow(double pct) {
         return getInstance().gui.addZone((1.0 - pct) / 2, pct, (1.0 - pct) / 2, pct, DualityMode.TEXT) - 1;
-    }
-    public static void writeToTemporaryTextWindow(int zoneId, ArrayList<Glyph> glyphString) {
-        getInstance().gui.print(zoneId, 1, 1, glyphString);
     }
     public static void disposeTemporaryTextWindow(int zoneID){
         getInstance().gui.removeZone(zoneID);
