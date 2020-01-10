@@ -59,13 +59,6 @@ public class Display extends Thread {
         return getInstance().gui;
     }
 
-    public static int temporaryTextWindow(double pct) {
-        return getInstance().gui.addZone((1.0 - pct) / 2, pct, (1.0 - pct) / 2, pct, DualityMode.TEXT) - 1;
-    }
-    public static void disposeTemporaryTextWindow(int zoneID){
-        getInstance().gui.removeZone(zoneID);
-    }
-
     private final Gui gui = new DualityGUI();
 
     @Override
