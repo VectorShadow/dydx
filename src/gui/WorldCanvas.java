@@ -21,7 +21,7 @@ public class WorldCanvas {
         //todo - hack: use the center of the level as the point of focus. instead we should use the Camera.
         int rowOffset = level.getRows()/2;
         int colOffset = level.getCols()/2;
-        //find the size of the display area
+        //find the size of the io.display area
         int rowCount = gui.countRows();
         int colCount = gui.countColumns();
         //calculate the correction from the screen coordinate to the level coordinate

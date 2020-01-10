@@ -34,7 +34,7 @@ public class Driver {
      */
     public static void main(String[] args) {
         try {
-            //open a GUI, attempt to connect to a remote server, and display information
+            //open a GUI, attempt to connect to a remote server, and io.display information
             //if no connection can be established or player chooses to play locally, create a new Engine
             //and establish a datalink bound to the Engine's datalink.
             //if connection is established, create a datalink bound to the connection socket.
