@@ -34,6 +34,7 @@ public class ServerHandler extends AbstractHandler {
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
                 linkSecret = RSA.decrypt(bid.getKey()).toString(16);
+                //todo - transmit acknowledgement
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
                 UserDatum ud = (UserDatum)datum;

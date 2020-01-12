@@ -16,7 +16,7 @@ import java.net.Socket;
 
 public class ServerRemoteDataLink extends AbstractRemoteDataLink implements ServerDataLink {
 
-    public ServerRemoteDataLink(Socket s) throws LogReadyTraceableException {
+    public ServerRemoteDataLink(Socket s) {
         super(s);
     }
 

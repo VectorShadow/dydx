@@ -1,5 +1,6 @@
 package data.handler;
 
+import client.ConnectionMonitor;
 import crypto.Cipher;
 import crypto.RSA;
 import data.AbstractDatum;
@@ -29,6 +30,7 @@ public class ClientHandler extends AbstractHandler {
         }
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
+                ConnectionMonitor.reportKeyReceived();
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
                 BigInteger secretKey = new BigInteger(Cipher.getSessionKey(), 16);
                 BigInteger encryptedSecretKey = RSA.encrypt(secretKey, bid.getKey());

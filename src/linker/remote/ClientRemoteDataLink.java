@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class ClientRemoteDataLink extends AbstractRemoteDataLink implements ClientDataLink {
 
-    public ClientRemoteDataLink(Socket s) throws LogReadyTraceableException {
+    public ClientRemoteDataLink(Socket s) {
         super(s);
     }
 

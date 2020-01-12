@@ -20,7 +20,7 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
 
     Socket socket;
 
-    public AbstractRemoteDataLink(Socket s) throws LogReadyTraceableException {
+    public AbstractRemoteDataLink(Socket s) {
         socket = s;
     }
 

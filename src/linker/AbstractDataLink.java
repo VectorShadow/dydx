@@ -14,7 +14,7 @@ public abstract class AbstractDataLink extends Thread {
      * We implement that below by returning this field.
      */
     //todo - MEGA HACK - generate a level here. This should instead be done by accessing the account data and loading or generating an appropriate level!
-    protected Level level = new Level(true, 32, 32, 0);
+    protected Level level; // = new Level(true, 32, 32, 0);
 
     public abstract void send(byte[] transmission);
 
