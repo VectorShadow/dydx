@@ -38,7 +38,9 @@ public class ClientHandler extends AbstractHandler {
                         DataPacker.pack(new BigIntegerDatum(encryptedSecretKey), InstructionCode.PROTOCOL_BIG_INTEGER)
                 );
                 break;
-
+            case InstructionCode.PROTOCOL_ACKNOWLEDGE_KEY_RECEIPT:
+                ConnectionMonitor.reportKeyAcknowledged();
+                break;
             //todo - more cases
             default:
                 ErrorLogger.logFatalException(new LogReadyTraceableException("Improper instruction."));

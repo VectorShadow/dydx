@@ -1,10 +1,7 @@
 package data.handler;
 
 import crypto.RSA;
-import data.AbstractDatum;
-import data.BigIntegerDatum;
-import data.InstructionCode;
-import data.UserDatum;
+import data.*;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
@@ -34,7 +31,7 @@ public class ServerHandler extends AbstractHandler {
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
                 linkSecret = RSA.decrypt(bid.getKey()).toString(16);
-                //todo - transmit acknowledgement
+                adl.send(DataPacker.pack(new AcknowledgementDatum(), InstructionCode.PROTOCOL_ACKNOWLEDGE_KEY_RECEIPT));
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
                 UserDatum ud = (UserDatum)datum;

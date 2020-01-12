@@ -2,7 +2,6 @@ package client;
 
 public class ConnectionMonitor {
     private static ConnectionListener listener;
-    private static boolean successfulConnection = false;
 
     public static void setListener(ConnectionListener cl) {
         listener = cl;
@@ -12,9 +11,11 @@ public class ConnectionMonitor {
     }
     public static void reportKeyReceived() {
         listener.reportKeyReceived();
-        successfulConnection = true;
+    }
+    public  static void reportKeyAcknowledged(){
+        listener.reportKeyAcknowledged();
     }
     public static boolean isSuccessfulConnection() {
-        return successfulConnection;
+        return listener.isConnected();
     }
 }
