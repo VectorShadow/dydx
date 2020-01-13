@@ -4,7 +4,10 @@ import java.awt.*;
 
 public class Light implements Comparable<Light>{
 
-    public static final int MAX_BRIGHTNESS = 3;
+    public static final int LIGHT_BLACK = 0;
+    public static final int LIGHT_DARK = 1;
+    public static final int LIGHT_DIM = 2;
+    public static final int LIGHT_BRIGHT = 3;
     public static final int MAX_RADIUS = 64;
 
     private final Color color;
@@ -14,7 +17,7 @@ public class Light implements Comparable<Light>{
 
     public Light(Color c, int b, int r, double f) {
         color = c;
-        brightness = b > MAX_BRIGHTNESS ? MAX_BRIGHTNESS : b < 0 ? 0 : b;
+        brightness = b > LIGHT_BRIGHT ? LIGHT_BRIGHT : b < 0 ? 0 : b;
         radius = r > MAX_RADIUS ? MAX_RADIUS : r < 1 ? 1 : r;
         flicker = f > 1.0 ? 1.0 : f < 0.0 ? 0.0 : f;
     }

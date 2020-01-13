@@ -27,4 +27,10 @@ public class DrawTile {
                 litSeen[indexOf(Direction.SELF)].setSight(sightPower);
         }
     }
+    public Light lightFrom(Direction d) {
+        return litSeen[indexOf(d)].getLight();
+    }
+    public short sightFrom(Direction d) {
+        return litSeen[indexOf(d)].getSight();
+    }
 }

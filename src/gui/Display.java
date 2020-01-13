@@ -23,11 +23,19 @@ public class Display extends Thread {
     private static final int MIN_FPS = 25;
     private static final int MAX_FPS = 100;
 
+    private static boolean gfxAllowed = false;
+
     private static Display instance = null;
 
     public static void loadGraphics(String fullscreenImageFilePath, String windowedImageFilePath) throws IOException {
         ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File(fullscreenImageFilePath));
         ImageManager.loadGraphics(DualityContext.TILE_WINDOWED, new File(windowedImageFilePath));
+    }
+    public static void setGfxAllowed(boolean allowed) {
+        gfxAllowed = allowed;
+    }
+    public static boolean isGfxAllowed() {
+        return gfxAllowed;
     }
 
     public static void setFPS(int FPS) {

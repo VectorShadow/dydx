@@ -34,6 +34,7 @@ public class TerrainProperties implements Drawable {
     public Glyph render() {
         //todo - HACK for now
         //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph
+        //TODO++ - this should be done through drawable aspects now - leaving for legacy for now
         return GlyphBuilder.build(protoGlyph, DualityMode.TILE);
     }
 }
