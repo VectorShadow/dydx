@@ -3,10 +3,7 @@ package data.handler;
 import client.ConnectionMonitor;
 import crypto.Cipher;
 import crypto.RSA;
-import data.AbstractDatum;
-import data.BigIntegerDatum;
-import data.DataPacker;
-import data.InstructionCode;
+import data.*;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
@@ -28,6 +25,7 @@ public class ClientHandler extends AbstractHandler {
             implementationHandler.handle(instruction, datum, adl);
             return;
         }
+        AccountDatum ad;
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 ConnectionMonitor.reportKeyReceived();
@@ -40,6 +38,22 @@ public class ClientHandler extends AbstractHandler {
                 break;
             case InstructionCode.PROTOCOL_ACKNOWLEDGE_KEY_RECEIPT:
                 ConnectionMonitor.reportKeyAcknowledged();
+                break;
+            case InstructionCode.PROTOCOL_QUERY_ACCOUNT:
+                //todo - username did not exist
+                break;
+            case InstructionCode.PROTOCOL_VERIFY_ACCOUNT:
+                ad = (AccountDatum)datum;
+                if (ad.getAccount() == null) {
+                    //todo - incorrect password
+                } else {
+                    //todo - proceed to character selection based on this account
+                }
+                break;
+            case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
+                ad = (AccountDatum)datum;
+                //todo - proceed to character selection based on this account
+                // no characters should exist, but that menu will include an option for character creation
                 break;
             //todo - more cases
             default:

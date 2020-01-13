@@ -1,19 +1,11 @@
 package player;
 
-import mapgen.WorldCoordinate;
+import java.util.ArrayList;
 
-/**
- * The base Account class. Implementations should extend this.
- */
-public abstract class Account {
+public class Account {
+    private ArrayList<Character> activeCharacters = new ArrayList<>();
 
-    private WorldCoordinate worldCoordinate;
-
-    public void setWorldCoordinate(WorldCoordinate worldCoordinate) {
-        this.worldCoordinate = worldCoordinate;
-    }
-
-    public WorldCoordinate getWorldCoordinate() {
-        return worldCoordinate;
+    public ArrayList<Character> getActiveCharacters() {
+        return activeCharacters;
     }
 }
