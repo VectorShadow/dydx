@@ -3,7 +3,7 @@ package server;
 import engine.Engine;
 import error.ErrorLogger;
 import graph.Graph;
-import level.BasicTerrainLookupTable;
+import level.BasicThemeLookupTable;
 import level.Level;
 
 /**
@@ -12,7 +12,7 @@ import level.Level;
 public class Launcher {
 
     public static void main(String[] args) {
-        Level.setTerrainLookupTable(new BasicTerrainLookupTable());
+        Level.setThemeLookupTable(new BasicThemeLookupTable());
         Graph.speedTest();
         try {
             new Engine(true, true);

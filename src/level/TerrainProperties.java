@@ -1,24 +1,22 @@
 package level;
 
 import attribute.Attribute;
+import gui.draw.Drawable;
 import resources.DualityMode;
 import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Define the properties for a specific terrain type.
  * Includes a list of flags to specify custom properties, and a protoglyph to specify the default appearance.
  */
-public class TerrainProperties {
+public class TerrainProperties implements Drawable {
     Attribute[] attributes;
     final ProtoGlyph protoGlyph;
 
     TerrainProperties(ProtoGlyph p) {
-        attributes = Level.terrainLookupTable.defaultAttributes();
+        attributes = Level.themeLookupTable.defaultAttributes();
         protoGlyph = p;
     }
 

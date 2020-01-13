@@ -1,8 +1,5 @@
 package client;
 
-import contract.Gui;
-import core.DualityGUI;
-import crypto.Cipher;
 import data.DataPacker;
 import data.InstructionCode;
 import data.UserDatum;
@@ -11,21 +8,9 @@ import error.ErrorLogger;
 import graph.Coordinate;
 import graph.Graph;
 import gui.Display;
-import level.BasicTerrainLookupTable;
+import level.BasicThemeLookupTable;
 import level.Level;
 import linker.AbstractDataLink;
-import resources.DualityContext;
-import resources.DualityMode;
-import resources.glyph.Glyph;
-import resources.glyph.GlyphBuilder;
-import resources.continuum.Pair;
-import resources.glyph.ProtoGlyph;
-import resources.glyph.ProtoGlyphBuilder;
-import resources.glyph.image.ImageManager;
-
-import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
 
 public class Driver {
     /**
@@ -38,7 +23,7 @@ public class Driver {
             //if no connection can be established or player chooses to play locally, create a new Engine
             //and establish a datalink bound to the Engine's datalink.
             //if connection is established, create a datalink bound to the connection socket.
-            Level.setTerrainLookupTable(new BasicTerrainLookupTable());
+            Level.setThemeLookupTable(new BasicThemeLookupTable());
 //            Cipher.testAllCrypto();
             /* test local */
             //realtime
@@ -54,8 +39,8 @@ public class Driver {
             Display.loadGraphics("./gfx/32.png", "./gfx/16.png");
             Display.getInstance().start();
             Display.drawLevel(adl.getLevel());
-            Graph g0 = new Graph(adl.getLevel(), BasicTerrainLookupTable.PERMIT_MOVE, true);
-            Graph g1 = new Graph(adl.getLevel(), BasicTerrainLookupTable.PERMIT_LIGHT, false);
+            Graph g0 = new Graph(adl.getLevel(), BasicThemeLookupTable.PERMIT_MOVE, true);
+            Graph g1 = new Graph(adl.getLevel(), BasicThemeLookupTable.PERMIT_LIGHT, false);
             System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);
             g0.update(new Coordinate(32, 32));
             System.out.println("Updated movement graph: " + g0);

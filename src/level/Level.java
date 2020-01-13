@@ -5,6 +5,7 @@ import actor.ActorExecutionQueue;
 import engine.time.RealTime;
 import engine.time.Time;
 import engine.time.TurnTime;
+import gui.draw.Light;
 import mapgen.TestGenerator;
 
 import java.util.Random;
@@ -23,20 +24,20 @@ public class Level {
     final int MAX_SIZE = MAX_DIM * MAX_DIM;
 
 
-    static TerrainLookupTable terrainLookupTable;
+    static ThemeLookupTable themeLookupTable;
 
     Time time;
     ActorExecutionQueue actors;
-    int terrainTheme;
+    int theme;
     int rows;
     int cols;
     byte[][] terrainMap;
     Actor[][] actorMap; //redundant access to actors by coordinates
 
-    public Level(boolean realtime, int r, int c, int theme){
+    public Level(boolean realtime, int r, int c, int t){
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue();
-        terrainTheme = theme;
+        theme = t;
         rows = r * c > MAX_SIZE ? MAX_DIM : r;
         cols = r * c > MAX_SIZE ? MAX_DIM : c;
         //terrainMap = new byte[rows][cols];
@@ -47,7 +48,7 @@ public class Level {
         for (int i = 0; i < 5;) {
             int ar = new Random().nextInt(rows);
             int ac = new Random().nextInt(cols);
-            if (propertiesAt(ar, ac).hasProperty(BasicTerrainLookupTable.PERMIT_MOVE)) {
+            if (propertiesAt(ar, ac).hasProperty(BasicThemeLookupTable.PERMIT_MOVE)) {
                 actorMap[ar][ac] = new Actor(time);
                 ++i;
             }
@@ -88,11 +89,14 @@ public class Level {
         actorMap[row][col] = a;
     }
 
-    public static void setTerrainLookupTable(TerrainLookupTable tll) {
-        terrainLookupTable = tll;
+    public static void setThemeLookupTable(ThemeLookupTable tll) {
+        themeLookupTable = tll;
     }
     public TerrainProperties propertiesAt(int row, int col) {
-        return terrainLookupTable.lookup(terrainTheme, terrainMap[row][col]);
+        return themeLookupTable.lookupTerrain(theme, terrainMap[row][col]);
+    }
+    public Light ambientLight() {
+        return themeLookupTable.lookupLight(theme);
     }
 
 }

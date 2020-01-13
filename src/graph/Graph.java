@@ -1,7 +1,6 @@
 package graph;
 
-import attribute.Attribute;
-import level.BasicTerrainLookupTable;
+import level.BasicThemeLookupTable;
 import level.Level;
 
 import java.util.ArrayList;
@@ -96,9 +95,11 @@ public class Graph {
         }
     }
 
-    public ArrayList<Coordinate> radiate(Coordinate center, double power){
-        //todo - traverse the graph and return a list of coordinates corresponding to light/sight with the specified
-        // power
+    public ArrayList<DirectedCoordinate> radiate(Coordinate center, double power){
+        //todo - traverse the graph and return a list of directed coordinates corresponding to light/sight with the
+        // specified power, and a direction indicating which direction they radiation travelled to get there
+        // center will use self, all others will use appropriate directions
+        // coordinates may appear more than once if radiated into from different directions
         return null;
     }
     public ArrayList<Coordinate> shortestPath(Coordinate origin, Coordinate destination){
@@ -113,22 +114,22 @@ public class Graph {
         Graph g;
         l = new Level(true, 16, 16, 0);
         start = System.currentTimeMillis();
-        g = new Graph(l, BasicTerrainLookupTable.PERMIT_LIGHT, false);
+        g = new Graph(l, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @16x16: " + (stop - start));
         m = new Level(true, 256, 256, 0);
         start = System.currentTimeMillis();
-        g = new Graph(m, BasicTerrainLookupTable.PERMIT_LIGHT, false);
+        g = new Graph(m, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @256x256: " + (stop - start));
         n = new Level(true, 512, 512, 0);
         start = System.currentTimeMillis();
-        g = new Graph(n, BasicTerrainLookupTable.PERMIT_LIGHT, false);
+        g = new Graph(n, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @512x512: " + (stop - start));
         o = new Level(true, 1024, 1024, 0);
         start = System.currentTimeMillis();
-        g = new Graph(o, BasicTerrainLookupTable.PERMIT_LIGHT, false);
+        g = new Graph(o, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @1024x1024(throttled to 512x512): " + (stop - start));
     }

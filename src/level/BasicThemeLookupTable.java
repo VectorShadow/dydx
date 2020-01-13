@@ -2,6 +2,7 @@ package level;
 
 import attribute.Attribute;
 import attribute.AttributeFactory;
+import gui.draw.Light;
 import resources.glyph.ProtoGlyphBuilder;
 
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.awt.*;
  * Mock terrain lookup table for testing purposes.
  * Serves as an example for how to create implementation-specific lookup tables.
  */
-public class BasicTerrainLookupTable implements TerrainLookupTable {
+public class BasicThemeLookupTable implements ThemeLookupTable {
     /**
      * Attribute indices.
      */
@@ -48,7 +49,7 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
     /**
      * Default constructor does nothing.
      */
-    public BasicTerrainLookupTable() {
+    public BasicThemeLookupTable() {
 
     }
 
@@ -64,7 +65,7 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
      * @return the desired TerrainProperties.
      */
     @Override
-    public TerrainProperties lookup(int theme, byte terrainCode) {
+    public TerrainProperties lookupTerrain(int theme, byte terrainCode) {
         int index = terrainCode;
         switch (theme) {
             case 0:
@@ -75,5 +76,10 @@ public class BasicTerrainLookupTable implements TerrainLookupTable {
             default:
                 throw new IllegalArgumentException("Theme " + theme + " not implemented.");
         }
+    }
+
+    @Override
+    public Light lookupLight(int theme) {
+        return null; //fine for now - this method must work in an implementation table
     }
 }
