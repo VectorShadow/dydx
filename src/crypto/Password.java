@@ -31,7 +31,7 @@ public class Password {
                 };
         int length = saltedPassword.length();
         String hashedPassword = "";
-        char seedIndex = (char)((HASH_CONSTANT[0] * saltedPassword.charAt(MINIMUM_LENGTH + SALT_LENGTH - 1)) % length);
+        char seedIndex = (char)((HASH_CONSTANT[0] * saltedPassword.charAt(SALT_LENGTH - 1)) % length);
         char seedChar = saltedPassword.charAt(seedIndex);
         char stepVector = (char)((length * seedChar) % MAX_CHAR);
         char baseChar = saltedPassword.charAt(0);

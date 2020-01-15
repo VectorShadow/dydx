@@ -2,7 +2,9 @@ package player;
 
 import mapgen.WorldCoordinate;
 
-public class Character {
+import java.io.Serializable;
+
+public class Character implements Serializable {
 
     private WorldCoordinate worldCoordinate;
 

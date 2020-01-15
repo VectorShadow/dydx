@@ -1,6 +1,6 @@
 package data.handler;
 
-import client.ConnectionMonitor;
+import client.SocketMonitor;
 import crypto.Cipher;
 import crypto.RSA;
 import data.*;
@@ -11,6 +11,14 @@ import linker.AbstractDataLink;
 import java.math.BigInteger;
 
 public class ClientHandler extends AbstractHandler {
+
+    public static final int KEY_RECEIVED = 0;
+    public static final int KEY_ACKNOWLEDGED = 1;
+
+    public static final int NO_RESPONSE = -1;
+    public static final int LOGIN_SUCCESS = 0;
+    public static final int LOGIN_FAILURE = 1;
+    public static final int NO_SUCH_ACCOUNT = 2;
 
     private static ClientHandler instance;
 
@@ -28,7 +36,7 @@ public class ClientHandler extends AbstractHandler {
         AccountDatum ad;
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
-                ConnectionMonitor.reportKeyReceived();
+                SocketMonitor.reportAcknowledgement(KEY_RECEIVED);
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
                 BigInteger secretKey = new BigInteger(Cipher.getSessionKey(), 16);
                 BigInteger encryptedSecretKey = RSA.encrypt(secretKey, bid.getKey());
@@ -37,23 +45,21 @@ public class ClientHandler extends AbstractHandler {
                 );
                 break;
             case InstructionCode.PROTOCOL_ACKNOWLEDGE_KEY_RECEIPT:
-                ConnectionMonitor.reportKeyAcknowledged();
+                SocketMonitor.reportAcknowledgement(KEY_ACKNOWLEDGED);
                 break;
             case InstructionCode.PROTOCOL_QUERY_ACCOUNT:
-                //todo - username did not exist
+                SocketMonitor.reportAcknowledgement(NO_SUCH_ACCOUNT);
                 break;
             case InstructionCode.PROTOCOL_VERIFY_ACCOUNT:
-                ad = (AccountDatum)datum;
-                if (ad.getAccount() == null) {
-                    //todo - incorrect password
-                } else {
-                    //todo - proceed to character selection based on this account
-                }
+                ad = (AccountDatum)datum; //todo - load the client side account from this!
+                if (ad.getAccount() == null)
+                    SocketMonitor.reportAcknowledgement(LOGIN_FAILURE);
+                else
+                    SocketMonitor.reportAcknowledgement(LOGIN_SUCCESS);
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
-                ad = (AccountDatum)datum;
-                //todo - proceed to character selection based on this account
-                // no characters should exist, but that menu will include an option for character creation
+                ad = (AccountDatum)datum; //todo - load the client side account from this!
+                SocketMonitor.reportAcknowledgement(LOGIN_SUCCESS);
                 break;
             //todo - more cases
             default:

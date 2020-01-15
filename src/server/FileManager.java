@@ -82,7 +82,7 @@ public class FileManager {
         if (!authenticateUser(username, password)) return null;
         Path userdir = getUserAccountDirectoryPath(username);
         //todo - generate an account object from the header file within this userdir
-        return null;
+        return new Account(); //todo - HACK, send something other than null if authentication succeeds.
     }
     /**
      * Returns the catalog line associated with the specified user.
