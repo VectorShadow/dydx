@@ -3,7 +3,6 @@ package engine.time;
 public class RealTime extends Time {
 
     private long systemTime;
-    private int granularity = Time.BASE_GRANULARITY;
 
     public RealTime() {
         super();
@@ -20,9 +19,5 @@ public class RealTime extends Time {
     public void setGranularity(int g) {
         if (g < Time.BASE_GRANULARITY) throw new IllegalArgumentException("Attempted to set time granularity below floor.");
         granularity = g;
-    }
-    @Override
-    public int getGranularity(){
-        return granularity;
     }
 }

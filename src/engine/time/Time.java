@@ -1,7 +1,9 @@
 package engine.time;
 
 public abstract class Time {
-    public static final int BASE_GRANULARITY = 25;
+    public static final int BASE_GRANULARITY = 16;
+    public static final int BASE_ACTION_SCALE = 32;
+    protected int granularity = Time.BASE_GRANULARITY;
 
     protected long currentTime = 0;
 
@@ -11,7 +13,8 @@ public abstract class Time {
     public long getCurrentTime(){
         return currentTime;
     }
+    public int getBaseActionTime(){return granularity * BASE_ACTION_SCALE;}
     public abstract void setTime(long t);
     public abstract void setGranularity(int g);
-    public abstract int getGranularity();
+    public int getGranularity(){return granularity;}
 }
