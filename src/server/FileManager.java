@@ -83,7 +83,6 @@ public class FileManager {
      */
     public static Account loadUser(String username, String password) {
         if (!authenticateUser(username, password)) return null;
-        Path userdir = getUserAccountDirectoryPath(username);
         return new Account(username, listCharacters(username));
     }
     /**

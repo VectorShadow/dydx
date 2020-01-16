@@ -3,6 +3,7 @@ package linker;
 import data.AbstractDatum;
 import error.LogReadyTraceableException;
 import level.Level;
+import player.Account;
 
 public abstract class AbstractDataLink extends Thread {
 
@@ -15,6 +16,11 @@ public abstract class AbstractDataLink extends Thread {
      */
     //todo - MEGA HACK - generate a level here. This should instead be done by accessing the account data and loading or generating an appropriate level!
     protected Level level; // = new Level(true, 32, 32, 0);
+
+    /**
+     * Each link is connected for a particular player account.
+     */
+    protected Account account;
 
     public abstract void send(byte[] transmission);
 
@@ -33,5 +39,13 @@ public abstract class AbstractDataLink extends Thread {
 
     public Level getLevel() {
         return level;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account a) {
+        account = a;
     }
 }

@@ -10,7 +10,10 @@ public class ModeManager {
 
     public static void toMode(IOMode mode) {
         gui.changeChannel(mode.getChannelIndex());
-        if (mode.getMenuHandler() != null) mode.getMenuHandler().printMenu(gui);
+        if (mode.getMenuHandler() != null) {
+            mode.getMenuHandler().initialize();
+            mode.getMenuHandler().printMenu(gui);
+        }
         if (mode.getInputDialog() != null) gui.printDialog(mode.getInputDialog());
     }
     public static void resetStack(IOMode mode) {

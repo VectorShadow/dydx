@@ -7,6 +7,7 @@ import data.*;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
+import player.Account;
 
 import java.math.BigInteger;
 
@@ -34,6 +35,7 @@ public class ClientHandler extends AbstractHandler {
             return;
         }
         AccountDatum ad;
+        Account account;
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 SocketMonitor.reportAcknowledgement(KEY_RECEIVED);
@@ -51,14 +53,19 @@ public class ClientHandler extends AbstractHandler {
                 SocketMonitor.reportAcknowledgement(NO_SUCH_ACCOUNT);
                 break;
             case InstructionCode.PROTOCOL_VERIFY_ACCOUNT:
-                ad = (AccountDatum)datum; //todo - load the client side account from this!
-                if (ad.getAccount() == null)
+                ad = (AccountDatum)datum;
+                account = ad.getAccount();
+                if (account == null)
                     SocketMonitor.reportAcknowledgement(LOGIN_FAILURE);
-                else
+                else {
+                    adl.setAccount(account);
                     SocketMonitor.reportAcknowledgement(LOGIN_SUCCESS);
+                }
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:
-                ad = (AccountDatum)datum; //todo - load the client side account from this!
+                ad = (AccountDatum)datum;
+                account = ad.getAccount();
+                adl.setAccount(account);
                 SocketMonitor.reportAcknowledgement(LOGIN_SUCCESS);
                 break;
             //todo - more cases

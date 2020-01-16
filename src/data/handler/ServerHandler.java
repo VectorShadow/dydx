@@ -5,6 +5,7 @@ import data.*;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
+import player.Account;
 import server.FileManager;
 
 public class ServerHandler extends AbstractHandler {
@@ -36,9 +37,12 @@ public class ServerHandler extends AbstractHandler {
                 break;
             case InstructionCode.PROTOCOL_QUERY_ACCOUNT:
                 ud = (UserDatum)datum;
-                if (FileManager.doesUserExist(ud.getUsername()))
-                    adl.send(DataPacker.pack(new AccountDatum(FileManager.loadUser(ud.getUsername(),
-                            ud.decryptPassword(linkSecret))), InstructionCode.PROTOCOL_VERIFY_ACCOUNT));
+                if (FileManager.doesUserExist(ud.getUsername())) {
+                    Account account = FileManager.loadUser(ud.getUsername(),
+                            ud.decryptPassword(linkSecret));
+                    adl.setAccount(account);
+                    adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_VERIFY_ACCOUNT));
+                }
                 else
                     adl.send(DataPacker.pack(new AccountDatum(null), InstructionCode.PROTOCOL_QUERY_ACCOUNT));
                 break;
@@ -46,8 +50,10 @@ public class ServerHandler extends AbstractHandler {
                 ud = (UserDatum)datum;
                 if (FileManager.doesUserExist(ud.getUsername()))
                     throw new IllegalStateException("Tried to create existing user!");
-                adl.send(DataPacker.pack(new AccountDatum(FileManager.createUser(ud.getUsername(),
-                        ud.decryptPassword(linkSecret))), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
+                Account account = FileManager.createUser(ud.getUsername(),
+                        ud.decryptPassword(linkSecret));
+                adl.setAccount(account);
+                adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
                 break;
             //todo - more cases
             default:
