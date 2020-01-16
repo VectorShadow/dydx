@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 
 /**
  * Maintains the file structure required by the server.
@@ -20,8 +21,9 @@ public class FileManager {
 
     private static final String DATA_FILE_EXTENSION = ".dis";
     private static final Path DATA_DIRECTORY = Paths.get("data");
-    private static final Path ACCOUNT_DIRECTORY = Paths.get(DATA_DIRECTORY + SEPARATOR_STRING + "accounts");
     private static final Path USER_CATALOG = Paths.get(DATA_DIRECTORY + "/usercat" + DATA_FILE_EXTENSION);
+
+    private static final Path ACCOUNT_DIRECTORY = Paths.get(DATA_DIRECTORY + SEPARATOR_STRING + "accounts");
 
     /**
      * Startup call to ensure file structure exists - if not, create it.
@@ -67,8 +69,9 @@ public class FileManager {
             Files.write(USER_CATALOG, catalogLine.getBytes(), StandardOpenOption.APPEND);
             Path userdir = getUserAccountDirectoryPath(username);
             if (!Files.exists(userdir)) Files.createDirectory(userdir);
-            //todo - create a header file
-            return new Account();
+            Path characterListPath = getUserAccountCharacterList(username);
+            if (!Files.exists(characterListPath)) Files.createFile(characterListPath);
+            return new Account(username, new ArrayList<>());
         } catch (IOException ioe) {
             ErrorLogger.logFatalException(ErrorLogger.trace(ioe));
             return null; //unreachable, since ErrorLogging terminates the thread, but required by Java
@@ -81,8 +84,7 @@ public class FileManager {
     public static Account loadUser(String username, String password) {
         if (!authenticateUser(username, password)) return null;
         Path userdir = getUserAccountDirectoryPath(username);
-        //todo - generate an account object from the header file within this userdir
-        return new Account(); //todo - HACK, send something other than null if authentication succeeds.
+        return new Account(username, listCharacters(username));
     }
     /**
      * Returns the catalog line associated with the specified user.
@@ -99,7 +101,43 @@ public class FileManager {
         }
         return null;
     }
+
+    /**
+     * Return the path to the data directory associated with the provided account name.
+     */
     public static Path getUserAccountDirectoryPath(String username) {
         return Paths.get(ACCOUNT_DIRECTORY + SEPARATOR_STRING + username);
+    }
+
+    /**
+     * Return the path to the character list, used to create an account object, associated with the provided account name.
+     */
+    public static Path getUserAccountCharacterList(String username) {
+        return Paths.get(getUserAccountDirectoryPath(username) + "/charlist" + DATA_FILE_EXTENSION);
+    }
+
+    /**
+     * Return a list of Character names associated with a provided account name.
+     */
+    public static ArrayList<String> listCharacters(String username) {
+        ArrayList<String> characters = new ArrayList<>();
+        try {
+            BufferedReader fileIn = Files.newBufferedReader(getUserAccountCharacterList(username));
+            String characterLine;
+            while((characterLine = fileIn.readLine()) != null)
+                characters.add(characterLine);
+        } catch (IOException ioe) {
+            ErrorLogger.logFatalException(ErrorLogger.trace(ioe));
+        }
+        return characters;
+    }
+
+    /**
+     * Add the provided character name to the character list for the provided account name.
+     */
+    public static void appendCharacter(String username, String characterName) {
+        ArrayList<String> currentCharacters = listCharacters(username);
+        currentCharacters.add(characterName);
+        //todo - lots - truncate existing file!
     }
 }
