@@ -32,17 +32,21 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
     private final TerrainProperties[] DEFAULT_THEME = {
             // 0 - Void
             TerrainPropertiesBuilder
-                    .setProtoGlyph(ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build())
+                    .initialize(
+                            defaultAttributes(),
+                            ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build())
                     .build(),
             // 1 - Empty floor
             TerrainPropertiesBuilder
-                    .setProtoGlyph(ProtoGlyphBuilder.setDefaults('.', Color.BLACK, Color.WHITE).build())
+                    .initialize(defaultAttributes(),
+                            ProtoGlyphBuilder.setDefaults('.', Color.BLACK, Color.WHITE).build())
                     .setAttribute(PERMIT_MOVE, AttributeFactory.manufacture(true))
                     .setAttribute(PERMIT_LIGHT, AttributeFactory.manufacture(true))
                     .build(),
             // 2 - Basic Wall
             TerrainPropertiesBuilder
-                    .setProtoGlyph(ProtoGlyphBuilder.setDefaults('#', Color.BLACK, Color.WHITE).build())
+                    .initialize(defaultAttributes(),
+                            ProtoGlyphBuilder.setDefaults('#', Color.BLACK, Color.WHITE).build())
                     .build(),
     };
 

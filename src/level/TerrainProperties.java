@@ -15,8 +15,8 @@ public class TerrainProperties implements Drawable {
     Attribute[] attributes;
     final ProtoGlyph protoGlyph;
 
-    TerrainProperties(ProtoGlyph p) {
-        attributes = Level.themeLookupTable.defaultAttributes();
+    TerrainProperties(Attribute[] a, ProtoGlyph p) {
+        attributes = a;
         protoGlyph = p;
     }
 
