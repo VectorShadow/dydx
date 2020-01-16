@@ -1,5 +1,10 @@
 package crypto;
 
+import error.ErrorLogger;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Password {
 
     static final int MAX_CHAR = 255;
@@ -21,32 +26,14 @@ public class Password {
     }
 
     public static String hash(String saltedPassword){
-        final char[] HASH_CONSTANT =
-                {
-                        139, 47, 83, 61, 2, 93, 241, 101,
-                        44, 22, 11, 200, 96, 44, 83, 2,
-                        191, 38, 38, 76, 119, 6, 14, 83,
-                        70, 2, 87, 175, 40, 88, 177, 209,
-                        18, 131, 94, 88, 7, 59, 109, 8
-                };
-        int length = saltedPassword.length();
-        String hashedPassword = "";
-        char seedIndex = (char)((HASH_CONSTANT[0] * saltedPassword.charAt(SALT_LENGTH - 1)) % length);
-        char seedChar = saltedPassword.charAt(seedIndex);
-        char stepVector = (char)((length * seedChar) % MAX_CHAR);
-        char baseChar = saltedPassword.charAt(0);
-        for (int i = 0; i < MAXIMUM_LENGTH + SALT_LENGTH; ++i){
-            int sumStep = baseChar + HASH_CONSTANT[i];
-            int productStep = sumStep * stepVector;
-            int modStep = productStep % MAX_CHAR;
-            char candidate = (char)modStep;
-            char result = forceAlphaNumericalSymbolic(candidate, baseChar);
-            baseChar = candidate;
-            stepVector =
-                    (char)((result + saltedPassword.charAt(i % SALT_LENGTH)) % MAX_CHAR);
-            hashedPassword += result;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            String sha256 = new String(md.digest(saltedPassword.getBytes()));
+            return Cipher.toHexString(sha256);
+        } catch (NoSuchAlgorithmException e) {
+            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+            return null; //exception should never be thrown, and if it is we crash, but java requires this
         }
-        return hashedPassword;
     }
 
     public static String generateRandomSalt() {

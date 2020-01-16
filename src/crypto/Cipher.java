@@ -150,7 +150,7 @@ public class Cipher {
      * Encryption step -
      * Converts a string into another string representing the byte values of the first string as hexadecimal characters.
      */
-    private static String toHexString(String string) {
+    public static String toHexString(String string) {
         String hexString = "";
         for(char c : string.toCharArray()){
             hexString += hex(((c & UPPER_MASK) >> 4));
