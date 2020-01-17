@@ -4,7 +4,7 @@ import mapgen.WorldCoordinate;
 
 import java.io.Serializable;
 
-public class Character implements Serializable {
+public abstract class Character implements Serializable {
 
     private WorldCoordinate worldCoordinate;
 
@@ -15,4 +15,6 @@ public class Character implements Serializable {
     public WorldCoordinate getWorldCoordinate() {
         return worldCoordinate;
     }
+
+    public abstract String[] writeSaveFile(); //define a save file write operation - we must also define a read op
 }
