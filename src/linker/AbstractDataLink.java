@@ -1,11 +1,10 @@
 package linker;
 
-import data.AbstractDatum;
-import error.LogReadyTraceableException;
 import level.Level;
 import player.Account;
+import player.PlayerCharacter;
 
-public abstract class AbstractDataLink extends Thread {
+public abstract class AbstractDataLink extends Thread implements DataLink{
 
     private boolean terminated = false;
 
@@ -22,30 +21,51 @@ public abstract class AbstractDataLink extends Thread {
      */
     protected Account account;
 
-    public abstract void send(byte[] transmission);
+    /**
+     * And one character for this account is in use.
+     */
+    protected PlayerCharacter character;
 
-    protected abstract void listen() throws LogReadyTraceableException;
-
-    protected abstract void handle(byte instruction, AbstractDatum datum);
-
+    @Override
     public abstract void run();
 
-    protected void terminate() {
+    @Override
+    public void terminate() {
         terminated = true;
     }
+
+    @Override
     public boolean isTerminated() {
         return terminated;
     }
 
+    @Override
     public Level getLevel() {
         return level;
     }
 
+    @Override
+    public void setLevel(Level l) {
+        level = l;
+    }
+
+    @Override
     public Account getAccount() {
         return account;
     }
 
+    @Override
     public void setAccount(Account a) {
         account = a;
+    }
+
+    @Override
+    public PlayerCharacter getCharacter() {
+        return character;
+    }
+
+    @Override
+    public void setCharacter(PlayerCharacter pc) {
+        character = pc;
     }
 }

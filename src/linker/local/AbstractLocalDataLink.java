@@ -47,7 +47,7 @@ public abstract class AbstractLocalDataLink extends AbstractDataLink {
     }
 
     @Override
-    protected void listen() throws LogReadyTraceableException {
+    public void listen() throws LogReadyTraceableException {
         for (;;) {
             while (input.get() == null) { //wait until we have something to do
                 try {

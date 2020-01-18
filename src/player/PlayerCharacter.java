@@ -4,7 +4,7 @@ import mapgen.WorldCoordinate;
 
 import java.io.Serializable;
 
-public abstract class Character implements Serializable {
+public abstract class PlayerCharacter implements Serializable {
 
     private WorldCoordinate worldCoordinate;
 

@@ -31,7 +31,7 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
             ErrorLogger.logFatalException(ErrorLogger.trace(ioe));
         }
     }
-    protected void listen() throws LogReadyTraceableException {
+    public void listen() throws LogReadyTraceableException {
         //todo - loop on the instream until an instruction can be pieced together, then handle() it
         byte instruction = 0; //byte code associated with a unique instruction type
         int instructionBodySize = 0; //the number of bytes expected by the current instruction
