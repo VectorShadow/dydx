@@ -9,9 +9,11 @@ package mapgen;
  * This often influences difficulty and rewards.
  */
 public class WorldCoordinate {
-    public final int PUBLIC_INSTANCE = 0;
-    public final int ORIGIN_LOCATION = 0;
-    public final int SURFACE = 0;
+    public static final int PUBLIC_INSTANCE = 0;
+    public static final int ORIGIN_LOCATION = 0;
+    public static final int SURFACE = 0;
+
+    public static final WorldCoordinate ORIGIN = new WorldCoordinate(PUBLIC_INSTANCE, ORIGIN_LOCATION, SURFACE);
 
     int instance;
     int worldLocation;

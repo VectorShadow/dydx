@@ -1,6 +1,6 @@
 package data;
 
-public class StringDatum {
+public class StringDatum extends AbstractDatum {
     private final String value;
 
     public StringDatum(String s) {

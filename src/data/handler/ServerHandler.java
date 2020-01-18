@@ -30,6 +30,7 @@ public class ServerHandler extends AbstractHandler {
             return;
         }
         UserDatum ud;
+        StringDatum sd;
         switch (instruction){
             case InstructionCode.PROTOCOL_BIG_INTEGER:
                 BigIntegerDatum bid = (BigIntegerDatum)datum;
@@ -56,21 +57,17 @@ public class ServerHandler extends AbstractHandler {
                 adl.setAccount(account);
                 adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
                 break;
-            case InstructionCode.PROTOCOL_QUERY_CHARACTER:
-                //todo - check whether this character name already exists. Use for creation name check.
-                // if so, transmit a Query Character code attached to an acknowledgement datum.
-                // if not, transmit a Query Character code attached to a null character datum.
-                break;
-            case InstructionCode.PROTOCOL_REQUEST_CHARACTER:
-                //todo - this should be a string datum. Unpack it, get the character file associated with the
-                // string, and send it as a character datum with a transmit character code.
-                // Use this when a player selects an existing character.
-                break;
             case InstructionCode.PROTOCOL_TRANSMIT_CHARACTER:
-                CharacterDatum cd = (CharacterDatum)datum;
-                PlayerCharacter pc = cd.getCharacter();
-                adl.setCharacter(pc);
-                //todo - create a character file for this character in the logged in account's directory.
+                if (datum instanceof CharacterDatum) {
+                    CharacterDatum cd = (CharacterDatum)datum;
+                    PlayerCharacter pc = cd.getCharacter();
+                    adl.setCharacter(pc);
+                    adl.getAccount().getActiveCharacters().add(pc.getName());
+                    FileManager.appendNewCharacter(adl.getAccount().getAccountName(), pc);
+                } else if (datum instanceof StringDatum) {
+                    sd = (StringDatum)datum;
+                    //todo - load the character file associated with the character named sd and send it to the client
+                }
                 break;
             //todo - more cases
             default:

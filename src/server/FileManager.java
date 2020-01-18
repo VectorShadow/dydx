@@ -3,6 +3,7 @@ package server;
 import crypto.Password;
 import error.ErrorLogger;
 import player.Account;
+import player.PlayerCharacter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -134,9 +135,26 @@ public class FileManager {
     /**
      * Add the provided character name to the character list for the provided account name.
      */
-    public static void appendCharacter(String username, String characterName) {
+    public static void appendNewCharacter(String username, PlayerCharacter pc) {
+        String characterName = pc.getName();
         ArrayList<String> currentCharacters = listCharacters(username);
         currentCharacters.add(characterName);
-        //todo - lots - truncate existing file!
+        ArrayList<String> existingCharacters = listCharacters(username);
+        existingCharacters.add(characterName);
+        try {
+            Path userCharacterListPath = getUserAccountCharacterList(username);
+            FileWriter fw = new FileWriter(userCharacterListPath.toFile(), false);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (String s : existingCharacters)
+                bw.write(s + "\n");
+            bw.close();
+            fw.close();
+            saveCharacter(username, pc);
+        } catch (IOException e) {
+            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+        }
+    }
+    public static void saveCharacter(String username, PlayerCharacter pc) {
+        //todo - create a character file from pc.saveAsText().
     }
 }

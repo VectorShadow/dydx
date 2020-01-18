@@ -69,13 +69,6 @@ public class ClientHandler extends AbstractHandler {
                 adl.setAccount(account);
                 SocketMonitor.reportAcknowledgement(LOGIN_SUCCESS);
                 break;
-            case InstructionCode.PROTOCOL_QUERY_CHARACTER:
-                if (datum instanceof AcknowledgementDatum) {
-                    //todo - this character name already exists! handle as specified in InputHandler todo.
-                } else if (datum instanceof CharacterDatum) {
-                    //todo - this character name did not exist. Proceed with creating the character on client end.
-                }
-                break;
             case InstructionCode.PROTOCOL_TRANSMIT_CHARACTER:
                 CharacterDatum cd = (CharacterDatum)datum;
                 PlayerCharacter pc = cd.getCharacter();
