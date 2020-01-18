@@ -6,6 +6,7 @@ import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
 import player.Account;
+import player.PlayerCharacter;
 import server.FileManager;
 
 public class ServerHandler extends AbstractHandler {
@@ -54,6 +55,22 @@ public class ServerHandler extends AbstractHandler {
                         ud.decryptPassword(linkSecret));
                 adl.setAccount(account);
                 adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
+                break;
+            case InstructionCode.PROTOCOL_QUERY_CHARACTER:
+                //todo - check whether this character name already exists. Use for creation name check.
+                // if so, transmit a Query Character code attached to an acknowledgement datum.
+                // if not, transmit a Query Character code attached to a null character datum.
+                break;
+            case InstructionCode.PROTOCOL_REQUEST_CHARACTER:
+                //todo - this should be a string datum. Unpack it, get the character file associated with the
+                // string, and send it as a character datum with a transmit character code.
+                // Use this when a player selects an existing character.
+                break;
+            case InstructionCode.PROTOCOL_TRANSMIT_CHARACTER:
+                CharacterDatum cd = (CharacterDatum)datum;
+                PlayerCharacter pc = cd.getCharacter();
+                adl.setCharacter(pc);
+                //todo - create a character file for this character in the logged in account's directory.
                 break;
             //todo - more cases
             default:

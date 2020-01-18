@@ -16,8 +16,8 @@ import java.util.ArrayList;
  * Handles predefined fileIO requirements such as account management.
  */
 public class FileManager {
-    private static final char SEPARATOR = '/';
-    private static final String SEPARATOR_STRING = "" + SEPARATOR;
+    public static final char SEPARATOR = '/';
+    public static final String SEPARATOR_STRING = "" + SEPARATOR;
 
     private static final String DATA_FILE_EXTENSION = ".dis";
     private static final Path DATA_DIRECTORY = Paths.get("data");
