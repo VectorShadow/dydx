@@ -22,6 +22,8 @@ public class ClientHandler extends AbstractHandler {
     public static final int LOGIN_FAILURE = 1;
     public static final int NO_SUCH_ACCOUNT = 2;
 
+    public static final int LEVEL_LOADED = 0;
+
     private static ClientHandler instance;
 
     public static ClientHandler getInstance() {
@@ -74,6 +76,11 @@ public class ClientHandler extends AbstractHandler {
                 PlayerCharacter pc = cd.getCharacter();
                 adl.setCharacter(pc);
                 //todo - more stuff here? let the client know it has a character loaded now.
+                break;
+            case InstructionCode.PROTOCOL_TRANSMIT_FLOOR:
+                LevelDatum ld = (LevelDatum)datum;
+                adl.setLevel(ld.getLevel());
+                SocketMonitor.reportAcknowledgement(LEVEL_LOADED);
                 break;
             //todo - more cases
             default:

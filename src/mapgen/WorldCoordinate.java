@@ -1,5 +1,7 @@
 package mapgen;
 
+import java.io.Serializable;
+
 /**
  * Describe the absolute location of a player in the world.
  * Used for map generation parameters.
@@ -8,7 +10,7 @@ package mapgen;
  * Level Depth describes how far into a dungeon(or town in some cases) the player is.
  * This often influences difficulty and rewards.
  */
-public class WorldCoordinate {
+public class WorldCoordinate implements Serializable {
     public static final int PUBLIC_INSTANCE = 0;
     public static final int ORIGIN_LOCATION = 0;
     public static final int SURFACE = 0;

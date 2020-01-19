@@ -8,7 +8,8 @@ public class InstructionCode {
     public static final byte PROTOCOL_VERIFY_ACCOUNT = 3;
     public static final byte PROTOCOL_CREATE_ACCOUNT = 4;
     public static final byte PROTOCOL_TRANSMIT_CHARACTER = 5;
-    public static final byte DYDX_CODES = 6; //todo - keep updated!! total should be final dydx code + 1
+    public static final byte PROTOCOL_TRANSMIT_FLOOR = 6;
+    public static final byte DYDX_CODES = 7; //todo - keep updated!! total should be final dydx code + 1
 
     /**
      * Safe method for defining implementation specific instruction codes.

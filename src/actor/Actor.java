@@ -3,6 +3,7 @@ package actor;
 import engine.time.Time;
 import gui.draw.Drawable;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
@@ -12,7 +13,7 @@ import java.util.LinkedList;
  *
  * Base class for all actor entities which may appear on a level.
  */
-public class Actor implements Drawable {
+public class Actor implements Drawable, Serializable {
 
     private static int serial = 0;
 

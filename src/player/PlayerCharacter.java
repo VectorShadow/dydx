@@ -15,6 +15,10 @@ public abstract class PlayerCharacter implements Serializable {
     private String name;
     private WorldCoordinate worldCoordinate;
 
+    public PlayerCharacter(){
+        worldCoordinate = WorldCoordinate.ORIGIN;
+    }
+
 
     public String getName() {
         return name;

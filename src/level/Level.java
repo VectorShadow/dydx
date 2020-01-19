@@ -8,9 +8,10 @@ import engine.time.TurnTime;
 import gui.draw.Light;
 import mapgen.TestGenerator;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Level {
+public class Level implements Serializable {
 
     /**
      * The Graph algorithm which we rely on for raycasting and AI runs in linear time relative to the size of the level,

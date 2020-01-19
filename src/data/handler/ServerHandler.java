@@ -2,9 +2,12 @@ package data.handler;
 
 import crypto.RSA;
 import data.*;
+import engine.CoreProcesses;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
+import mapgen.FloorDesigner;
+import mapgen.WorldCoordinate;
 import player.Account;
 import player.PlayerCharacter;
 import server.FileManager;
@@ -58,9 +61,10 @@ public class ServerHandler extends AbstractHandler {
                 adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_CREATE_ACCOUNT));
                 break;
             case InstructionCode.PROTOCOL_TRANSMIT_CHARACTER:
+                PlayerCharacter pc = null;
                 if (datum instanceof CharacterDatum) {
                     CharacterDatum cd = (CharacterDatum)datum;
-                    PlayerCharacter pc = cd.getCharacter();
+                    pc = cd.getCharacter();
                     adl.setCharacter(pc);
                     adl.getAccount().getActiveCharacters().add(pc.getName());
                     FileManager.appendNewCharacter(adl.getAccount().getAccountName(), pc);
@@ -68,6 +72,11 @@ public class ServerHandler extends AbstractHandler {
                     sd = (StringDatum)datum;
                     //todo - load the character file associated with the character named sd and send it to the client
                 }
+                System.out.println("Preparing to send level information...");
+                adl.send(DataPacker.pack(new LevelDatum(
+                                CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate())),
+                        InstructionCode.PROTOCOL_TRANSMIT_FLOOR));
+                System.out.println("Level information sent.");
                 break;
             //todo - more cases
             default:

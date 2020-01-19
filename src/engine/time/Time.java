@@ -1,6 +1,8 @@
 package engine.time;
 
-public abstract class Time {
+import java.io.Serializable;
+
+public abstract class Time implements Serializable {
     public static final int BASE_GRANULARITY = 16;
     public static final int BASE_ACTION_SCALE = 32;
     protected int granularity = Time.BASE_GRANULARITY;

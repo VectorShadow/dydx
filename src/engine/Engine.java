@@ -132,4 +132,8 @@ public class Engine extends Thread {
         if (!getAllDataLinks().contains(l)) throw new IllegalArgumentException("Specified data link does not exist.");
         return l.getLevel();
     }
+
+    public boolean isRealtime() {
+        return realtime;
+    }
 }

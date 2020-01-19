@@ -1,5 +1,6 @@
 package actor;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -7,15 +8,10 @@ import java.util.PriorityQueue;
  * The actor list for a game level.
  * It is sorted by the timestamp on the first queued ActionItem of each actor.
  */
-public class ActorExecutionQueue {
+public class ActorExecutionQueue implements Serializable {
 
-    PriorityQueue<Actor> executionQueue = new PriorityQueue<>(
-        new Comparator<Actor>() {
-            @Override
-            public int compare(Actor o1, Actor o2) {
-                return Long.compare(o1.getNextActionTime(), o2.getNextActionTime());
-            }
-        }
+    transient PriorityQueue<Actor> executionQueue = new PriorityQueue<>(
+            Comparator.comparingLong(Actor::getNextActionTime)
     );
     public Actor getActor(int actorID) {
         for (Actor actor : executionQueue) {

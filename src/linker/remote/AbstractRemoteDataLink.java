@@ -41,6 +41,7 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         ArrayList<Byte> excess = new ArrayList<>(); //leftover data in the stream after completing the last instruction
         int bytesRead = 0; //the number of bytes read from the stream this iteration
         for (;;) {
+            System.out.println("Looping in listen...");
             try {
                 streamBlock = new byte[BLOCK_SIZE]; //reset the stream block
                 bytesRead = socket.getInputStream().read(streamBlock, 0 , BLOCK_SIZE); //read up to 1024 bytes from the stream
