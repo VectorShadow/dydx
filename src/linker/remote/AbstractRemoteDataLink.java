@@ -40,8 +40,8 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         byte[] streamBlock; //the block read from the stream this iteration
         ArrayList<Byte> excess = new ArrayList<>(); //leftover data in the stream after completing the last instruction
         int bytesRead = 0; //the number of bytes read from the stream this iteration
+        boolean firstBlock = true; //only the first block of a transmission should exclude the header segment
         for (;;) {
-            System.out.println("Looping in listen...");
             try {
                 streamBlock = new byte[BLOCK_SIZE]; //reset the stream block
                 bytesRead = socket.getInputStream().read(streamBlock, 0 , BLOCK_SIZE); //read up to 1024 bytes from the stream
@@ -60,8 +60,8 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                         instruction = streamBlock[0]; //set the instruction code
                         instructionBodySize = DataPacker.readSize(streamBlock[1], streamBlock[2], streamBlock[3]); //get the size as an int
                         instructionBody = new byte[instructionBodySize]; //initialize the body block
-                    }
-                    for (int i = DataPacker.HEADER_LENGTH; i < bytesRead; ++i, bytesReadInInstruction++) { //iterate through the bytes read this pass
+                    } else firstBlock = false; //else ensure we no longer exclude the header until this instruction is complete
+                    for (int i = firstBlock ? DataPacker.HEADER_LENGTH : 0; i < bytesRead; ++i, bytesReadInInstruction++) { //iterate through the bytes read this pass
                         if (bytesReadInInstruction < instructionBodySize){ //bytes from the current instruction
                             instructionBody[bytesReadInInstruction] = streamBlock[i];
                         } else { //bytes from a new instruction
@@ -73,6 +73,7 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                         instruction = 0; //then reset the data members
                         instructionBodySize = 0;
                         bytesReadInInstruction = 0;
+                        firstBlock = true;
                     }
                 }
             } catch (SocketException se){

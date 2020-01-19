@@ -15,7 +15,6 @@ public class ClientRemoteDataLink extends AbstractRemoteDataLink implements Clie
 
     @Override
     public void handle(byte instruction, AbstractDatum datum) {
-        System.out.println("Handling instruction " + instruction);
         ClientHandler.getInstance().handle(instruction, datum, this);
     }
 }

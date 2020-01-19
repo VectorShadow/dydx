@@ -73,10 +73,10 @@ public class ServerHandler extends AbstractHandler {
                     //todo - load the character file associated with the character named sd and send it to the client
                 }
                 System.out.println("Preparing to send level information...");
-                adl.send(DataPacker.pack(new LevelDatum(
+                byte[] levelBytes = DataPacker.pack(new LevelDatum(
                                 CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate())),
-                        InstructionCode.PROTOCOL_TRANSMIT_FLOOR));
-                System.out.println("Level information sent.");
+                        InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
+                adl.send(levelBytes);
                 break;
             //todo - more cases
             default:
