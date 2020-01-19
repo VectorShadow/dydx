@@ -72,7 +72,6 @@ public class ServerHandler extends AbstractHandler {
                     sd = (StringDatum)datum;
                     //todo - load the character file associated with the character named sd and send it to the client
                 }
-                System.out.println("Preparing to send level information...");
                 byte[] levelBytes = DataPacker.pack(new LevelDatum(
                                 CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate())),
                         InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
