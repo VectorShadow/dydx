@@ -8,7 +8,7 @@ import error.ErrorLogger;
 import graph.Coordinate;
 import graph.Graph;
 import gui.Display;
-import level.BasicThemeLookupTable;
+import theme.BasicThemeLookupTable;
 import level.Level;
 import linker.AbstractDataLink;
 

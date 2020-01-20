@@ -7,6 +7,8 @@ import engine.time.Time;
 import engine.time.TurnTime;
 import gui.draw.Light;
 import mapgen.TestGenerator;
+import theme.BasicThemeLookupTable;
+import theme.ThemeLookupTable;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -93,7 +95,7 @@ public class Level implements Serializable {
     public static void setThemeLookupTable(ThemeLookupTable tll) {
         themeLookupTable = tll;
     }
-    public TerrainProperties propertiesAt(int row, int col) {
+    public TerrainTemplate propertiesAt(int row, int col) {
         return themeLookupTable.lookupTerrain(theme, terrainMap[row][col]);
     }
     public Light ambientLight() {

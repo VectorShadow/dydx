@@ -1,10 +1,8 @@
 package gui.draw;
 
-import actor.Actor;
 import graph.DirectedCoordinate;
 import graph.Direction;
 import level.Level;
-import level.TerrainProperties;
 import resources.glyph.Glyph;
 import resources.glyph.ascii.SimpleGlyph;
 

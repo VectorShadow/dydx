@@ -11,11 +11,11 @@ import resources.glyph.ProtoGlyph;
  * Define the properties for a specific terrain type.
  * Includes a list of flags to specify custom properties, and a protoglyph to specify the default appearance.
  */
-public class TerrainProperties implements Drawable {
+public class TerrainTemplate implements Drawable {
     Attribute[] attributes;
     final ProtoGlyph protoGlyph;
 
-    TerrainProperties(Attribute[] a, ProtoGlyph p) {
+    TerrainTemplate(Attribute[] a, ProtoGlyph p) {
         attributes = a;
         protoGlyph = p;
     }

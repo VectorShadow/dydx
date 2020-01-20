@@ -2,13 +2,10 @@ package gui;
 
 import contract.Gui;
 import level.Level;
-import level.TerrainProperties;
-import resources.DualityMode;
-import resources.continuum.Pair;
+import level.TerrainTemplate;
 import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyphBuilder;
-import resources.render.OutputMode;
 
 import java.awt.*;
 
@@ -39,7 +36,7 @@ public class WorldCanvas {
                     g = Glyph.EMPTY_GLYPH;
                 }
                 else {
-                    TerrainProperties tp = level.propertiesAt(levelRow, levelCol);
+                    TerrainTemplate tp = level.propertiesAt(levelRow, levelCol);
                     g = tp.render();
                     //todo - properly render actors: MEGAHACK - force glyph if actor is here
                     if (level.getActorAt(levelRow, levelCol) != null) {

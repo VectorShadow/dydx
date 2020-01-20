@@ -3,7 +3,7 @@ package server;
 import engine.Engine;
 import error.ErrorLogger;
 import graph.Graph;
-import level.BasicThemeLookupTable;
+import theme.BasicThemeLookupTable;
 import level.Level;
 
 /**

@@ -1,6 +1,6 @@
 package graph;
 
-import level.BasicThemeLookupTable;
+import theme.BasicThemeLookupTable;
 import level.Level;
 
 import java.util.ArrayList;

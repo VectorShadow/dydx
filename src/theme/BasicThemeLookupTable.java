@@ -1,8 +1,10 @@
-package level;
+package theme;
 
 import attribute.Attribute;
 import attribute.AttributeFactory;
 import gui.draw.Light;
+import level.TerrainTemplate;
+import level.TerrainTemplateBuilder;
 import resources.glyph.ProtoGlyphBuilder;
 
 import java.awt.*;
@@ -13,39 +15,71 @@ import java.awt.*;
  */
 public class BasicThemeLookupTable implements ThemeLookupTable {
     /**
-     * Attribute indices.
+     * Aspect Attribute indices.
      */
-    public static final int PERMIT_MOVE = 0;
-    public static final int PERMIT_LIGHT = 1;
+
+    public static final int ASPECT_ATTRIBUTE_COUNT = 0;
 
     /**
-     * Default Attributes.
+     * Actor Attribute indices (start from ASPECT_ATTRIBUTE_COUNT).
      */
-    public static final Attribute[] DEFAULT_ATTRIBUTES = new Attribute[] {
+
+    /**
+     * Item Attribute indices (start from ASPECT_ATTRIBUTE_COUNT).
+     */
+
+    /**
+     * Terrain Attribute indices (start from ASPECT_ATTRIBUTE_COUNT).
+     */
+    public static final int PERMIT_MOVE = ASPECT_ATTRIBUTE_COUNT;
+    public static final int PERMIT_LIGHT = PERMIT_MOVE + 1;
+
+    /**
+     * Default Aspect Attributes.
+     */
+    public static final Attribute[] DEFAULT_ASPECT_ATTRIBUTES = new Attribute[] {
+    };
+
+    /**
+     * Default Actor Attributes.
+     */
+    public static final Attribute[] DEFAULT_ACTOR_ATTRIBUTES = new Attribute[] {
+    };
+
+    /**
+     * Default Item Attributes.
+     */
+    public static final Attribute[] DEFAULT_ITEM_ATTRIBUTES = new Attribute[] {
+    };
+
+    /**
+     * Default Terrain Attributes.
+     */
+    public static final Attribute[] DEFAULT_TERRAIN_ATTRIBUTES = new Attribute[] {
             AttributeFactory.manufacture(false),
             AttributeFactory.manufacture(false),
     };
 
     /**
-     * Properties tables.
+     * Terrain Properties tables.
      */
-    private final TerrainProperties[] DEFAULT_THEME = {
+    private final TerrainTemplate[] DEFAULT_THEME = {
             // 0 - Void
-            TerrainPropertiesBuilder
+            TerrainTemplateBuilder
                     .initialize(
-                            defaultAttributes(),
+                            defaultTerrainAttributes(),
                             ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build())
                     .build(),
             // 1 - Empty floor
-            TerrainPropertiesBuilder
-                    .initialize(defaultAttributes(),
+            TerrainTemplateBuilder
+                    .initialize(defaultTerrainAttributes(),
                             ProtoGlyphBuilder.setDefaults('.', Color.BLACK, Color.WHITE).build())
                     .setAttribute(PERMIT_MOVE, AttributeFactory.manufacture(true))
                     .setAttribute(PERMIT_LIGHT, AttributeFactory.manufacture(true))
                     .build(),
             // 2 - Basic Wall
-            TerrainPropertiesBuilder
-                    .initialize(defaultAttributes(),
+            TerrainTemplateBuilder
+                    .initialize(defaultTerrainAttributes(),
                             ProtoGlyphBuilder.setDefaults('#', Color.BLACK, Color.WHITE).build())
                     .build(),
     };
@@ -58,8 +92,23 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
     }
 
     @Override
-    public Attribute[] defaultAttributes() {
-        return DEFAULT_ATTRIBUTES;
+    public Attribute[] defaultAspectAttributes() {
+        return DEFAULT_ASPECT_ATTRIBUTES;
+    }
+
+    @Override
+    public Attribute[] defaultActorAttributes() {
+        return ThemeLookupTable.prependAspectAttributes(this, DEFAULT_ACTOR_ATTRIBUTES);
+    }
+
+    @Override
+    public Attribute[] defaultItemAttributes() {
+        return ThemeLookupTable.prependAspectAttributes(this, DEFAULT_ITEM_ATTRIBUTES);
+    }
+
+    @Override
+    public Attribute[] defaultTerrainAttributes() {
+        return ThemeLookupTable.prependAspectAttributes(this, DEFAULT_TERRAIN_ATTRIBUTES);
     }
 
     /**
@@ -69,7 +118,7 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
      * @return the desired TerrainProperties.
      */
     @Override
-    public TerrainProperties lookupTerrain(int theme, byte terrainCode) {
+    public TerrainTemplate lookupTerrain(int theme, byte terrainCode) {
         int index = terrainCode;
         switch (theme) {
             case 0:
