@@ -5,6 +5,7 @@ import data.StreamConverter;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
+import server.FileManager;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -32,7 +33,6 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         }
     }
     public void listen() throws LogReadyTraceableException {
-        //todo - loop on the instream until an instruction can be pieced together, then handle() it
         byte instruction = 0; //byte code associated with a unique instruction type
         int instructionBodySize = 0; //the number of bytes expected by the current instruction
         int bytesReadInInstruction = 0; //the number of bytes read from the stream so far for this instruction
@@ -52,6 +52,8 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                 }
                 if (bytesRead < 0) { //error reading on socket - connection lost
                     socket.close();
+                    if (this instanceof ServerRemoteDataLink)  //for now - try to save the character if connection is lost - more todo
+                        FileManager.saveCharacter(account.getAccountName(), character);
                     //todo - additionally handling here - let the server or client know connection was lost.
                 } else if (bytesRead > 0){ //data was read from the stream this pass - we do nothing on 0
                     if (instruction == 0) { //if we have no current instruction, parse for the next one

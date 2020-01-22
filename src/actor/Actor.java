@@ -4,6 +4,7 @@ import engine.time.Time;
 import gui.draw.Drawable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -13,7 +14,8 @@ import java.util.LinkedList;
  *
  * Base class for all actor entities which may appear on a level.
  */
-public class Actor implements Drawable, Serializable {
+public abstract class Actor implements Drawable, Serializable {
+    public static final int SUPER_INDICES = 0; //todo - keep updated if we add fields
 
     private static int serial = 0;
 
@@ -41,5 +43,11 @@ public class Actor implements Drawable, Serializable {
     }
     public long getNextActionTime() {
         return nextActionTime;
+    }
+
+    public ArrayList<String> saveAsText() {
+        ArrayList<String> save = new ArrayList<>();
+        //todo - fields which aren't reset on re-loading? all existing fields(uID, aIQ, nAT) need not be saved
+        return save;
     }
 }

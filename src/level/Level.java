@@ -38,6 +38,7 @@ public class Level implements Serializable {
     Actor[][] actorMap; //redundant access to actors by coordinates
 
     public Level(boolean realtime, int r, int c, int t){
+        //TODO - this entire constructor is a hack. implement properly with MapGenerators
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue();
         theme = t;
@@ -48,14 +49,14 @@ public class Level implements Serializable {
         terrainMap = new TestGenerator().generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
         //todo - generate actors properly: MEGAHACK - generate actors randomly
-        for (int i = 0; i < 5;) {
-            int ar = new Random().nextInt(rows);
-            int ac = new Random().nextInt(cols);
-            if (propertiesAt(ar, ac).hasProperty(BasicThemeLookupTable.PERMIT_MOVE)) {
-                actorMap[ar][ac] = new Actor(time);
-                ++i;
-            }
-        }
+//        for (int i = 0; i < 5;) {
+//            int ar = new Random().nextInt(rows);
+//            int ac = new Random().nextInt(cols);
+//            if (propertiesAt(ar, ac).hasProperty(BasicThemeLookupTable.PERMIT_MOVE)) {
+//                actorMap[ar][ac] = new Actor(time);
+//                ++i;
+//            }
+//        }
     }
 
     public int getRows(){

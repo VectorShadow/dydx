@@ -117,6 +117,22 @@ public class FileManager {
     }
 
     /**
+     * Return the path to the character file associated with the provided account and character name.
+     */
+    private static Path getCharacterFilePath(String username, String characterName) {
+        return Paths.get(
+                getUserAccountDirectoryPath(username) + SEPARATOR_STRING + characterName + DATA_FILE_EXTENSION);
+    }
+    /**
+     * Return the path to the actor file associated with the provided account and character name.
+     */
+    private static Path getActorFilePath(String username, String characterName) {
+        return Paths.get(
+                getUserAccountDirectoryPath(username) + SEPARATOR_STRING + characterName + ".actor" +
+                        DATA_FILE_EXTENSION);
+    }
+
+    /**
      * Return a list of Character names associated with a provided account name.
      */
     public static ArrayList<String> listCharacters(String username) {
@@ -132,6 +148,14 @@ public class FileManager {
         return characters;
     }
 
+    private static void writeByLine(File file, ArrayList<String> text, boolean append) throws IOException {
+        FileWriter fw = new FileWriter(file, append);
+        BufferedWriter bw = new BufferedWriter(fw);
+        for (String s : text)
+            bw.write(s + "\n");
+        bw.close();
+        fw.close();
+    }
     /**
      * Add the provided character name to the character list for the provided account name.
      */
@@ -143,18 +167,23 @@ public class FileManager {
         existingCharacters.add(characterName);
         try {
             Path userCharacterListPath = getUserAccountCharacterList(username);
-            FileWriter fw = new FileWriter(userCharacterListPath.toFile(), false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (String s : existingCharacters)
-                bw.write(s + "\n");
-            bw.close();
-            fw.close();
+            writeByLine(userCharacterListPath.toFile(), existingCharacters, false);
             saveCharacter(username, pc);
         } catch (IOException e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
         }
     }
     public static void saveCharacter(String username, PlayerCharacter pc) {
-        //todo - create a character file from pc.saveAsText().
+        String characterName = pc.getName();
+        Path characterFilePath = getCharacterFilePath(username, characterName);
+        Path actorFilePath = getActorFilePath(username, characterName);
+        try {
+            if (!Files.exists(characterFilePath)) Files.createFile(characterFilePath);
+            if (!Files.exists(actorFilePath)) Files.createFile(actorFilePath);
+            writeByLine(characterFilePath.toFile(), pc.saveAsText(), false);
+            writeByLine(actorFilePath.toFile(), pc.getActor().saveAsText(), false);
+        } catch (IOException e) {
+            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+        }
     }
 }

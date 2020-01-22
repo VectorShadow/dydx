@@ -1,5 +1,6 @@
 package player;
 
+import actor.Actor;
 import mapgen.WorldCoordinate;
 import static server.FileManager.SEPARATOR_STRING;
 
@@ -12,6 +13,7 @@ public abstract class PlayerCharacter implements Serializable {
     public static final int WORLD_COORDINATE_INDEX = NAME_INDEX + 1;
     public static final int SUPER_INDICES = WORLD_COORDINATE_INDEX + 1; //todo - keep updated if we add fields
 
+    private Actor actor; //do not save this from here - call getActor().saveAsText()
     private String name;
     private WorldCoordinate worldCoordinate;
 
@@ -19,6 +21,13 @@ public abstract class PlayerCharacter implements Serializable {
         worldCoordinate = WorldCoordinate.ORIGIN;
     }
 
+    public Actor getActor() {
+        return actor;
+    }
+
+    public void setActor(Actor actor) {
+        this.actor = actor;
+    }
 
     public String getName() {
         return name;
