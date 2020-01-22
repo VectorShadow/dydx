@@ -14,22 +14,28 @@ import java.util.LinkedList;
  *
  * Base class for all actor entities which may appear on a level.
  */
-public abstract class Actor implements Drawable, Serializable {
+public class Actor implements Drawable, Serializable {
     public static final int SUPER_INDICES = 0; //todo - keep updated if we add fields
 
-    private static int serial = 0;
+    private static long serial = 0;
 
-    private int uID;
+    private long uID = serial++;
     public LinkedList<ActionItem> actionItemQueue;
     long nextActionTime;
 
     public Actor(Time levelTime) {
-        uID = serial++; //increment and assign a unique serial ID - used for associating across links
+        synchronizeTime(levelTime);
+    }
+    public Actor(ArrayList<String> actorFile) {
+        //todo - fields, if we add them
+    }
+
+    public void synchronizeTime(Time levelTime) {
         actionItemQueue = new LinkedList<>();
         nextActionTime = levelTime.getCurrentTime() + levelTime.getGranularity();
     }
 
-    public int getUID() {
+    public long getUID() {
         return uID;
     }
 

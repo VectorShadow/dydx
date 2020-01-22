@@ -13,17 +13,17 @@ public abstract class AbstractDataLink extends Thread implements DataLink{
      * Both Server and Client interfaces require a method called getLevel() to reference this connection.
      * We implement that below by returning this field.
      */
-    protected Level level;
+    protected Level level = null;
 
     /**
      * Each link is connected for a particular player account.
      */
-    protected Account account;
+    protected Account account = null;
 
     /**
      * And one character for this account is in use.
      */
-    protected PlayerCharacter character;
+    protected PlayerCharacter character = null;
 
     @Override
     public abstract void run();

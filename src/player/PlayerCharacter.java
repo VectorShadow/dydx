@@ -2,12 +2,14 @@ package player;
 
 import actor.Actor;
 import mapgen.WorldCoordinate;
+
+import static server.FileManager.SEPARATOR;
 import static server.FileManager.SEPARATOR_STRING;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class PlayerCharacter implements Serializable {
+public class PlayerCharacter implements Serializable {
 
     public static final int NAME_INDEX = 0;
     public static final int WORLD_COORDINATE_INDEX = NAME_INDEX + 1;
@@ -15,10 +17,33 @@ public abstract class PlayerCharacter implements Serializable {
 
     private Actor actor; //do not save this from here - call getActor().saveAsText()
     private String name;
-    private WorldCoordinate worldCoordinate;
+    private WorldCoordinate worldCoordinate = WorldCoordinate.ORIGIN;
 
-    public PlayerCharacter(){
-        worldCoordinate = WorldCoordinate.ORIGIN;
+    public PlayerCharacter(){}
+
+    public PlayerCharacter(ArrayList<String> saveFile, Actor a) {
+        //todo - handle null cases as we add new fields to retain backwards compatibility
+        actor = a;
+        String line = saveFile.get(NAME_INDEX);
+        name = skipSeparator(line);
+        line = skipSeparator(saveFile.get(WORLD_COORDINATE_INDEX));
+        int instance, worldLocation, levelDepth;
+        instance = integer(nextSubstring(line));
+        line = skipSeparator(line);
+        worldLocation = integer(nextSubstring(line));
+        line = skipSeparator(line);
+        levelDepth = integer(line);
+        worldCoordinate = new WorldCoordinate(instance, worldLocation, levelDepth);
+    }
+
+    protected String skipSeparator(String saveFileLine) {
+        return saveFileLine.substring(saveFileLine.indexOf(SEPARATOR) + 1);
+    }
+    protected String nextSubstring(String saveFileLine) {
+        return saveFileLine.substring(0, saveFileLine.indexOf(SEPARATOR));
+    }
+    protected int integer(String substring) {
+        return Integer.parseInt(substring);
     }
 
     public Actor getActor() {

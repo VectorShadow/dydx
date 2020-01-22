@@ -1,5 +1,6 @@
 package server;
 
+import actor.Actor;
 import crypto.Password;
 import error.ErrorLogger;
 import player.Account;
@@ -156,6 +157,14 @@ public class FileManager {
         bw.close();
         fw.close();
     }
+    private static ArrayList<String> readByLine(Path path) throws IOException {
+        ArrayList<String> fileLines = new ArrayList<>();
+        BufferedReader fileIn = Files.newBufferedReader(path);
+        String fileLine;
+        while((fileLine = fileIn.readLine()) != null)
+            fileLines.add(fileLine);
+        return fileLines;
+    }
     /**
      * Add the provided character name to the character list for the provided account name.
      */
@@ -184,6 +193,16 @@ public class FileManager {
             writeByLine(actorFilePath.toFile(), pc.getActor().saveAsText(), false);
         } catch (IOException e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
+        }
+    }
+    public static PlayerCharacter loadCharacter(String username, String characterName) {
+        Path characterFilePath = getCharacterFilePath(username, characterName);
+        Path actorFilePath = getActorFilePath(username, characterName);
+        try {
+            return new PlayerCharacter(readByLine(characterFilePath), new Actor(readByLine(actorFilePath)));
+        } catch (Exception e) {
+            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+            return null; //useless and unreachable but required by java
         }
     }
 }

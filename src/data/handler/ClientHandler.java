@@ -75,7 +75,6 @@ public class ClientHandler extends AbstractHandler {
                 CharacterDatum cd = (CharacterDatum)datum;
                 PlayerCharacter pc = cd.getCharacter();
                 adl.setCharacter(pc);
-                //todo - more stuff here? let the client know it has a character loaded now.
                 break;
             case InstructionCode.PROTOCOL_TRANSMIT_FLOOR:
                 LevelDatum ld = (LevelDatum)datum;

@@ -5,6 +5,7 @@ import data.*;
 import engine.CoreProcesses;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
+import level.Level;
 import linker.AbstractDataLink;
 import mapgen.FloorDesigner;
 import mapgen.WorldCoordinate;
@@ -70,11 +71,12 @@ public class ServerHandler extends AbstractHandler {
                     FileManager.appendNewCharacter(adl.getAccount().getAccountName(), pc);
                 } else if (datum instanceof StringDatum) {
                     sd = (StringDatum)datum;
-                    //todo - load the character file associated with the character named sd and send it to the client
+                    pc = FileManager.loadCharacter(adl.getAccount().getAccountName(), sd.getValue());
                 }
-                byte[] levelBytes = DataPacker.pack(new LevelDatum(
-                                CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate())),
-                        InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
+                Level level = CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate());
+                pc.getActor().synchronizeTime(level.getTime()); //todo - this should probably be a level method for adding an actor, which then synchronizes the actor.
+                adl.send(DataPacker.pack(new CharacterDatum(pc), InstructionCode.PROTOCOL_TRANSMIT_CHARACTER));
+                byte[] levelBytes = DataPacker.pack(new LevelDatum(level), InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
                 adl.send(levelBytes);
                 break;
             //todo - more cases
