@@ -36,6 +36,31 @@ public enum Direction {
         }
         return Direction.ERROR;
     }
+    private Direction clockTransform(boolean clockwise) {
+        switch (this) {
+            case NORTH: return clockwise ? NORTH_EAST : NORTH_WEST;
+            case NORTH_EAST: return clockwise ? EAST : NORTH;
+            case EAST: return clockwise ? SOUTH_EAST : NORTH_EAST;
+            case SOUTH_EAST: return clockwise ? SOUTH : EAST;
+            case SOUTH: return clockwise ? SOUTH_WEST : SOUTH_EAST;
+            case SOUTH_WEST: return clockwise ? WEST : SOUTH;
+            case WEST: return clockwise ? NORTH_WEST : SOUTH_WEST;
+            case NORTH_WEST: return clockwise ? NORTH : WEST;
+            default: return ERROR;
+        }
+    }
+    public Direction rotate(boolean clockwise) {
+        return rotate(clockwise, 1);
+    }
+    public Direction rotate(boolean clockwise, int iterations) {
+        if (iterations <= 0) throw new IllegalArgumentException("Iterations must be > 0.");
+        Direction result = this;
+        while (iterations > 0) {
+            result = clockTransform(clockwise);
+            --iterations;
+        }
+        return result;
+    }
     public double multiplier(){
         switch (this){
             case NORTH: case EAST: case SOUTH: case WEST:

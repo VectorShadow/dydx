@@ -15,7 +15,7 @@ public class Vertex {
         this(new Coordinate(row, col));
     }
     Coordinate adjacent(Direction direction) {
-        return new Coordinate(row() + direction.rowChange, col() + direction.colChange);
+        return coordinate.adjacent(direction);
     }
     void addEdge(Edge e) {
         edges[e.direction.ordinal()] = e;
@@ -23,6 +23,9 @@ public class Vertex {
     }
     Edge getEdge(Direction dir) {
         return edges[dir.ordinal()];
+    }
+    Edge[] getEdges() {
+        return edges;
     }
     int col(){
         return coordinate.COL;

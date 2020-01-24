@@ -38,10 +38,16 @@ public class Graph {
                 origin.addEdge(new Edge(origin, target));
             }
         }
-        allVertices[indexOf(origin.coordinate())] = origin;
+        setVertexAt(origin);
     }
     private int indexOf(Coordinate c) {
         return c.ROW * level.getCols() + c.COL;
+    }
+    private Vertex getVertexAt(Coordinate c) {
+        return getVertexAt(c);
+    }
+    private void setVertexAt(Vertex v) {
+        allVertices[indexOf(v.coordinate())] = v;
     }
     private boolean inBounds(Coordinate c) {
         return c.ROW >= 0 && c.COL >= 0 && c.ROW < level.getRows() && c.COL < level.getCols();
@@ -64,7 +70,7 @@ public class Graph {
      */
     private Vertex followEdge(Vertex origin, Direction edgeDirection) {
         Edge e = origin.getEdge(edgeDirection);
-        return e == null ? null : allVertices[indexOf(e.destination)];
+        return e == null ? null : getVertexAt(e.destination);
     }
     int countEdges() {
         int count = 0;
@@ -95,12 +101,67 @@ public class Graph {
         }
     }
 
+    /**
+     * return the cost of an edge in this graph
+     **/
+    private double cost(Edge e) {
+        return cost(e, constructionAttribute);
+    }
+
+    /**
+     * return the cost of an edge in this graph for some other attribute
+     **/
+    private double cost(Edge e, int attributeIndex) {
+        return e.cost(level, attributeIndex);
+    }
+
+    /**
+     * Propagation must be in the initial direction, or along one of the directions adjacent to it.
+     */
+    private boolean canPropagate(Direction d, Edge e) {
+        return e.direction == d || e.direction == d.rotate(true) || e.direction == d.rotate(false);
+    }
+    /**
+     * Check a coordinate for propagation. If it's in bounds, add it and deduct the edge cost to reach it.
+     * Then if power remains, attempt to propagate further.
+     */
+    private void validatePropogation(ArrayList<DirectedCoordinate> dcl, Edge e, double power) {
+        Coordinate c = e.destination;
+        if (!inBounds(c)) return;
+        DirectedCoordinate dc = new DirectedCoordinate(c, e.direction);
+        dcl.add(dc);
+        double remnant = power - cost(e);
+        if (remnant > 0.0)
+            propagate(dcl, dc, remnant);
+    }
+    /**
+     *
+     * @param dcl a list tracking reached coordinates
+     * @param dc the coordinate and direction to propagate from and in
+     * @param power the power to continue propagation with
+     */
+    private void propagate(ArrayList<DirectedCoordinate> dcl, DirectedCoordinate dc, double power) {
+        Vertex v = getVertexAt(dc);
+        if (v == null || !inBounds(dc)) return;
+        dcl.add(dc);
+        Edge[] ee = v.getEdges();
+        for (Edge e : ee) {
+            if (e != null && canPropagate(dc.DIR, e)) {
+                validatePropogation(dcl, e, power);
+            }
+        }
+    }
+
     public ArrayList<DirectedCoordinate> radiate(Coordinate center, double power){
-        //todo - traverse the graph and return a list of directed coordinates corresponding to light/sight with the
-        // specified power, and a direction indicating which direction they radiation travelled to get there
-        // center will use self, all others will use appropriate directions
-        // coordinates may appear more than once if radiated into from different directions
-        return null;
+        ArrayList<DirectedCoordinate> dcl = new ArrayList<>();
+        Vertex v = getVertexAt(center);
+        if (v != null && inBounds(v.coordinate())) {
+            dcl.add(new DirectedCoordinate(center, Direction.SELF));
+            for (Edge e : getVertexAt(center).getEdges()) {
+                validatePropogation(dcl, e, power);
+            }
+        }
+        return dcl;
     }
     public ArrayList<Coordinate> shortestPath(Coordinate origin, Coordinate destination){
         //todo - traverse the graph and return a list of coordinates corresponding to the shortest path from origin

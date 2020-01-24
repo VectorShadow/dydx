@@ -8,6 +8,9 @@ public class Coordinate {
         ROW = row;
         COL = col;
     }
+    Coordinate adjacent(Direction direction) {
+        return new Coordinate(ROW + direction.rowChange, COL + direction.colChange);
+    }
 
     @Override
     public boolean equals(Object o) {
