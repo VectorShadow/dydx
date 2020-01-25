@@ -7,9 +7,9 @@ import level.TerrainTemplate;
 import level.TerrainTemplateBuilder;
 import mapgen.MapGenerator;
 import mapgen.TestGenerator;
+import resources.chroma.Chroma;
+import resources.continuum.Pair;
 import resources.glyph.ProtoGlyphBuilder;
-
-import java.awt.*;
 
 /**
  * Mock terrain lookup table for testing purposes.
@@ -70,19 +70,22 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
             TerrainTemplateBuilder
                     .initialize(
                             defaultTerrainAttributes(),
-                            ProtoGlyphBuilder.setDefaults(' ', Color.BLACK, Color.WHITE).build())
+                            ProtoGlyphBuilder.setDefaults(Chroma.BLACK, Chroma.WHITE,' ').build()
+                    )
                     .build(),
             // 1 - Empty floor
             TerrainTemplateBuilder
                     .initialize(defaultTerrainAttributes(),
-                            ProtoGlyphBuilder.setDefaults('.', Color.BLACK, Color.WHITE).build())
+                            ProtoGlyphBuilder.setDefaults(Chroma.BLACK, Chroma.WHITE,'.').build()
+                    )
                     .setAttribute(PERMIT_MOVE, AttributeFactory.manufacture(true))
                     .setAttribute(PERMIT_LIGHT, AttributeFactory.manufacture(true))
                     .build(),
             // 2 - Basic Wall
             TerrainTemplateBuilder
                     .initialize(defaultTerrainAttributes(),
-                            ProtoGlyphBuilder.setDefaults('#', Color.BLACK, Color.WHITE).build())
+                            ProtoGlyphBuilder.setDefaults(Chroma.BLACK, Chroma.WHITE,'#').build()
+                    )
                     .build(),
     };
 

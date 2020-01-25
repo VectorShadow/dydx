@@ -9,6 +9,7 @@ import resources.glyph.ascii.SimpleGlyph;
 import java.util.ArrayList;
 
 public class DrawMap {
+
     private final DrawTile[][] tiles;
     private final Level level;
 
@@ -29,8 +30,8 @@ public class DrawMap {
         if (s <= 0) return;
         for (DirectedCoordinate dc : dcList) tiles[dc.ROW][dc.COL].seeFrom(dc.DIR, s);
     }
-    private int getMaxDirectionalPriority(Drawable d, DrawTile t) {
-        int maxPriority = 0;
+    private DrawData getMaxDirectionalPriority(Drawable d, DrawTile t) {
+        DrawData dd = new DrawData();
         Light l;
         short s;
         int b;
@@ -41,40 +42,46 @@ public class DrawMap {
             s = t.sightFrom(dir);
             b = l.getBrightness();
             if (b < Light.LIGHT_BRIGHT && Sight.hasProperty(s, Sight.AMPLIFY_LIGHT)) b += 1;
-            if (b == Light.LIGHT_BRIGHT && Sight.hasProperty(s, Sight.BRIGHT_SIGHT)) return 7; //we are done - no priority can exceed this
-            //todo - if (maxPriority < 7 && Sight.hasProperty(s, Sight.ULTRA_VISION) [&& d.hasAttribute(ULTRA_ASPECT)]) maxPriority = 6;
-            if (maxPriority < 6 && b == Light.LIGHT_DIM && Sight.hasProperty(s, Sight.DIM_SIGHT)) maxPriority = 5;
-            //todo - heat! if (maxPriority < 5 && Sight.hasProperty(s, Sight.INFRA_VISION)) maxPriority = 4;
-            if (maxPriority < 4 && b == Light.LIGHT_DARK && Sight.hasProperty(s, Sight.DARK_SIGHT)) maxPriority = 3;
-            if (maxPriority < 3 && b > Light.LIGHT_BLACK && s > Sight.NO_SIGHT) maxPriority = 2;
-            //todo - sound! if (maxPriority < 2 && d.getCurrentSound() != null) maxPriority = 1;
+            if (b == Light.LIGHT_BRIGHT && Sight.hasProperty(s, Sight.BRIGHT_SIGHT)) {
+                dd.setValues(Aspect.BRIGHT.ordinal(), b, l);
+                return dd; //we are done - no priority can exceed this
+            }
+            //todo - if (maxPriority < BRIGHT && Sight.hasProperty(s, Sight.ULTRA_VISION) [&& d.hasAttribute(ULTRA_ASPECT)]) maxPriority = ULTRA;
+            if (dd.getAspectRank() < Aspect.ULTRA.ordinal() && b == Light.LIGHT_DIM && Sight.hasProperty(s, Sight.DIM_SIGHT))
+                dd.setValues(Aspect.DIM.ordinal(), b, l);
+            //todo - heat! if (maxPriority < DIM && Sight.hasProperty(s, Sight.INFRA_VISION)) maxPriority = INFRA;
+            if (dd.getAspectRank() < Aspect.INFRA.ordinal() && b == Light.LIGHT_DARK && Sight.hasProperty(s, Sight.DARK_SIGHT))
+                dd.setValues(Aspect.DARK.ordinal(), b, l);
+            if (dd.getAspectRank() < Aspect.DARK.ordinal() && b > Light.LIGHT_BLACK && s > Sight.NO_SIGHT){
+                dd.setValues(Aspect.VAGUE.ordinal(), b, l);
+            }
+            //todo - sound! if (maxPriority < VAGUE && d.getCurrentSound() != null) maxPriority = SOUND;
         }
-        //todo - sound! if (maxPriority == 1 && !Player.canHear(d.getCurrentSound())) maxPriority = 0;
-        return maxPriority;
+        //todo - memory! if (maxPriority == SOUND && !Player.canHear(d.getCurrentSound())) maxPriority = MEMORY;
+        if (dd.getAspectRank() == Aspect.MEMORY.ordinal() && !t.remembered)
+            dd.setValues(Aspect.NONE.ordinal(), 0, null);
+        return dd;
     }
-    private int actorPriority(int row, int col) {
+    private DrawData actorPriority(int row, int col) {
         return getMaxDirectionalPriority(level.getActorAt(row, col), tiles[row][col]);
     }
-    private int terrainPriority(int row, int col) {
+    private DrawData terrainPriority(int row, int col) {
         return getMaxDirectionalPriority(level.propertiesAt(row, col), tiles[row][col]);
     }
     public Glyph drawFrom(int row, int col) {
         DrawTile dt = tiles[row][col];
         Drawable d = level.getActorAt(row, col);
         Glyph g;
-        int priority;
+        DrawData dd;
         if (d != null) {
-            priority = actorPriority(row, col);
-            if (priority > 0) {
-                g = Aspect.get(priority).drawGlyph(d);
-                if (g != SimpleGlyph.EMPTY_GLYPH) return g; //this can occur of priority was 1 and no sound reached the player
+            dd = actorPriority(row, col);
+            if (dd.getAspectRank() > Aspect.MEMORY.ordinal()) {
+                return Aspect.get(dd.getAspectRank()).drawGlyph(d, dd);
             }
         }
         d = level.propertiesAt(row, col);
-        priority = terrainPriority(row, col);
-        g = Aspect.get(priority).drawGlyph(d);
-        //Don't draw from a memory aspect if the player doesn't remember this tile!
-        if (priority == 0 && !dt.remembered) g = SimpleGlyph.EMPTY_GLYPH;
+        dd = terrainPriority(row, col);
+        g = Aspect.get(dd.getAspectRank()).drawGlyph(d, dd);
         return g;
     }
 }

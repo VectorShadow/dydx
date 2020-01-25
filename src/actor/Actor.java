@@ -1,8 +1,12 @@
 package actor;
 
 import engine.time.Time;
+import graph.Coordinate;
 import gui.draw.Drawable;
+import resources.continuum.Pair;
+import resources.glyph.ProtoGlyph;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -55,5 +59,21 @@ public class Actor implements Drawable, Serializable {
         ArrayList<String> save = new ArrayList<>();
         //todo - fields which aren't reset on re-loading? all existing fields(uID, aIQ, nAT) need not be saved
         return save;
+    }
+
+    //todo - all below: Derive everything but temporary from ActorTemplate(needs to be implemented)
+    @Override
+    public ProtoGlyph getProtoGlyph() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Pair<Color>> getAllTemporaryColors() {
+        return null;
+    }
+
+    @Override
+    public boolean isUltraFluorescent() {
+        return false;
     }
 }

@@ -1,11 +1,16 @@
 package level;
 
 import attribute.Attribute;
+import graph.Coordinate;
 import gui.draw.Drawable;
 import resources.DualityMode;
+import resources.continuum.Pair;
 import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyph;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Define the properties for a specific terrain type.
@@ -31,10 +36,18 @@ public class TerrainTemplate implements Drawable {
         return attributes[index].isSet();
     }
 
-    public Glyph render() {
-        //todo - HACK for now
-        //todo - render method, which will interpret flags and protoglyph and apply light and sight and memory information to generate a true glyph
-        //TODO++ - this should be done through drawable aspects now - leaving for legacy for now
-        return GlyphBuilder.build(protoGlyph, DualityMode.TILE);
+    @Override
+    public ProtoGlyph getProtoGlyph() {
+        return protoGlyph;
+    }
+
+    @Override
+    public ArrayList<Pair<Color>> getAllTemporaryColors() {
+        return new ArrayList<>(); //not for terrain
+    }
+
+    @Override
+    public boolean isUltraFluorescent() {
+        return false; //todo - maybe necessary
     }
 }
