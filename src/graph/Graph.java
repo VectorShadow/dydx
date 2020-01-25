@@ -3,9 +3,10 @@ package graph;
 import theme.BasicThemeLookupTable;
 import level.Level;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Graph {
+public class Graph implements Serializable {
     Level level;
     int constructionAttribute;
     boolean requiresDestinationFlag;
@@ -44,7 +45,7 @@ public class Graph {
         return c.ROW * level.getCols() + c.COL;
     }
     private Vertex getVertexAt(Coordinate c) {
-        return getVertexAt(c);
+        return allVertices[indexOf(c)];
     }
     private void setVertexAt(Vertex v) {
         allVertices[indexOf(v.coordinate())] = v;

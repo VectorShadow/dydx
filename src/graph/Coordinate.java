@@ -1,6 +1,8 @@
 package graph;
 
-public class Coordinate {
+import java.io.Serializable;
+
+public class Coordinate implements Serializable {
     public final int ROW;
     public final int COL;
 

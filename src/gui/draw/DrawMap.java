@@ -22,9 +22,11 @@ public class DrawMap {
         }
     }
     public void radiateLight(Light l, ArrayList<DirectedCoordinate> dcList) {
+        if (l == null) return;
         for (DirectedCoordinate dc : dcList) tiles[dc.ROW][dc.COL].lightFrom(dc.DIR, l);
     }
     public void radiateSight(short s, ArrayList<DirectedCoordinate> dcList) {
+        if (s <= 0) return;
         for (DirectedCoordinate dc : dcList) tiles[dc.ROW][dc.COL].seeFrom(dc.DIR, s);
     }
     private int getMaxDirectionalPriority(Drawable d, DrawTile t) {
@@ -33,11 +35,13 @@ public class DrawMap {
         short s;
         int b;
         for (Direction dir : Direction.values()) {
+            if (dir == Direction.ERROR) continue;
             l = t.lightFrom(dir);
+            if (l == null) continue;
             s = t.sightFrom(dir);
             b = l.getBrightness();
             if (b < Light.LIGHT_BRIGHT && Sight.hasProperty(s, Sight.AMPLIFY_LIGHT)) b += 1;
-            if (Sight.hasProperty(s, Sight.BRIGHT_SIGHT)) return 7; //we are done - no priority can exceed this
+            if (b == Light.LIGHT_BRIGHT && Sight.hasProperty(s, Sight.BRIGHT_SIGHT)) return 7; //we are done - no priority can exceed this
             //todo - if (maxPriority < 7 && Sight.hasProperty(s, Sight.ULTRA_VISION) [&& d.hasAttribute(ULTRA_ASPECT)]) maxPriority = 6;
             if (maxPriority < 6 && b == Light.LIGHT_DIM && Sight.hasProperty(s, Sight.DIM_SIGHT)) maxPriority = 5;
             //todo - heat! if (maxPriority < 5 && Sight.hasProperty(s, Sight.INFRA_VISION)) maxPriority = 4;

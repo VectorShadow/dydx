@@ -5,15 +5,22 @@ import actor.ActorExecutionQueue;
 import engine.time.RealTime;
 import engine.time.Time;
 import engine.time.TurnTime;
+import graph.Graph;
 import gui.draw.Light;
+import mapgen.FloorDesigner;
 import mapgen.TestGenerator;
 import theme.BasicThemeLookupTable;
 import theme.ThemeLookupTable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Level implements Serializable {
+
+    public static final int MOVEMENT_GRAPH_INDEX = 0;
+    public static final int LIGHT_GRAPH_INDEX = 1;
+    //todo - SOUND, other graphs such as AI stuff may be implementation specific?
 
     /**
      * The Graph algorithm which we rely on for raycasting and AI runs in linear time relative to the size of the level,
@@ -36,6 +43,7 @@ public class Level implements Serializable {
     int cols;
     byte[][] terrainMap;
     Actor[][] actorMap; //redundant access to actors by coordinates
+    ArrayList<Graph> graphs;
 
     public Level(boolean realtime, int r, int c, int t){
         //TODO - this entire constructor is a hack. implement properly with MapGenerators
@@ -44,19 +52,11 @@ public class Level implements Serializable {
         theme = t;
         rows = r * c > MAX_SIZE ? MAX_DIM : r;
         cols = r * c > MAX_SIZE ? MAX_DIM : c;
-        //terrainMap = new byte[rows][cols];
-        /* todo - the above, and a proper method for calling map generation */
-        terrainMap = new TestGenerator().generateTerrain(rows, cols);
+        terrainMap = themeLookupTable.getMapGenerator(theme).generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
-        //todo - generate actors properly: MEGAHACK - generate actors randomly
-//        for (int i = 0; i < 5;) {
-//            int ar = new Random().nextInt(rows);
-//            int ac = new Random().nextInt(cols);
-//            if (propertiesAt(ar, ac).hasProperty(BasicThemeLookupTable.PERMIT_MOVE)) {
-//                actorMap[ar][ac] = new Actor(time);
-//                ++i;
-//            }
-//        }
+        graphs = new ArrayList<>();
+        FloorDesigner.graph(this);
+        //todo - generate actors properly
     }
 
     public int getRows(){
@@ -91,6 +91,13 @@ public class Level implements Serializable {
     }
     public void setActorAt(int row, int col, Actor a) {
         actorMap[row][col] = a;
+    }
+
+    public void addGraph(Graph g) {
+        graphs.add(g);
+    }
+    public Graph getGraph(int graphIndex) {
+        return graphs.get(graphIndex);
     }
 
     public static void setThemeLookupTable(ThemeLookupTable tll) {

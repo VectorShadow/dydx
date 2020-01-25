@@ -1,7 +1,11 @@
 package gui.draw;
 
 import resources.glyph.Glyph;
+import resources.glyph.GlyphBuilder;
+import resources.glyph.ProtoGlyphBuilder;
 import resources.glyph.ascii.SimpleGlyph;
+
+import java.awt.*;
 
 public enum Aspect {
     MEMORY,
@@ -15,6 +19,7 @@ public enum Aspect {
 
     public Glyph drawGlyph(Drawable d) {
         switch (this) {
+            case BRIGHT: return GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('!', Color.BLACK, Color.WHITE).build());
             //todo:
             //ensure we can draw both ascii and image glyphs here
             //todo:

@@ -3,13 +3,15 @@ package graph;
 import attribute.*;
 import level.Level;
 
+import java.io.Serializable;
+
 /**
  * An edge between Vertices in a Graph.
  * Note that the destination is not a Vertex, but rather the Coordinate corresponding to a Vertex.
  * This is because Coordinates can be interpreted in the context of a Graph, but Vertices without
  * that context are meaningless.
  */
-public class Edge {
+public class Edge implements Serializable {
     private final Vertex origin;
     final Coordinate destination;
     final Direction direction;

@@ -40,6 +40,7 @@ public class Light implements Comparable<Light>{
 
     @Override
     public int compareTo(Light light) {
+        if (light == null) return 1;
         int value = brightness - light.brightness;
         if (value == 0) value = radius - light.radius;
         if (value == 0) value = (int)(100 * (light.flicker - flicker));

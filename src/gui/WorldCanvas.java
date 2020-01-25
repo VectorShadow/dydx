@@ -1,8 +1,12 @@
 package gui;
 
 import contract.Gui;
+import graph.Coordinate;
+import gui.draw.DrawMap;
+import gui.draw.Sight;
 import level.Level;
 import level.TerrainTemplate;
+import mapgen.FloorDesigner;
 import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyphBuilder;
@@ -28,6 +32,12 @@ public class WorldCanvas {
         int levelRow;
         int levelCol;
         Glyph g;
+        DrawMap dm = new DrawMap(level);
+        dm.radiateSight(Sight.BRIGHT_SIGHT, // todo - HACK - this should be the player's sight power
+                level.getGraph(Level.LIGHT_GRAPH_INDEX).radiate(
+                        new Coordinate(rowOffset, colOffset), //todo - this should track the camera, will update when we set it at start
+                        11 //todo - HACK - this should be the player's sight radius
+                ));
         for (int i = 0; i < rowCount; ++i) {
             for (int j = 0; j < colCount; ++j) {
                 levelRow = i + rowCorrection;
@@ -36,12 +46,14 @@ public class WorldCanvas {
                     g = Glyph.EMPTY_GLYPH;
                 }
                 else {
-                    TerrainTemplate tp = level.propertiesAt(levelRow, levelCol);
-                    g = tp.render();
-                    //todo - properly render actors: MEGAHACK - force glyph if actor is here
-                    if (level.getActorAt(levelRow, levelCol) != null) {
-                        g = GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('A', Color.BLACK, Color.YELLOW).build());
-                    }
+                    g = dm.drawFrom(levelRow, levelCol);
+                    //below - legacy code, display all
+//                    TerrainTemplate tp = level.propertiesAt(levelRow, levelCol);
+//                    g = tp.render();
+//                    //todo - properly render actors: MEGAHACK - force glyph if actor is here
+//                    if (level.getActorAt(levelRow, levelCol) != null) {
+//                        g = GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('A', Color.BLACK, Color.YELLOW).build());
+//                    }
                 }
                 gui.print(i, j, g);
             }

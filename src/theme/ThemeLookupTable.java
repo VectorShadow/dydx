@@ -3,6 +3,7 @@ package theme;
 import attribute.Attribute;
 import gui.draw.Light;
 import level.TerrainTemplate;
+import mapgen.MapGenerator;
 
 public interface ThemeLookupTable {
     Attribute[] defaultAspectAttributes();
@@ -13,6 +14,7 @@ public interface ThemeLookupTable {
     //todo - lookup item template
     TerrainTemplate lookupTerrain(int theme, byte terrainCode);
     Light lookupLight(int theme);
+    MapGenerator getMapGenerator(int theme);
 
     static Attribute[] prependAspectAttributes(ThemeLookupTable tlt, Attribute[] a) {
         Attribute[] aspects = tlt.defaultAspectAttributes();

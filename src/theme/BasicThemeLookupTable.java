@@ -5,6 +5,8 @@ import attribute.AttributeFactory;
 import gui.draw.Light;
 import level.TerrainTemplate;
 import level.TerrainTemplateBuilder;
+import mapgen.MapGenerator;
+import mapgen.TestGenerator;
 import resources.glyph.ProtoGlyphBuilder;
 
 import java.awt.*;
@@ -134,5 +136,10 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
     @Override
     public Light lookupLight(int theme) {
         return null; //fine for now - this method must work in an implementation table
+    }
+
+    @Override
+    public MapGenerator getMapGenerator(int theme) {
+        return new TestGenerator();
     }
 }

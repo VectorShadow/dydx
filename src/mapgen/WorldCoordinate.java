@@ -38,4 +38,9 @@ public class WorldCoordinate implements Serializable {
     public int getLevelDepth() {
         return levelDepth;
     }
+
+    @Override
+    public String toString() {
+        return "(" + instance + "," + worldLocation + "," + levelDepth + ")";
+    }
 }
