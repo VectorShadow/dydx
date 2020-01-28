@@ -1,5 +1,6 @@
 package engine;
 
+import actor.Actor;
 import client.Client;
 import data.AbstractDatum;
 import data.DataPacker;
@@ -44,6 +45,9 @@ public class CoreProcesses {
     }
     public static Account getActiveAccount() {
         return clientDataLink.getAccount();
+    }
+    public static Actor getPlayerActor() {
+        return clientDataLink.getCharacter().getActor();
     }
     public static Level getActiveLevel() {
         return clientDataLink.getLevel();

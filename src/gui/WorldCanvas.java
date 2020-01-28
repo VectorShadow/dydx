@@ -19,9 +19,8 @@ import java.awt.*;
  */
 public class WorldCanvas {
     public static void paint(Level level, Gui gui) {
-        //todo - hack: use the center of the level as the point of focus. instead we should use the Camera.
-        int rowOffset = level.getRows()/2;
-        int colOffset = level.getCols()/2;
+        int rowOffset = Camera.row();
+        int colOffset = Camera.col();
         //find the size of the io.display area
         int rowCount = gui.countRows();
         int colCount = gui.countColumns();
@@ -35,7 +34,7 @@ public class WorldCanvas {
         DrawMap dm = new DrawMap(level);
         dm.radiateSight(Sight.BRIGHT_SIGHT, // todo - HACK - this should be the player's sight power
                 level.getGraph(Level.LIGHT_GRAPH_INDEX).radiate(
-                        new Coordinate(rowOffset, colOffset), //todo - this should track the camera, will update when we set it at start
+                        new Coordinate(rowOffset, colOffset),
                         11 //todo - HACK - this should be the player's sight radius
                 ));
         for (int i = 0; i < rowCount; ++i) {
@@ -47,13 +46,6 @@ public class WorldCanvas {
                 }
                 else {
                     g = dm.drawFrom(levelRow, levelCol);
-                    //below - legacy code, display all
-//                    TerrainTemplate tp = level.propertiesAt(levelRow, levelCol);
-//                    g = tp.render();
-//                    //todo - properly render actors: MEGAHACK - force glyph if actor is here
-//                    if (level.getActorAt(levelRow, levelCol) != null) {
-//                        g = GlyphBuilder.build(ProtoGlyphBuilder.setDefaults('A', Color.BLACK, Color.YELLOW).build());
-//                    }
                 }
                 gui.print(i, j, g);
             }

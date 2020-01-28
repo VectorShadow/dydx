@@ -75,6 +75,7 @@ public class DrawMap {
         DrawData dd;
         if (d != null) {
             dd = actorPriority(row, col);
+            System.out.println(dd);
             if (dd.getAspectRank() > Aspect.MEMORY.ordinal()) {
                 return Aspect.get(dd.getAspectRank()).drawGlyph(d, dd);
             }

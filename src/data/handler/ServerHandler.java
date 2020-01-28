@@ -74,7 +74,7 @@ public class ServerHandler extends AbstractHandler {
                     pc = FileManager.loadCharacter(adl.getAccount().getAccountName(), sd.getValue());
                 }
                 Level level = CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate());
-                pc.getActor().synchronizeTime(level.getTime()); //todo - this should probably be a level method for adding an actor, which then synchronizes the actor.
+                level.placeActor(pc.getActor());
                 adl.send(DataPacker.pack(new CharacterDatum(pc), InstructionCode.PROTOCOL_TRANSMIT_CHARACTER));
                 byte[] levelBytes = DataPacker.pack(new LevelDatum(level), InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
                 adl.send(levelBytes);

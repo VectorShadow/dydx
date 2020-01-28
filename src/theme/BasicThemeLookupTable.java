@@ -145,4 +145,14 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
     public MapGenerator getMapGenerator(int theme) {
         return new TestGenerator();
     }
+
+    @Override
+    public int allowMovementIndex() {
+        return PERMIT_MOVE;
+    }
+
+    @Override
+    public int allowLightIndex() {
+        return PERMIT_LIGHT;
+    }
 }

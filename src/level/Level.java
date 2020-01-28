@@ -8,8 +8,6 @@ import engine.time.TurnTime;
 import graph.Graph;
 import gui.draw.Light;
 import mapgen.FloorDesigner;
-import mapgen.TestGenerator;
-import theme.BasicThemeLookupTable;
 import theme.ThemeLookupTable;
 
 import java.io.Serializable;
@@ -20,6 +18,8 @@ public class Level implements Serializable {
 
     public static final int MOVEMENT_GRAPH_INDEX = 0;
     public static final int LIGHT_GRAPH_INDEX = 1;
+
+    public static final Random LEVEL_RNG = new Random();
     //todo - SOUND, other graphs such as AI stuff may be implementation specific?
 
     /**
@@ -108,6 +108,18 @@ public class Level implements Serializable {
     }
     public Light ambientLight() {
         return themeLookupTable.lookupLight(theme);
+    }
+    public void placeActor(Actor a) {
+        int r = a.getMapCoordinate().ROW;
+        int c = a.getMapCoordinate().COL;
+        while (r < 0 || c < 0 || !propertiesAt(r, c).hasProperty(themeLookupTable.allowMovementIndex()) && getActorAt(r, c) == null) {
+            r = LEVEL_RNG.nextInt(rows);
+            c = LEVEL_RNG.nextInt(cols);
+        }
+        a.synchronizeTime(time);
+        a.setMapCoordinate(r, c);
+        actors.addActor(a);
+        setActorAt(r, c, a);
     }
 
 }

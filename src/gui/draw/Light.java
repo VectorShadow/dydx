@@ -49,4 +49,10 @@ public class Light implements Comparable<Light>{
         if (value == 0) value = color.getBlue() - light.color.getBlue();
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Light with Color: (" + color.getRed() + "/" + color.getGreen() + "/" + color.getBlue() +
+                "); Brightness: " + brightness + "; Radius: " + radius + "; Flicker: " + flicker;
+    }
 }

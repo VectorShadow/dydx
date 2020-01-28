@@ -15,6 +15,8 @@ public interface ThemeLookupTable {
     TerrainTemplate lookupTerrain(int theme, byte terrainCode);
     Light lookupLight(int theme);
     MapGenerator getMapGenerator(int theme);
+    int allowMovementIndex();
+    int allowLightIndex();
 
     static Attribute[] prependAspectAttributes(ThemeLookupTable tlt, Attribute[] a) {
         Attribute[] aspects = tlt.defaultAspectAttributes();

@@ -2,14 +2,14 @@ package player;
 
 import actor.Actor;
 import mapgen.WorldCoordinate;
+import server.StringSaveable;
 
-import static server.FileManager.SEPARATOR;
 import static server.FileManager.SEPARATOR_STRING;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PlayerCharacter implements Serializable {
+public class PlayerCharacter extends StringSaveable implements Serializable {
 
     public static final int NAME_INDEX = 0;
     public static final int WORLD_COORDINATE_INDEX = NAME_INDEX + 1;
@@ -34,16 +34,6 @@ public class PlayerCharacter implements Serializable {
         line = skipSeparator(line);
         levelDepth = integer(line);
         worldCoordinate = new WorldCoordinate(instance, worldLocation, levelDepth);
-    }
-
-    protected String skipSeparator(String saveFileLine) {
-        return saveFileLine.substring(saveFileLine.indexOf(SEPARATOR) + 1);
-    }
-    protected String nextSubstring(String saveFileLine) {
-        return saveFileLine.substring(0, saveFileLine.indexOf(SEPARATOR));
-    }
-    protected int integer(String substring) {
-        return Integer.parseInt(substring);
     }
 
     public Actor getActor() {

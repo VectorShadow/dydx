@@ -28,4 +28,8 @@ public class DrawData {
         brightness = b;
         light = l;
     }
+    @Override
+    public String toString() {
+        return "Aspect Rank: " + aspectRank + "; Brightness: " + brightness + "; Light: " + light;
+    }
 }

@@ -13,6 +13,9 @@ public class ActorExecutionQueue implements Serializable {
     transient PriorityQueue<Actor> executionQueue = new PriorityQueue<>(
             Comparator.comparingLong(Actor::getNextActionTime)
     );
+    public void addActor(Actor a) {
+        executionQueue.add(a);
+    }
     public Actor getActor(int actorID) {
         for (Actor actor : executionQueue) {
             if (actor.getUID() == actorID) return actor;

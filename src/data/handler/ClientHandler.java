@@ -6,6 +6,7 @@ import crypto.RSA;
 import data.*;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
+import gui.Camera;
 import linker.AbstractDataLink;
 import player.Account;
 import player.PlayerCharacter;
@@ -75,6 +76,7 @@ public class ClientHandler extends AbstractHandler {
                 CharacterDatum cd = (CharacterDatum)datum;
                 PlayerCharacter pc = cd.getCharacter();
                 adl.setCharacter(pc);
+                Camera.setFocus(pc.getActor());
                 break;
             case InstructionCode.PROTOCOL_TRANSMIT_FLOOR:
                 LevelDatum ld = (LevelDatum)datum;
