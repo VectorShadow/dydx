@@ -22,6 +22,10 @@ public class Edge implements Serializable {
         direction = Direction.derive(from, to);
     }
 
+    public Coordinate getDestination() {
+        return destination;
+    }
+
     double cost(Level level, int attributeIndex) {
         Attribute originAttribute = level.propertiesAt(origin.row(), origin.col()).getAttribute(attributeIndex);
         Attribute destinationAttribute =

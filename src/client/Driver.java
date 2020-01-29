@@ -38,7 +38,7 @@ public class Driver {
             /* end remote */
             Display.loadGraphics("./gfx/32.png", "./gfx/16.png");
             Display.getInstance().start();
-            Display.drawLevel(adl.getLevel());
+            Display.drawLevel();
             Graph g0 = new Graph(adl.getLevel(), BasicThemeLookupTable.PERMIT_MOVE, true);
             Graph g1 = new Graph(adl.getLevel(), BasicThemeLookupTable.PERMIT_LIGHT, false);
             System.out.println("Movement graph: " + g0 + "\nLight graph: " + g1);

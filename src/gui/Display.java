@@ -2,6 +2,7 @@ package gui;
 
 import contract.Gui;
 import core.DualityGUI;
+import engine.CoreProcesses;
 import error.ErrorLogger;
 import level.Level;
 import resources.DualityContext;
@@ -26,6 +27,8 @@ public class Display extends Thread {
     private static boolean gfxAllowed = false;
 
     private static Display instance = null;
+
+    private static long lastDraw = 0;
 
     public static void loadGraphics(String fullscreenImageFilePath, String windowedImageFilePath) throws IOException {
         ImageManager.loadGraphics(DualityContext.TILE_FULLSCREEN, new File(fullscreenImageFilePath));
@@ -59,8 +62,11 @@ public class Display extends Thread {
         getInstance().gui.toggleFullScreen();
     }
 
-    public static void drawLevel(Level level) {
-        WorldCanvas.paint(level, getInstance().gui);
+    public static void drawLevel() {
+        long now = System.currentTimeMillis();
+        if (now - lastDraw < refreshRate()) return;
+        WorldCanvas.paint(CoreProcesses.getActiveLevel(), getInstance().gui);
+        lastDraw = now;
     }
 
     public static Gui gui(){

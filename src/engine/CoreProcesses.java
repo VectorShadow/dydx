@@ -1,21 +1,19 @@
 package engine;
 
-import actor.Actor;
 import client.Client;
-import data.AbstractDatum;
-import data.DataPacker;
-import data.LevelDatum;
+import data.*;
 import level.Level;
 import linker.ClientDataLink;
 import mapgen.FloorDesigner;
 import mapgen.WorldCoordinate;
 import player.Account;
+import player.PlayerCharacter;
 
 public class CoreProcesses {
 
     private static Client client; //null if local
     private static ClientDataLink clientDataLink; //set whether remote or local
-    private static Engine localEngine; //null if remote
+    private static Engine engine; //null client side if remote
 
     public static void setClient(Client c) {
         client = c;
@@ -29,12 +27,13 @@ public class CoreProcesses {
         return clientDataLink;
     }
 
-    public static void setLocalEngine(Engine engine) {
-        localEngine = engine;
-        setClientDataLink(engine.generateClientDataLink());
+    public static void setEngine(Engine e) {
+        engine = e;
+        if (!engine.isRemote()) setClientDataLink(engine.generateClientDataLink());
+        engine.start();
     }
-    public static void startLocalEngine() {
-        localEngine.start();
+    public static void trackLevel(Level l) {
+        engine.trackLevel(l);
     }
 
     public static void send(AbstractDatum ad, byte ic) {
@@ -46,14 +45,17 @@ public class CoreProcesses {
     public static Account getActiveAccount() {
         return clientDataLink.getAccount();
     }
-    public static Actor getPlayerActor() {
-        return clientDataLink.getCharacter().getActor();
+    public static PlayerCharacter getPlayerCharacter() {
+        return clientDataLink.getCharacter();
+    }
+    public static void updateActor(Level l) {
+        getPlayerCharacter().setActor(l.getActor(getPlayerCharacter().getActor().getUID()));
     }
     public static Level getActiveLevel() {
         return clientDataLink.getLevel();
     }
     public static boolean isRealTime() {
-        return localEngine == null || localEngine.isRealtime();
+        return engine == null || engine.isRealtime();
     }
     public static Level getLevelAtWorldCoordinate(WorldCoordinate wc) {
         //todo - MEGAHACK - find out if this level already exists somewhere. If not, find out of it's one of the

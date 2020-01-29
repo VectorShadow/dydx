@@ -3,13 +3,13 @@ package engine.time;
 import java.io.Serializable;
 
 public abstract class Time implements Serializable {
-    public static final int BASE_GRANULARITY = 16;
-    public static final int BASE_ACTION_SCALE = 32;
+    public static final int BASE_GRANULARITY = 32;
+    public static final int BASE_ACTION_SCALE = 16;
     protected int granularity = Time.BASE_GRANULARITY;
 
     protected long currentTime = 0;
 
-    public Time(){
+    public void initialize() {
         currentTime = 0;
     }
     public long getCurrentTime(){

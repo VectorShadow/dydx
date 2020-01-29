@@ -22,7 +22,7 @@ import static server.FileManager.SEPARATOR_STRING;
  *
  * Base class for all actor entities which may appear on a level.
  */
-public class Actor extends StringSaveable implements Drawable, Serializable {
+public class Actor extends StringSaveable implements Drawable, Serializable, Comparable<Actor> {
     public static final int MAP_COORDINATE_INDEX = 0;
     public static final int SUPER_INDICES = MAP_COORDINATE_INDEX + 1; //todo - keep updated if we add fields
 
@@ -34,9 +34,7 @@ public class Actor extends StringSaveable implements Drawable, Serializable {
 
     private Coordinate mapCoordinate = new Coordinate(-1, -1);
 
-    public Actor(Time levelTime) {
-        synchronizeTime(levelTime);
-    }
+    public Actor(){}
     public Actor(ArrayList<String> actorFile) {
         String line = actorFile.get(MAP_COORDINATE_INDEX);
         int row, col;
@@ -49,7 +47,7 @@ public class Actor extends StringSaveable implements Drawable, Serializable {
 
     public void synchronizeTime(Time levelTime) {
         actionItemQueue = new LinkedList<>();
-        nextActionTime = levelTime.getCurrentTime() + levelTime.getGranularity();
+        setNextActionTime(levelTime.getCurrentTime() + levelTime.getGranularity());
     }
 
     public long getUID() {
@@ -57,15 +55,25 @@ public class Actor extends StringSaveable implements Drawable, Serializable {
     }
 
     public ActionItem checkNextActionEvent(){
-        //todo - handle null case by replacing with wait action
+        if (actionItemQueue.isEmpty()) return new ActionItem(Action.PAUSE, uID);
         return actionItemQueue.pollFirst();
     }
     public ActionItem executeNextActionEvent(){
-        //todo - as above
+        if (actionItemQueue.isEmpty()) return new ActionItem(Action.PAUSE, uID);
         return actionItemQueue.removeFirst();
     }
     public long getNextActionTime() {
         return nextActionTime;
+    }
+    public void setNextActionTime(long time) {
+        nextActionTime = time;
+    }
+    public void queueAction(ActionItem ai) {
+        actionItemQueue.addLast(ai);
+    }
+    public double getTimeMultiplier(Action a) {
+        //todo - check attributes, temporary effects, etc. for modifiers
+        return 1.0;
     }
 
     public Coordinate getMapCoordinate() {
@@ -97,5 +105,10 @@ public class Actor extends StringSaveable implements Drawable, Serializable {
     @Override
     public boolean isUltraFluorescent() {
         return false; //todo - build from attributes
+    }
+
+    @Override
+    public int compareTo(Actor o) {
+        return (int) (o.getNextActionTime() - getNextActionTime());
     }
 }

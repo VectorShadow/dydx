@@ -61,6 +61,9 @@ public class Graph implements Serializable {
                 (!requiresDestinationFlag && inBounds(dest)) || validCoordinate(dest)
         );
     }
+    public Edge getEdgeFrom(Coordinate origin, Direction direction) {
+        return getVertexAt(origin).getEdge(direction);
+    }
 
     /**
      * Find a vertex by following an edge from the given vertex.

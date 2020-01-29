@@ -21,9 +21,8 @@ public class PlayerCharacter extends StringSaveable implements Serializable {
 
     public PlayerCharacter(){}
 
-    public PlayerCharacter(ArrayList<String> saveFile, Actor a) {
+    protected PlayerCharacter(ArrayList<String> saveFile) {
         //todo - handle null cases as we add new fields to retain backwards compatibility
-        actor = a;
         String line = saveFile.get(NAME_INDEX);
         name = skipSeparator(line);
         line = skipSeparator(saveFile.get(WORLD_COORDINATE_INDEX));

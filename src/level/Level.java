@@ -1,7 +1,8 @@
 package level;
 
+import actor.ActionItem;
 import actor.Actor;
-import actor.ActorExecutionQueue;
+import engine.ActorExecutionQueue;
 import engine.time.RealTime;
 import engine.time.Time;
 import engine.time.TurnTime;
@@ -48,7 +49,7 @@ public class Level implements Serializable {
     public Level(boolean realtime, int r, int c, int t){
         //TODO - this entire constructor is a hack. implement properly with MapGenerators
         time = realtime ? new RealTime() : new TurnTime();
-        actors = new ActorExecutionQueue();
+        actors = new ActorExecutionQueue(time);
         theme = t;
         rows = r * c > MAX_SIZE ? MAX_DIM : r;
         cols = r * c > MAX_SIZE ? MAX_DIM : c;
@@ -75,7 +76,7 @@ public class Level implements Serializable {
         return actors;
     }
 
-    public Actor getActor(int actorID) {
+    public Actor getActor(long actorID) {
         return actors.getActor(actorID);
     }
 
@@ -91,6 +92,7 @@ public class Level implements Serializable {
     }
     public void setActorAt(int row, int col, Actor a) {
         actorMap[row][col] = a;
+        if (a != null) a.setMapCoordinate(row, col);
     }
 
     public void addGraph(Graph g) {
@@ -117,9 +119,17 @@ public class Level implements Serializable {
             c = LEVEL_RNG.nextInt(cols);
         }
         a.synchronizeTime(time);
-        a.setMapCoordinate(r, c);
         actors.addActor(a);
         setActorAt(r, c, a);
+    }
+    public ActionItem execute() {
+        Actor a = actors.poll();
+        ActionItem ai = a.executeNextActionEvent();
+        //todo - verify that this ActionItem is still valid, else replace it with a pause action
+        a.setNextActionTime(time.getCurrentTime() +
+                (long)(ai.getActionDurationInInstants() * a.getTimeMultiplier(ai.getAction()) * time.getGranularity()));
+        actors.addActor(a);
+        return ai;
     }
 
 }

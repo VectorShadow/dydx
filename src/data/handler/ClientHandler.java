@@ -1,12 +1,15 @@
 package data.handler;
 
+import actor.ActionResolutionManager;
 import client.SocketMonitor;
 import crypto.Cipher;
 import crypto.RSA;
 import data.*;
+import engine.CoreProcesses;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import gui.Camera;
+import gui.Display;
 import linker.AbstractDataLink;
 import player.Account;
 import player.PlayerCharacter;
@@ -76,12 +79,18 @@ public class ClientHandler extends AbstractHandler {
                 CharacterDatum cd = (CharacterDatum)datum;
                 PlayerCharacter pc = cd.getCharacter();
                 adl.setCharacter(pc);
-                Camera.setFocus(pc.getActor());
                 break;
             case InstructionCode.PROTOCOL_TRANSMIT_FLOOR:
                 LevelDatum ld = (LevelDatum)datum;
                 adl.setLevel(ld.getLevel());
+                CoreProcesses.updateActor(ld.getLevel());
+                Camera.setFocus(CoreProcesses.getPlayerCharacter().getActor());
                 SocketMonitor.reportAcknowledgement(LEVEL_LOADED);
+                break;
+            case InstructionCode.PROTOCOL_TRANSMIT_ACTION_EVENT:
+                ActionEventDatum aed = (ActionEventDatum)datum;
+                ActionResolutionManager.resolve(aed.getActionItem(), CoreProcesses.getActiveLevel()); //local update
+                Display.drawLevel();
                 break;
             //todo - more cases
             default:

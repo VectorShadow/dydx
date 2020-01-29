@@ -66,18 +66,24 @@ public class ServerHandler extends AbstractHandler {
                 if (datum instanceof CharacterDatum) {
                     CharacterDatum cd = (CharacterDatum)datum;
                     pc = cd.getCharacter();
-                    adl.setCharacter(pc);
                     adl.getAccount().getActiveCharacters().add(pc.getName());
                     FileManager.appendNewCharacter(adl.getAccount().getAccountName(), pc);
                 } else if (datum instanceof StringDatum) {
                     sd = (StringDatum)datum;
                     pc = FileManager.loadCharacter(adl.getAccount().getAccountName(), sd.getValue());
                 }
+                adl.setCharacter(pc);
                 Level level = CoreProcesses.getLevelAtWorldCoordinate(pc.getWorldCoordinate());
+                adl.setLevel(level);
+                CoreProcesses.trackLevel(level);
                 level.placeActor(pc.getActor());
                 adl.send(DataPacker.pack(new CharacterDatum(pc), InstructionCode.PROTOCOL_TRANSMIT_CHARACTER));
                 byte[] levelBytes = DataPacker.pack(new LevelDatum(level), InstructionCode.PROTOCOL_TRANSMIT_FLOOR);
                 adl.send(levelBytes);
+                break;
+            case InstructionCode.PROTOCOL_TRANSMIT_ACTION_EVENT:
+                ActionEventDatum aed = (ActionEventDatum)datum;
+                adl.getCharacter().getActor().queueAction(aed.getActionItem());
                 break;
             //todo - more cases
             default:

@@ -4,6 +4,7 @@ import actor.Actor;
 import crypto.Password;
 import error.ErrorLogger;
 import player.Account;
+import player.CharacterFactory;
 import player.PlayerCharacter;
 
 import java.io.*;
@@ -199,7 +200,7 @@ public class FileManager {
         Path characterFilePath = getCharacterFilePath(username, characterName);
         Path actorFilePath = getActorFilePath(username, characterName);
         try {
-            return new PlayerCharacter(readByLine(characterFilePath), new Actor(readByLine(actorFilePath)));
+            return CharacterFactory.loadPlayerCharacter(readByLine(characterFilePath), readByLine(actorFilePath));
         } catch (Exception e) {
             ErrorLogger.logFatalException(ErrorLogger.trace(e));
             return null; //useless and unreachable but required by java

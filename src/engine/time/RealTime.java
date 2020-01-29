@@ -2,18 +2,16 @@ package engine.time;
 
 public class RealTime extends Time {
 
-    private long systemTime;
-
-    public RealTime() {
-        super();
-        systemTime = System.currentTimeMillis();
+    @Override
+    public void initialize() {
+        currentTime = System.currentTimeMillis();
     }
     @Override
     public void setTime(long t) {
-        int dt = (int)(t - systemTime)/granularity;
-        if (dt == 1) systemTime += dt * granularity;
-        else if (dt != 0)
-            throw new IllegalStateException("Illegal time shift: " + dt + ". No more than 1 allowed per call.");
+        int dt = (int)(t - currentTime)/granularity;
+        if (dt == 1) currentTime = t;
+//        else if (dt != 0)
+//            throw new IllegalStateException("Illegal time shift: Attempted to update time from " + currentTime + " to " + t + ". Change was " + dt + "x granularity of " + getGranularity() + ". No more than 1 allowed per call.");
     }
     @Override
     public void setGranularity(int g) {

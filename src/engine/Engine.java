@@ -1,7 +1,9 @@
 package engine;
 
+import actor.Action;
 import actor.ActionItem;
-import actor.ActorExecutionQueue;
+import actor.ActionResolutionManager;
+import actor.Actor;
 import crypto.RSA;
 import data.*;
 import engine.time.Time;
@@ -27,10 +29,12 @@ public class Engine extends Thread {
     private Server server = null;
     private ArrayList<ServerDataLink> localLinks = null;
     private ArrayList<Level> activeLevels = new ArrayList<>();
+    private final boolean remote;
     private final boolean realtime;
 
     public Engine(boolean remote, boolean realtime) {
         FileManager.ensurePaths();
+        this.remote = remote;
         this.realtime = realtime;
         if (remote) {
             server = new Server();
@@ -39,6 +43,10 @@ public class Engine extends Thread {
             localLinks = new ArrayList<>();
             localLinks.add(new ServerLocalDataLink());
         }
+    }
+    public void trackLevel(Level l) {
+        activeLevels.add(l);
+        l.getTime().initialize();
     }
 
     /**
@@ -96,10 +104,11 @@ public class Engine extends Thread {
                 //this is required because more than one actor may have an action queued for the same instant
                 while (l.getTime().getCurrentTime() >= aeq.nextTime()) {
                     //execute
-                    EventDatum ed = execute(aeq.execute());
+                    ActionEventDatum aed = execute(l);
                     //send the resulting datum via all relevant data links
                     for (ServerDataLink sdl : getAllDataLinks()) {
-                        ((AbstractDataLink)sdl).send(StreamConverter.toByteArray(ed));
+                        if (sdl.getLevel() == l && aed.getActionItem().getAction() != Action.PAUSE)
+                            sdl.send(DataPacker.pack(aed, InstructionCode.PROTOCOL_TRANSMIT_ACTION_EVENT));
                     }
                 }
             }
@@ -111,9 +120,11 @@ public class Engine extends Thread {
      * This will update the World State as necessary, and generate an EventDatum that will
      * cause all relevant Clients to make the exact same update.
      */
-    private EventDatum execute(ActionItem ai) {
-        //todo - update the World, then build an EventDatum to send to the Client
-        return null;
+    private ActionEventDatum execute(Level l) {
+        ActionItem ai = l.execute();
+        if (CoreProcesses.isRemotelyConnected()) //update remote gamestate
+            ActionResolutionManager.resolve(ai, l);
+        return new ActionEventDatum(ai); //update local gamestate
     }
     /**
      * Search all open links for the specified level and return a list of links connected to that level.
@@ -133,6 +144,9 @@ public class Engine extends Thread {
         return l.getLevel();
     }
 
+    public boolean isRemote() {
+        return remote;
+    }
     public boolean isRealtime() {
         return realtime;
     }
