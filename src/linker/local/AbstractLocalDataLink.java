@@ -66,11 +66,7 @@ public abstract class AbstractLocalDataLink extends AbstractDataLink {
         for (int i = 0; i < body.length; ++i) {
             body[i] = bytes[i + 4];
         }
-        try {
-            handle(instruction, StreamConverter.toObject(body));
-        }catch (Exception e) {
-            ErrorLogger.logFatalException(ErrorLogger.trace(e));
-        }
+        handle(instruction, StreamConverter.toObject(body));
     }
     @Override
     public void run() {

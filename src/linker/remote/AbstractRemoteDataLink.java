@@ -44,12 +44,13 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         boolean firstBlock = true; //only the first block of a transmission should exclude the header segment
         for (;;) {
             try {
-                streamBlock = new byte[BLOCK_SIZE]; //reset the stream block
-                bytesRead = socket.getInputStream().read(streamBlock, 0 , BLOCK_SIZE); //read up to 1024 bytes from the stream
-                if (excess.size() > 0) { //handle excess data from the previous pass
-                    streamBlock = concatenate(excess, streamBlock); //build a new block from old excess and current read
-                    bytesRead = streamBlock.length; //adjust bytes read to account for prepended data
-                    excess = new ArrayList<>(); //reset excess
+                if (excess.size() > 0) {
+                    streamBlock = listToArray(excess);
+                    bytesRead = excess.size();
+                    excess = new ArrayList<>();
+                } else {
+                    streamBlock = new byte[BLOCK_SIZE];
+                    bytesRead = socket.getInputStream().read(streamBlock,0, BLOCK_SIZE);
                 }
                 if (bytesRead < 0) { //error reading on socket - connection lost
                     socket.close();
@@ -64,19 +65,15 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                         instructionBodySize = DataPacker.readSize(streamBlock[1], streamBlock[2], streamBlock[3]); //get the size as an int
                         instructionBody = new byte[instructionBodySize]; //initialize the body block
                     } else firstBlock = false; //else ensure we no longer exclude the header until this instruction is complete
-                    for (int i = firstBlock ? DataPacker.HEADER_LENGTH : 0; i < bytesRead; ++i, bytesReadInInstruction++) { //iterate through the bytes read this pass
+                    for (int i = firstBlock ? DataPacker.HEADER_LENGTH : 0; i < bytesRead; ++i) { //iterate through the bytes read this pass
                         if (bytesReadInInstruction < instructionBodySize){ //bytes from the current instruction
-                            instructionBody[bytesReadInInstruction] = streamBlock[i];
+                            instructionBody[bytesReadInInstruction++] = streamBlock[i];
                         } else { //bytes from a new instruction
                             excess.add(streamBlock[i]); //these go into excess to be handled next pass
                         }
                     }
                     if (bytesReadInInstruction >= instructionBodySize) { //if we finished an instruction, handle it
-                        try {
-                            handle(instruction, StreamConverter.toObject(instructionBody));
-                        } catch (Exception e) {
-                            System.out.println("Crashed on instruction " + instruction + " with " + bytesReadInInstruction + "/" + instructionBodySize + " bytes read ");
-                        }
+                        handle(instruction, StreamConverter.toObject(instructionBody));
                         instruction = 0; //then reset the data members
                         instructionBodySize = 0;
                         bytesReadInInstruction = 0;
@@ -91,8 +88,13 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
         }
         terminate();
     }
-    private byte[] concatenate(ArrayList<Byte> excess, byte[] stream) {
-        byte[] total = new byte[excess.size() + stream.length];
+    private byte[] listToArray(ArrayList<Byte> list) {
+        byte[] array = new byte[BLOCK_SIZE];
+        for (int i = 0; i < list.size(); ++i) array[i] = list.get(i);
+        return array;
+    }
+    private byte[] concatenate(ArrayList<Byte> excess, byte[] stream, int streamSize) {
+        byte[] total = new byte[excess.size() + streamSize];
         int index = 0;
         while (index < excess.size()) {
             total[index] = excess.get(index);
