@@ -58,7 +58,9 @@ public class CoreProcesses {
         return engine == null || engine.isRealtime();
     }
     public static Level getLevelAtWorldCoordinate(WorldCoordinate wc) {
-        //todo - MEGAHACK - find out if this level already exists somewhere. If not, find out of it's one of the
+        Level level = engine.getLevel(wc);
+        if (level != null) return level;
+        //todo - MEGAHACK If null, find out of it's one of the
         // Server's permanent levels, and load it, or generate it if it doesn't yet exist.
         // Finally, generate it fresh if needed.
         return FloorDesigner.design(WorldCoordinate.ORIGIN);

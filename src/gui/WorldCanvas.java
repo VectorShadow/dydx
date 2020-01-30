@@ -18,7 +18,20 @@ import java.awt.*;
  * into the data required to draw to the GUI.
  */
 public class WorldCanvas {
+
+    private static Level level = null;
+    private static DrawMap drawMap = null;
+
+    private static void setLevel(Level l) {
+        if (l == level) drawMap.resetLightSight();
+        else {
+            level = l;
+            drawMap = new DrawMap(level);
+        }
+    }
+
     public static void paint(Level level, Gui gui) {
+        setLevel(level);
         int rowOffset = Camera.row();
         int colOffset = Camera.col();
         //find the size of the io.display area
@@ -31,8 +44,7 @@ public class WorldCanvas {
         int levelRow;
         int levelCol;
         Glyph g;
-        DrawMap dm = new DrawMap(level);
-        dm.radiateSight(Sight.BRIGHT_SIGHT, // todo - HACK - this should be the player's sight power
+        drawMap.radiateSight(Sight.BRIGHT_SIGHT, // todo - HACK - this should be the player's sight power
                 level.getGraph(Level.LIGHT_GRAPH_INDEX).radiate(
                         new Coordinate(rowOffset, colOffset),
                         11 //todo - HACK - this should be the player's sight radius
@@ -45,7 +57,7 @@ public class WorldCanvas {
                     g = Glyph.EMPTY_GLYPH;
                 }
                 else {
-                    g = dm.drawFrom(levelRow, levelCol);
+                    g = drawMap.drawFrom(levelRow, levelCol);
                 }
                 gui.print(i, j, g);
             }

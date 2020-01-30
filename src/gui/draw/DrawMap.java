@@ -22,6 +22,13 @@ public class DrawMap {
             }
         }
     }
+    public void resetLightSight() {
+        for (int i = 0; i < level.getRows(); ++i) {
+            for (int j = 0; j < level.getCols(); ++j) {
+                tiles[i][j].resetLightSight();
+            }
+        }
+    }
     public void radiateLight(Light l, ArrayList<DirectedCoordinate> dcList) {
         if (l == null) return;
         for (DirectedCoordinate dc : dcList) tiles[dc.ROW][dc.COL].lightFrom(dc.DIR, l);
@@ -55,11 +62,11 @@ public class DrawMap {
             if (dd.getAspectRank() < Aspect.DARK.ordinal() && b > Light.LIGHT_BLACK && s > Sight.NO_SIGHT){
                 dd.setValues(Aspect.VAGUE.ordinal(), b, l);
             }
-            //todo - sound! if (maxPriority < VAGUE && d.getCurrentSound() != null) maxPriority = SOUND;
+            //todo - sound! if (maxPriority < VAGUE && d.getCurrentSound() != null && Player.canHear(d.getCurrentSound())) maxPriority = SOUND;
         }
-        //todo - memory! if (maxPriority == SOUND && !Player.canHear(d.getCurrentSound())) maxPriority = MEMORY;
-        if (dd.getAspectRank() == Aspect.MEMORY.ordinal() && !t.remembered)
-            dd.setValues(Aspect.NONE.ordinal(), 0, null);
+        if (dd.getAspectRank() < Aspect.SOUND.ordinal() && t.isRemembered())
+            dd.setValues(Aspect.MEMORY.ordinal(), 0, null);
+        if (dd.getAspectRank() > Aspect.SOUND.ordinal()) t.remember();
         return dd;
     }
     private DrawData actorPriority(int row, int col) {
@@ -69,7 +76,6 @@ public class DrawMap {
         return getMaxDirectionalPriority(level.propertiesAt(row, col), tiles[row][col]);
     }
     public Glyph drawFrom(int row, int col) {
-        DrawTile dt = tiles[row][col];
         Drawable d = level.getActorAt(row, col);
         Glyph g;
         DrawData dd;

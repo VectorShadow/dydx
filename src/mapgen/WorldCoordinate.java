@@ -43,4 +43,12 @@ public class WorldCoordinate implements Serializable {
     public String toString() {
         return "(" + instance + "," + worldLocation + "," + levelDepth + ")";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WorldCoordinate &&
+                ((WorldCoordinate) obj).instance == instance &&
+                ((WorldCoordinate) obj).worldLocation == worldLocation &&
+                ((WorldCoordinate) obj).levelDepth == levelDepth;
+    }
 }

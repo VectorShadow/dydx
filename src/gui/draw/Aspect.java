@@ -6,6 +6,7 @@ import resources.continuum.Pair;
 import resources.glyph.Glyph;
 import resources.glyph.GlyphBuilder;
 import resources.glyph.ProtoGlyph;
+import resources.glyph.ProtoGlyphBuilder;
 import resources.glyph.ascii.SimpleGlyph;
 
 import java.awt.*;
@@ -47,15 +48,19 @@ public enum Aspect {
         GlyphBuilder g = GlyphBuilder.buildGlyph();
         switch (this) {
             case MEMORY:
-                //todo
-                //memory aspects draws a bright grey foreground onto a background the color of the dark version of the foreground.
-                //memory is drawn for terrain only.
-                break;
+                return g.readProtoGlyph(
+                        ProtoGlyphBuilder.setDefaults(
+                                Chroma.dark(Chroma.GREY),
+                                Chroma.BLACK,
+                                protoGlyph.getSymbol(true)
+                        ).build(),
+                        true
+                ).build(DualityMode.TILE);
             case SOUND:
                 //todo
                 //sound aspects use a profile that generates a sound based on the current game instant. A line is then drawn on the
                 //sound graph from the source to the hearer. If the sound arrives with volume greater than the ambient background
-                //noise AND the hearer's hearing theshold, a glyph will generate corresponding to the type of sound and the
+                //noise AND the hearer's hearing threshold, a glyph will generate corresponding to the type of sound and the
                 //difference in volume from whichever is higher - the background or the threshold - and the residual arrival volume
                 break;
             case VAGUE:

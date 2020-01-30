@@ -25,24 +25,27 @@ public class StreamConverter {
         }
         return b;
     }
-    public static AbstractDatum toObject(byte[] b) {
+    public static AbstractDatum toObject(byte[] b) throws IOException, ClassNotFoundException {
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         ObjectInput in = null;
         AbstractDatum ad = null;
-        try {
-            in = new ObjectInputStream(bis);
-            ad = (AbstractDatum)in.readObject();
-        } catch (Exception e) {
-            ErrorLogger.logFatalException(ErrorLogger.trace(e));
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                // ignore close exception
-            }
-        }
+//        try {
+//            in = new ObjectInputStream(bis);
+//            ad = (AbstractDatum)in.readObject();
+//        } catch (Exception e) {
+//            ErrorLogger.logFatalException(ErrorLogger.trace(e));
+//        } finally {
+//            try {
+//                if (in != null) {
+//                    in.close();
+//                }
+//            } catch (IOException ex) {
+//                // ignore close exception
+//            }
+//        }
+        in = new ObjectInputStream(bis);
+        ad = (AbstractDatum)in.readObject();
+        in.close();
         return ad;
     }
 }

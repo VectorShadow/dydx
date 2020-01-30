@@ -15,6 +15,7 @@ import linker.ServerDataLink;
 import linker.local.ClientLocalDataLink;
 import linker.local.AbstractLocalDataLink;
 import linker.local.ServerLocalDataLink;
+import mapgen.WorldCoordinate;
 import server.FileManager;
 import server.Server;
 
@@ -47,6 +48,12 @@ public class Engine extends Thread {
     public void trackLevel(Level l) {
         activeLevels.add(l);
         l.getTime().initialize();
+    }
+    public Level getLevel(WorldCoordinate wc) {
+        for (Level l : activeLevels) {
+            if (l.getWorldCoordinate().equals(wc)) return l;
+        }
+        return null;
     }
 
     /**

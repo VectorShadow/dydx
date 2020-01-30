@@ -7,6 +7,7 @@ import error.LogReadyTraceableException;
 import linker.AbstractDataLink;
 import server.FileManager;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -71,7 +72,11 @@ public abstract class AbstractRemoteDataLink extends AbstractDataLink {
                         }
                     }
                     if (bytesReadInInstruction >= instructionBodySize) { //if we finished an instruction, handle it
-                        handle(instruction, StreamConverter.toObject(instructionBody));
+                        try {
+                            handle(instruction, StreamConverter.toObject(instructionBody));
+                        } catch (Exception e) {
+                            System.out.println("Crashed on instruction " + instruction + " with " + bytesReadInInstruction + "/" + instructionBodySize + " bytes read ");
+                        }
                         instruction = 0; //then reset the data members
                         instructionBodySize = 0;
                         bytesReadInInstruction = 0;

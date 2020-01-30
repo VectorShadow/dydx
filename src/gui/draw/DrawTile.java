@@ -3,16 +3,23 @@ package gui.draw;
 import graph.Direction;
 
 public class DrawTile {
-    boolean remembered = false;
-    LightSight[] litSeen = new LightSight[9];
+    private boolean remembered = false;
+    private Light ambientLight;
+    private LightSight[] litSeen;
 
-    public DrawTile(Light ambientLight){
-        for (int i = 0; i < litSeen.length; ++i) litSeen[i] = new LightSight();
-        lightFrom(Direction.SELF, ambientLight);
+    public DrawTile(Light l){
+        ambientLight = l;
+        resetLightSight();
     }
 
     private int indexOf(Direction direction) {
         return direction.ordinal();
+    }
+
+    public void resetLightSight() {
+        litSeen = new LightSight[9];
+        for (int i = 0; i < litSeen.length; ++i) litSeen[i] = new LightSight();
+        lightFrom(Direction.SELF, ambientLight);
     }
 
     public void lightFrom(Direction d, Light l) {
@@ -32,5 +39,11 @@ public class DrawTile {
     }
     public short sightFrom(Direction d) {
         return litSeen[indexOf(d)].getSight();
+    }
+    public void remember() {
+        remembered = true;
+    }
+    public boolean isRemembered() {
+        return remembered;
     }
 }
