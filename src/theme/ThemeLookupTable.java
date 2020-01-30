@@ -4,12 +4,14 @@ import attribute.Attribute;
 import gui.draw.Light;
 import level.TerrainTemplate;
 import mapgen.MapGenerator;
+import mapgen.WorldCoordinate;
 
 public interface ThemeLookupTable {
     Attribute[] defaultAspectAttributes();
     Attribute[] defaultActorAttributes();
     Attribute[] defaultItemAttributes();
     Attribute[] defaultTerrainAttributes();
+    int theme(WorldCoordinate wc);
     //todo - lookup actor template
     //todo - lookup item template
     TerrainTemplate lookupTerrain(int theme, byte terrainCode);

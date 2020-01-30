@@ -7,6 +7,7 @@ import level.TerrainTemplate;
 import level.TerrainTemplateBuilder;
 import mapgen.MapGenerator;
 import mapgen.TestGenerator;
+import mapgen.WorldCoordinate;
 import resources.chroma.Chroma;
 import resources.continuum.Pair;
 import resources.glyph.ProtoGlyphBuilder;
@@ -114,6 +115,11 @@ public class BasicThemeLookupTable implements ThemeLookupTable {
     @Override
     public Attribute[] defaultTerrainAttributes() {
         return ThemeLookupTable.prependAspectAttributes(this, DEFAULT_TERRAIN_ATTRIBUTES);
+    }
+
+    @Override
+    public int theme(WorldCoordinate wc) {
+        return 0;
     }
 
     /**

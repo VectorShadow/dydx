@@ -9,6 +9,7 @@ import engine.time.TurnTime;
 import graph.Graph;
 import gui.draw.Light;
 import mapgen.FloorDesigner;
+import mapgen.WorldCoordinate;
 import theme.ThemeLookupTable;
 
 import java.io.Serializable;
@@ -45,14 +46,16 @@ public class Level implements Serializable {
     byte[][] terrainMap;
     Actor[][] actorMap; //redundant access to actors by coordinates
     ArrayList<Graph> graphs;
+    WorldCoordinate worldCoordinate;
 
-    public Level(boolean realtime, int r, int c, int t){
+    public Level(boolean realtime, int r, int c, WorldCoordinate wc){
         //TODO - this entire constructor is a hack. implement properly with MapGenerators
         time = realtime ? new RealTime() : new TurnTime();
         actors = new ActorExecutionQueue(time);
-        theme = t;
         rows = r * c > MAX_SIZE ? MAX_DIM : r;
         cols = r * c > MAX_SIZE ? MAX_DIM : c;
+        worldCoordinate = wc;
+        theme = themeLookupTable.theme(wc);
         terrainMap = themeLookupTable.getMapGenerator(theme).generateTerrain(rows, cols);
         actorMap = new Actor[rows][cols];
         graphs = new ArrayList<>();
@@ -100,6 +103,10 @@ public class Level implements Serializable {
     }
     public Graph getGraph(int graphIndex) {
         return graphs.get(graphIndex);
+    }
+
+    public WorldCoordinate getWorldCoordinate() {
+        return worldCoordinate;
     }
 
     public static void setThemeLookupTable(ThemeLookupTable tll) {

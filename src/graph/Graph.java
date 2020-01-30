@@ -1,5 +1,6 @@
 package graph;
 
+import mapgen.WorldCoordinate;
 import theme.BasicThemeLookupTable;
 import level.Level;
 
@@ -177,22 +178,22 @@ public class Graph implements Serializable {
         long start, stop;
         Level l, m, n, o;
         Graph g;
-        l = new Level(true, 16, 16, 0);
+        l = new Level(true, 16, 16, WorldCoordinate.ORIGIN);
         start = System.currentTimeMillis();
         g = new Graph(l, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @16x16: " + (stop - start));
-        m = new Level(true, 256, 256, 0);
+        m = new Level(true, 256, 256, WorldCoordinate.ORIGIN);
         start = System.currentTimeMillis();
         g = new Graph(m, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @256x256: " + (stop - start));
-        n = new Level(true, 512, 512, 0);
+        n = new Level(true, 512, 512, WorldCoordinate.ORIGIN);
         start = System.currentTimeMillis();
         g = new Graph(n, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
         System.out.println("Graph build speed @512x512: " + (stop - start));
-        o = new Level(true, 1024, 1024, 0);
+        o = new Level(true, 1024, 1024, WorldCoordinate.ORIGIN);
         start = System.currentTimeMillis();
         g = new Graph(o, BasicThemeLookupTable.PERMIT_LIGHT, false);
         stop = System.currentTimeMillis();
