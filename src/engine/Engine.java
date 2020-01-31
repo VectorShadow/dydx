@@ -3,14 +3,12 @@ package engine;
 import actor.Action;
 import actor.ActionItem;
 import actor.ActionResolutionManager;
-import actor.Actor;
 import crypto.RSA;
 import data.*;
 import engine.time.Time;
 import error.ErrorLogger;
 import error.LogReadyTraceableException;
 import level.Level;
-import linker.AbstractDataLink;
 import linker.ServerDataLink;
 import linker.local.ClientLocalDataLink;
 import linker.local.AbstractLocalDataLink;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 public class Engine extends Thread {
 
     private Server server = null;
-    private ArrayList<ServerDataLink> localLinks = null;
+    private ArrayList<ServerDataLink> dataLinks = null;
     private ArrayList<Level> activeLevels = new ArrayList<>();
     private final boolean remote;
     private final boolean realtime;
@@ -40,16 +38,23 @@ public class Engine extends Thread {
         if (remote) {
             server = new Server();
             server.start();
+            dataLinks = server.getOpenConnections();
         } else {
-            localLinks = new ArrayList<>();
-            localLinks.add(new ServerLocalDataLink());
+            dataLinks = new ArrayList<>();
+            dataLinks.add(new ServerLocalDataLink());
         }
     }
     public void trackLevel(Level l) {
         activeLevels.add(l);
         l.getTime().initialize();
     }
-    public Level getLevel(WorldCoordinate wc) {
+    public ArrayList<ServerDataLink> getDataLinks() {
+        return dataLinks;
+    }
+    public ArrayList<Level> getActiveLevels() {
+        return activeLevels;
+    }
+    public Level getLevelByWorldCoordinate(WorldCoordinate wc) {
         for (Level l : activeLevels) {
             if (l.getWorldCoordinate().equals(wc)) return l;
         }
@@ -58,11 +63,11 @@ public class Engine extends Thread {
 
     /**
      * Return a list of ServerDataLinks which this engine is connected on.
-     * If we are local, simply return the localLinks field.
+     * If we are local, simply return the dataLinks field.
      * Otherwise, get the open connections from the active Server.
      */
     private ArrayList<ServerDataLink> getAllDataLinks() {
-        if (server == null) return localLinks;
+        if (server == null) return dataLinks;
         return server.getOpenConnections();
     }
 
@@ -73,7 +78,7 @@ public class Engine extends Thread {
      */
     public ClientLocalDataLink generateClientDataLink() {
         RSA.generateSessionKeys();
-        ServerLocalDataLink sldl = (ServerLocalDataLink)localLinks.get(0);
+        ServerLocalDataLink sldl = (ServerLocalDataLink) dataLinks.get(0);
         ClientLocalDataLink cldl = AbstractLocalDataLink.generateClientLink(sldl);
         sldl.send(
                 DataPacker.pack(
@@ -136,7 +141,7 @@ public class Engine extends Thread {
     /**
      * Search all open links for the specified level and return a list of links connected to that level.
      */
-    public ArrayList<ServerDataLink> getLinks(Level l) {
+    public ArrayList<ServerDataLink> getLinksByLevel(Level l) {
         if (!activeLevels.contains(l)) throw new IllegalArgumentException("Specified level does not exist.");
         ArrayList<ServerDataLink> serverDataLinks = new ArrayList<>();
         for (ServerDataLink sdl : getAllDataLinks()) if (sdl.getLevel() == l) serverDataLinks.add(sdl);
@@ -146,7 +151,7 @@ public class Engine extends Thread {
     /**
      * Return the level associated with the specified data link.
      */
-    public Level getLevel(ServerDataLink l) {
+    public Level getLevelByLink(ServerDataLink l) {
         if (!getAllDataLinks().contains(l)) throw new IllegalArgumentException("Specified data link does not exist.");
         return l.getLevel();
     }

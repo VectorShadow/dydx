@@ -13,6 +13,8 @@ import player.Account;
 import player.PlayerCharacter;
 import server.FileManager;
 
+import java.util.ArrayList;
+
 public class ServerHandler extends AbstractHandler {
 
     private static ServerHandler instance;
@@ -24,7 +26,7 @@ public class ServerHandler extends AbstractHandler {
 
     public static ServerHandler getInstance() {
         if (instance == null) instance = new ServerHandler();
-        return (ServerHandler)instance;
+        return instance;
     }
 
     @Override
@@ -43,13 +45,14 @@ public class ServerHandler extends AbstractHandler {
                 break;
             case InstructionCode.PROTOCOL_QUERY_ACCOUNT:
                 ud = (UserDatum)datum;
-                if (FileManager.doesUserExist(ud.getUsername())) {
+                if (CoreProcesses.isAccountLoggedIn(ud.getUsername())) {
+                    adl.send(DataPacker.pack(new AccountDatum(new Account("", new ArrayList<>())), InstructionCode.PROTOCOL_QUERY_ACCOUNT));
+                } else if (FileManager.doesUserExist(ud.getUsername())) {
                     Account account = FileManager.loadUser(ud.getUsername(),
-                            ud.decryptPassword(linkSecret));
+                            ud.decryptPassword(linkSecret)); //returns null if decryption doesn't match password table
                     adl.setAccount(account);
                     adl.send(DataPacker.pack(new AccountDatum(account), InstructionCode.PROTOCOL_VERIFY_ACCOUNT));
-                }
-                else
+                } else
                     adl.send(DataPacker.pack(new AccountDatum(null), InstructionCode.PROTOCOL_QUERY_ACCOUNT));
                 break;
             case InstructionCode.PROTOCOL_CREATE_ACCOUNT:

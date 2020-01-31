@@ -10,7 +10,7 @@ public abstract class AbstractDataLink extends Thread implements DataLink{
 
     /**
      * Each link is connected on a particular game level.
-     * Both Server and Client interfaces require a method called getLevel() to reference this connection.
+     * Both Server and Client interfaces require a method called getLevelByWorldCoordinate() to reference this connection.
      * We implement that below by returning this field.
      */
     protected Level level = null;

@@ -4,6 +4,7 @@ import client.Client;
 import data.*;
 import level.Level;
 import linker.ClientDataLink;
+import linker.ServerDataLink;
 import mapgen.FloorDesigner;
 import mapgen.WorldCoordinate;
 import player.Account;
@@ -57,8 +58,16 @@ public class CoreProcesses {
     public static boolean isRealTime() {
         return engine == null || engine.isRealtime();
     }
+    public static boolean isAccountLoggedIn(String accountName) {
+        for (ServerDataLink sdl : engine.getDataLinks()) {
+            Account a = sdl.getAccount();
+            if (a == null) continue;
+            if (a.getAccountName().equals(accountName)) return true;
+        }
+        return false;
+    }
     public static Level getLevelAtWorldCoordinate(WorldCoordinate wc) {
-        Level level = engine.getLevel(wc);
+        Level level = engine.getLevelByWorldCoordinate(wc);
         if (level != null) return level;
         //todo - MEGAHACK If null, find out of it's one of the
         // Server's permanent levels, and load it, or generate it if it doesn't yet exist.

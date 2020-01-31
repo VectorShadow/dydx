@@ -25,6 +25,7 @@ public class ClientHandler extends AbstractHandler {
     public static final int LOGIN_SUCCESS = 0;
     public static final int LOGIN_FAILURE = 1;
     public static final int NO_SUCH_ACCOUNT = 2;
+    public static final int ACCOUNT_ALREADY_LOGGED_IN = 3;
 
     public static final int LEVEL_LOADED = 0;
 
@@ -32,7 +33,7 @@ public class ClientHandler extends AbstractHandler {
 
     public static ClientHandler getInstance() {
         if (instance == null) instance = new ClientHandler();
-        return (ClientHandler)instance;
+        return instance;
     }
 
     @Override
@@ -57,7 +58,10 @@ public class ClientHandler extends AbstractHandler {
                 SocketMonitor.reportAcknowledgement(KEY_ACKNOWLEDGED);
                 break;
             case InstructionCode.PROTOCOL_QUERY_ACCOUNT:
-                SocketMonitor.reportAcknowledgement(NO_SUCH_ACCOUNT);
+                ad = (AccountDatum)datum;
+                account = ad.getAccount();
+                if (account == null) SocketMonitor.reportAcknowledgement(NO_SUCH_ACCOUNT);
+                else SocketMonitor.reportAcknowledgement(ACCOUNT_ALREADY_LOGGED_IN);
                 break;
             case InstructionCode.PROTOCOL_VERIFY_ACCOUNT:
                 ad = (AccountDatum)datum;
